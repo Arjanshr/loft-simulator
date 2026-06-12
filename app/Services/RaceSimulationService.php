@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Race;
 use App\Models\Pigeon;
 use App\Models\RaceResult;
+use App\Models\RaceHistory;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -39,23 +40,33 @@ class RaceSimulationService
 
         return DB::transaction(function () use ($race, $sortedResults) {
             return $sortedResults->map(function ($result, $index) use ($race) {
+                $pigeon = $result['pigeon'];
                 $position = $index + 1;
                 $payout = $this->calculatePayout($race, $position);
                 
                 $raceResult = RaceResult::create([
                     'race_id' => $race->id,
-                    'pigeon_id' => $result['pigeon']->id,
+                    'pigeon_id' => $pigeon->id,
                     'finish_time_seconds' => (int) $result['total_time'],
                     'position' => $position,
                     'payout' => $payout,
                 ]);
 
+                // Log History
+                RaceHistory::create([
+                    'loft_id' => $pigeon->loft_id,
+                    'race_title' => $race->title,
+                    'pigeon_name' => $pigeon->name,
+                    'position' => $position,
+                    'payout' => $payout,
+                ]);
+
                 // Update pigeon status
-                $result['pigeon']->update(['status' => 'idle']);
+                $pigeon->update(['status' => 'idle']);
                 
                 // If payout > 0, update loft coins
                 if ($payout > 0) {
-                    $result['pigeon']->loft->increment('coins', $payout);
+                    $pigeon->loft->increment('coins', $payout);
                 }
 
                 return $raceResult;
