@@ -21,7 +21,7 @@ class MassDataSeeder extends Seeder
         for ($level = 1; $level <= 20; $level++) {
             $this->command->info("Seeding Level $level");
             
-            for ($i = 1; $i <= 5; $i++) {
+            for ($i = 1; $i <= 10; $i++) {
                 $aiUser = User::factory()->create([
                     'name' => "AI Level $level - $i",
                     'is_ai' => true
@@ -35,7 +35,7 @@ class MassDataSeeder extends Seeder
                 ]);
 
                 $pigeonsData = [];
-                for ($j = 0; $j < 5; $j++) {
+                for ($j = 0; $j < 10; $j++) {
                     $pigeonLevel = rand(1, $level);
 
                     $pigeonsData[] = [
