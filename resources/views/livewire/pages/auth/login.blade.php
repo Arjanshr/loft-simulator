@@ -25,18 +25,20 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
+    @if ($errors->any())
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
+             class="fixed top-4 right-4 z-50 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold font-industrial">
+            <ul class="text-sm">
+                @foreach ($errors->all() as $error)
+                    <li>⚠ {{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <h2 class="font-industrial text-2xl font-black text-white text-center mb-8 uppercase tracking-widest italic">Authorization</h2>
 
     <form wire:submit="login" class="space-y-6">
-        @if ($errors->any())
-            <div class="p-4 bg-red-500/10 border border-red-500/50 rounded-2xl animate-pulse">
-                <ul class="text-xs text-red-400 font-bold space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>⚠ {{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
 
         <div>
             <label class="block text-xs font-black text-yellow-500 uppercase tracking-widest mb-2 ml-1">Terminal ID (Email)</label>

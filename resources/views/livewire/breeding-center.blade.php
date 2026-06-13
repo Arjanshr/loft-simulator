@@ -96,10 +96,26 @@
                                         $hatchTime = $record->eggs_laid_at->addDay();
                                         $remaining = now()->diffInSeconds($hatchTime, false);
                                     @endphp
-                                    <div class="text-right">
+                                    <div class="text-right"
+                                         wire:key="timer-{{ $record->id }}"
+                                         x-data="{ 
+                                            remaining: {{ $remaining }},
+                                            init() {
+                                                setInterval(() => {
+                                                    if (this.remaining > 0) this.remaining--;
+                                                }, 1000);
+                                            },
+                                            get display() {
+                                                if (this.remaining <= 0) return 'READY';
+                                                let h = Math.floor(this.remaining / 3600);
+                                                let m = Math.floor((this.remaining % 3600) / 60);
+                                                let s = this.remaining % 60;
+                                                return [h, m, s].map(v => v < 10 ? '0' + v : v).join(':');
+                                            }
+                                         }">
                                         <span class="text-[8px] font-black text-yellow-500 block uppercase mb-1">Hatch sequence</span>
-                                        <span class="text-xl font-industrial font-black text-white tracking-widest">
-                                            @if($remaining > 0) {{ gmdate("H:i:s", $remaining) }} @else READY @endif
+                                        <span class="text-xl font-industrial font-black text-white tracking-widest"
+                                              x-text="display">
                                         </span>
                                     </div>
                                 @endif
