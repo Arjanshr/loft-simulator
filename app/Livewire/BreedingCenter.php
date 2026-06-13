@@ -16,9 +16,14 @@ class BreedingCenter extends Component
 
     public function createPair(PairingService $pairingService)
     {
+        $this->validate([
+            'maleId' => 'required',
+            'femaleId' => 'required',
+        ]);
+
         $loft = Auth::user()->loft;
         
-        if ($pairingService->createPair($loft, $this->maleId, $this->femaleId)) {
+        if ($pairingService->createPair($loft, (int)$this->maleId, (int)$this->femaleId)) {
             $this->reset(['maleId', 'femaleId']);
             session()->flash('message', 'Pair formed successfully!');
         } else {
