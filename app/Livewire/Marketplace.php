@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class Marketplace extends Component
 {
+    public $levelFilter = '';
+
     public function buy($listingId, MarketplaceService $marketplaceService)
     {
         $listing = Listing::findOrFail($listingId);
@@ -25,16 +27,29 @@ class Marketplace extends Component
     public function render()
     {
         $userLoft = Auth::user()->loft;
-        $maxLevel = $userLoft->level + 1;
+        $userLevel = $userLoft->level;
+
+        $query = Listing::where('is_active', true)
+            ->where('loft_id', '!=', $userLoft->id)
+            ->whereHas('pigeon', function($q) use ($userLevel) {
+                $q->where(function($query) use ($userLevel) {
+                    $query->where('level', '<=', $userLevel)
+                          ->orWhere(function($q2) use ($userLevel) {
+                              $q2->where('level', '=', $userLevel + 1)
+                                 ->whereRaw('RAND() < 0.05');
+                          });
+                });
+                
+                if ($this->levelFilter) {
+                    $q->where('level', $this->levelFilter);
+                }
+            })
+            ->with(['pigeon', 'loft'])
+            ->latest()
+            ->limit(30);
 
         return view('livewire.marketplace', [
-            'listings' => Listing::where('is_active', true)
-                ->where('loft_id', '!=', $userLoft->id)
-                ->whereHas('pigeon', function($q) use ($maxLevel) {
-                    $q->where('level', '<=', $maxLevel);
-                })
-                ->with(['pigeon', 'loft'])
-                ->get(),
+            'listings' => $query->get(),
         ])->layout('layouts.app', ['header' => 'Auction House']);
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('races', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->unsignedInteger('distance_km');
+            $table->unsignedInteger('distance_km')->nullable();
             $table->unsignedInteger('difficulty_tier')->default(1);
             $table->unsignedBigInteger('entry_fee')->default(0);
             $table->unsignedBigInteger('prize_pool')->default(0);
