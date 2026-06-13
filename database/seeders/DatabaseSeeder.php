@@ -99,6 +99,8 @@ class DatabaseSeeder extends Seeder
                 'level' => $level,
                 'type' => fake()->randomElement(['fancy', 'racer', 'highflyer']),
                 'gender' => fake()->randomElement(['male', 'female']),
+                'birth_at' => now()->subDays(10), // Ensure they are adults
+                'hatch_at' => now()->subDays(6),
                 'eyes' => rand(1, $level * 10),
                 'beak' => rand(1, $level * 10),
                 'legs' => rand(1, $level * 10),
