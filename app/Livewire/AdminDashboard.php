@@ -47,6 +47,13 @@ class AdminDashboard extends Component
         session()->flash('message', 'Market ecosystem tick executed successfully.');
     }
 
+    public function runPassiveIncome()
+    {
+        \Illuminate\Support\Facades\Log::info('Admin Passive Income Triggered');
+        Artisan::call('pigeons:passive-income');
+        session()->flash('message', 'Passive income distribution executed successfully.');
+    }
+
     public function render()
     {
         return view('livewire.admin-dashboard')->layout('layouts.app', ['header' => 'Admin Panel']);

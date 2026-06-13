@@ -61,6 +61,10 @@
                                 class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-industrial font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 uppercase italic tracking-widest">
                             Execute Market Tick
                         </button>
+                        <button wire:click="runPassiveIncome" 
+                                class="w-full py-4 bg-green-600 hover:bg-green-500 text-white font-industrial font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 uppercase italic tracking-widest col-span-1 md:col-span-2">
+                            Distribute Passive Income
+                        </button>
                     </div>
                 </div>
             </div>

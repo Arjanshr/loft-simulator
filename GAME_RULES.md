@@ -57,7 +57,10 @@ This document serves as the master record for all game mechanics, processes, and
 ---
 
 ## 4. Economy & Marketplace V3
-*   **Coins:** Earned from tournament prizes and leveling up pigeons.
+*   **Coins:** Earned from tournament prizes, leveling up pigeons, and passive generation.
+*   **Passive Income:** 
+    *   Each **Fancy** pigeon (that has hatched) generates coins every minute.
+    *   **Formula:** `1 Base Coin + (Beauty Score / 10)` per minute.
 *   **Auction House:**
     *   **Time-Limited:** Every listing has a 24-hour expiry timer. Expired units are returned to their loft.
     *   **Level Constraints:** You can only view and purchase pigeons that are at most `Loft Level + 1`.

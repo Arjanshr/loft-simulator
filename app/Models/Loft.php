@@ -16,6 +16,13 @@ class Loft extends Model
         'xp',
     ];
 
+    protected $appends = ['total_passive_income'];
+
+    public function getTotalPassiveIncomeAttribute(): float
+    {
+        return $this->pigeons()->where('type', 'fancy')->where('status', '!=', 'egg')->get()->sum('income_per_minute');
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

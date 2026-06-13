@@ -53,11 +53,14 @@
                                        class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/20">
                             </div>
                             
-                            <!-- Badges -->
-                            <div class="flex flex-wrap gap-2">
-                                <span class="text-[9px] font-black uppercase tracking-widest border border-slate-700 text-slate-500 px-2 py-1 rounded-full">{{ $pigeon->type }}</span>
-                                <span class="text-[9px] font-black uppercase tracking-widest border border-yellow-500/30 text-yellow-500 px-2 py-1 rounded-full">{{ $pigeon->rarity }}</span>
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                <span class="text-[10px] font-black uppercase tracking-widest border border-slate-700 text-slate-500 px-2 py-1 rounded-full">{{ $pigeon->type }}</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest border border-yellow-500/30 text-yellow-500 px-2 py-1 rounded-full">{{ $pigeon->rarity }}</span>
+                                @if($pigeon->income_per_minute > 0)
+                                    <span class="text-[10px] font-black uppercase tracking-widest bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded-full">+{{ $pigeon->income_per_minute }} 💰/MIN</span>
+                                @endif
                                 <span class="text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-pink-500/10 text-pink-400 border-pink-500/20' }} px-2 py-1 border rounded-full">
+                            ...
                                     {{ $pigeon->gender == 'male' ? '♂ MALE' : '♀ FEMALE' }}
                                 </span>
                             </div>

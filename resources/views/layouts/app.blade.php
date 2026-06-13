@@ -58,9 +58,10 @@
 
                     <div class="flex items-center gap-6">
                         @if(Auth::user()->loft)
-                            <div class="flex items-center gap-4 bg-black/40 px-4 py-2 rounded-full border border-yellow-500/30">
-                                <span class="text-yellow-500 font-industrial font-bold text-lg">💰 {{ number_format(Auth::user()->loft->coins) }}</span>
-                            </div>
+                            <!-- This block will now refresh automatically because it's part of the navigation component if moved there, 
+                                 or we can keep it here and use a small Livewire component for the Resource Bar. 
+                                 Let's create a dedicated ResourceBar component for the cleanest implementation. -->
+                            <livewire:resource-bar />
                         @endif
                         
                         <div class="flex items-center gap-3">

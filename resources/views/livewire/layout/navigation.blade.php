@@ -1,24 +1,43 @@
 <?php
-
-use App\Livewire\Actions\Logout;
-use Livewire\Volt\Component;
-
 new class extends Component
 {
+    /**
+     * Log the current user out of the application.
+     */
     public function logout(Logout $logout): void
     {
         $logout();
+
         $this->redirect('/', navigate: true);
+    }
+
+    /**
+     * Optional: Method to handle polling tick if logic is needed, 
+     * but wire:poll alone will refresh the properties.
+     */
+    public function refreshResources()
+    {
+        // Property refresh is automatic
     }
 }; ?>
 
-<div class="flex flex-col h-full">
+<div class="flex flex-col h-full" wire:poll.60s="refreshResources">
     <!-- Brand Logo -->
     <div class="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-yellow-500/10">
         <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
             <span class="text-2xl">🕊️</span>
             <span class="hidden lg:block font-industrial font-black text-yellow-500 tracking-tighter text-lg italic">ELITE LOFT</span>
         </a>
+    </div>
+
+    <!-- Resource Bar (Mobile/Collapsed View integration) -->
+    <div class="lg:hidden px-4 pt-4">
+        @if(auth()->user()->loft)
+            <div class="flex flex-col items-center bg-black/40 py-2 rounded-xl border border-yellow-500/30">
+                <span class="text-yellow-500 font-industrial font-bold text-sm">💰 {{ number_format(auth()->user()->loft->coins) }}</span>
+                <span class="text-[7px] font-black text-slate-500 uppercase tracking-widest">+{{ number_format(auth()->user()->loft->total_passive_income, 1) }} / MIN</span>
+            </div>
+        @endif
     </div>
 
     <!-- Nav Links -->

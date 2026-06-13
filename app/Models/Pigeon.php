@@ -60,11 +60,23 @@ class Pigeon extends Model
         // Score = (Stats) + (Beauty * Multiplier)
         return $this->speed + $this->endurance + $this->navigation + $this->temperament + ($this->beauty * 2);
     }
+protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute'];
 
-    protected $appends = ['beauty', 'total_score', 'stat_grades'];
+/**
+ * Get the income generated per minute by this pigeon.
+ */
+public function getIncomePerMinuteAttribute(): float
+{
+    if ($this->type !== 'fancy' || $this->status === 'egg') {
+        return 0;
+    }
 
-    /**
-     * Get visual grades for all trainable stats.
+    return round(1 + ($this->beauty / 10), 2);
+}
+
+/**
+ * Get visual grades for all trainable stats.
+...
      */
     public function getStatGradesAttribute(): array
     {
