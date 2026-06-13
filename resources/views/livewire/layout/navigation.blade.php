@@ -16,31 +16,51 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-black border-b border-yellow-500">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="font-black text-xl text-indigo-700">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="font-black text-xl text-yellow-500">
                         Pigeon Racer
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="text-white hover:text-yellow-400">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                </div>
+                    <x-nav-link :href="route('tournaments')" :active="request()->routeIs('tournaments')" wire:navigate class="text-white hover:text-yellow-400">
+                        {{ __('Tournaments') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace')" wire:navigate class="text-white hover:text-yellow-400">
+                        {{ __('Marketplace') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('leaderboard')" :active="request()->routeIs('leaderboard')" wire:navigate class="text-white hover:text-yellow-400">
+                        {{ __('Leaderboard') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('activity.log')" :active="request()->routeIs('activity.log')" wire:navigate class="text-white hover:text-yellow-400">
+                        {{ __('Activity') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('faq')" :active="request()->routeIs('faq')" wire:navigate class="text-white hover:text-yellow-400">
+                        {{ __('FAQ') }}
+                    </x-nav-link>
+                    @if(auth()->user()->is_admin)
+                        <x-nav-link :href="route('admin')" :active="request()->routeIs('admin')" wire:navigate class="text-white hover:text-yellow-400">
+                            {{ __('Admin') }}
+                        </x-nav-link>
+                    @endif
+                    </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-slate-200 bg-black hover:text-yellow-400 focus:outline-none transition ease-in-out duration-150">
                             <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
 
                             <div class="ms-1">
@@ -51,20 +71,21 @@ new class extends Component
                         </button>
                     </x-slot>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')" wire:navigate>
+                    <x-slot name="content" class="bg-black text-slate-200">
+                        <x-dropdown-link :href="route('profile')" wire:navigate class="text-slate-800">
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link>
+                            <x-dropdown-link class="text-slate-800">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </button>
                     </x-slot>
                 </x-dropdown>
             </div>
+
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">

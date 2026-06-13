@@ -1,61 +1,67 @@
-<div class="p-6">
+<div class="p-6 bg-black min-h-screen text-slate-200">
+    @if (session()->has('message'))
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="fixed top-4 right-4 z-50 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg">
+            {{ session('message') }}
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="fixed top-4 right-4 z-50 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg">
+            {{ session('error') }}
+        </div>
+    @endif
+
     @if($showCreateForm)
-        <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-6">
-            <h2 class="text-2xl font-bold mb-4">Welcome, Trainer!</h2>
-            <p class="mb-4 text-gray-600">Give your new pigeon loft a name to start your journey.</p>
+        <div class="max-w-md mx-auto bg-slate-900 rounded-2xl shadow-xl p-8 border border-yellow-600">
+            <h2 class="text-3xl font-black text-white mb-2">Establish Loft</h2>
+            <p class="text-slate-400 mb-6">Welcome, Trainer. Give your new loft a name to begin your journey to the top.</p>
             <form wire:submit.prevent="createLoft">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="loftName">
-                        Loft Name
-                    </label>
-                    <input wire:model="loftName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="loftName" type="text" placeholder="e.g. Sky High Lofts">
-                    @error('loftName') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                </div>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Establish Loft
-                </button>
+                <input wire:model="loftName" class="w-full bg-slate-800 border-none rounded-lg p-4 mb-4 text-white focus:ring-2 focus:ring-yellow-500" type="text" placeholder="e.g. Skyline Champions">
+                @error('loftName') <span class="text-red-500 text-sm mb-4 block">{{ $message }}</span> @enderror
+                <button type="submit" class="w-full bg-yellow-500 text-black font-bold py-4 rounded-lg hover:bg-yellow-400 transition">Create Your Loft</button>
             </form>
         </div>
     @elseif($loft)
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Header Stats -->
-            <div class="md:col-span-3 bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            @php
+                $nextLevel = $loft->level + 1;
+                $xpRequired = $nextLevel * $nextLevel * 100;
+                $cost = $nextLevel * 500;
+                $progress = min(100, ($loft->xp / $xpRequired) * 100);
+            @endphp
+            <div class="bg-yellow-500 text-black p-8 rounded-3xl shadow-2xl mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
                 <div>
-                    <h1 class="text-3xl font-black text-gray-800">{{ $loft->name }}</h1>
-                    <p class="text-gray-500">Established {{ $loft->created_at->format('M Y') }}</p>
-                </div>
-                <div class="flex gap-4">
-                    <div class="text-center">
-                        <span class="block text-2xl font-bold text-yellow-600">💰 {{ number_format($loft->coins) }}</span>
-                        <span class="text-xs uppercase text-gray-400 font-semibold">Coins</span>
+                    <h1 class="text-4xl font-black">{{ $loft->name }}</h1>
+                    <p class="text-black/70 font-bold mt-1">Loft Level: <span class="text-black">{{ $loft->level }}</span></p>
+                    
+                    <div class="mt-4 flex items-center gap-4">
+                        <div class="w-48 bg-black/20 rounded-full h-2">
+                            <div class="bg-black h-2 rounded-full" style="width: {{ $progress }}%"></div>
+                        </div>
+                        <span class="text-xs font-black">{{ $loft->xp }} / {{ $xpRequired }} XP</span>
+                        
+                        @if($loft->xp >= $xpRequired && $loft->coins >= $cost)
+                            <button wire:click="upgrade" class="bg-black text-yellow-500 text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-800 transition">
+                                Upgrade Loft ({{ number_format($cost) }} 💰)
+                            </button>
+                        @endif
                     </div>
+                </div>
+                <div class="flex gap-8">
                     <div class="text-center">
-                        <span class="block text-2xl font-bold text-blue-600">⭐ {{ $loft->level }}</span>
-                        <span class="text-xs uppercase text-gray-400 font-semibold">Level</span>
+                        <div class="text-4xl font-black text-black">{{ number_format($loft->coins) }}</div>
+                        <div class="text-xs uppercase tracking-widest text-black/70 font-bold">Coins</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="md:col-span-2 space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <h2 class="text-xl font-bold mb-4">Your Champions</h2>
-                    <livewire:pigeon-manager />
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                    <h2 class="text-xl font-bold mb-4">Available Races</h2>
-                    <livewire:race-lobby />
-                </div>
-                
-                <livewire:race-history-display />
-                
-                <div class="bg-indigo-600 p-6 rounded-xl shadow-md text-white hover:bg-indigo-700 transition-colors">
-                    <h3 class="font-bold text-lg mb-2">Tip of the day</h3>
-                    <p class="text-indigo-100 text-sm">Navigation reduces randomness. If your birds are inconsistent, focus on navigation training!</p>
-                </div>
+            <!-- Pigeon Management -->
+            <div class="bg-slate-900 p-8 rounded-3xl shadow-sm border border-slate-700">
+                <h2 class="text-2xl font-black text-white mb-6 flex items-center gap-2">
+                    <span class="text-3xl">🕊️</span> Your Pigeons
+                </h2>
+                <livewire:pigeon-manager />
             </div>
         </div>
     @endif

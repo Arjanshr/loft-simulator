@@ -12,6 +12,7 @@ class LiveRace extends Component
 {
     public $raceId;
     public $pigeonId;
+    public $race;
     public $results = null;
     public $isSimulating = true;
 
@@ -19,18 +20,16 @@ class LiveRace extends Component
     {
         $this->raceId = $raceId;
         $this->pigeonId = $pigeonId;
+        $this->race = Race::findOrFail($raceId);
     }
 
-    public function startSimulation(RaceSimulationService $simulationService)
+    public function startSimulation(RaceSimulationService $simulationService, \App\Services\MatchmakingService $matchmakingService)
     {
         $race = Race::findOrFail($this->raceId);
         $playerPigeon = Pigeon::findOrFail($this->pigeonId);
         
-        // Pick random AI pigeons to fill the race (up to 7 opponents)
-        $opponents = Pigeon::where('loft_id', '!=', $playerPigeon->loft_id)
-            ->inRandomOrder()
-            ->limit(7)
-            ->get();
+        // Use MatchmakingService to find appropriately leveled opponents
+        $opponents = $matchmakingService->getOpponents($playerPigeon->loft, 7);
             
         $competitors = $opponents->push($playerPigeon);
         

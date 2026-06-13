@@ -13,6 +13,8 @@ class Race extends Model
         'difficulty_tier',
         'entry_fee',
         'prize_pool',
+        'race_type',
+        'level_requirement',
     ];
 
     public function results(): HasMany

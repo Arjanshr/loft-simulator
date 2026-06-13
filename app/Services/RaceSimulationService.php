@@ -23,11 +23,11 @@ class RaceSimulationService
         $segments = 10;
         $segmentDistance = $race->distance_km / $segments;
         
-        $results = $pigeons->map(function (Pigeon $pigeon) use ($segments, $segmentDistance) {
+        $results = $pigeons->map(function (Pigeon $pigeon) use ($segments, $segmentDistance, $race) {
             $totalTime = 0;
             
             for ($i = 0; $i < $segments; $i++) {
-                $totalTime += $this->calculateSegmentTime($pigeon, $segmentDistance, $i / $segments);
+                $totalTime += $this->calculateSegmentTime($pigeon, $segmentDistance, $i / $segments, $race->race_type);
             }
             
             return [
@@ -61,6 +61,11 @@ class RaceSimulationService
                     'payout' => $payout,
                 ]);
 
+                // Award XP to loft
+                // Formula: Tier * (100 / Position)
+                $xpAwarded = (int) ($race->difficulty_tier * (100 / $position));
+                $pigeon->loft->increment('xp', $xpAwarded);
+
                 // Update pigeon status
                 $pigeon->update(['status' => 'idle']);
                 
@@ -74,12 +79,25 @@ class RaceSimulationService
         });
     }
 
-    private function calculateSegmentTime(Pigeon $pigeon, float $distance, float $progress): float
+    private function calculateSegmentTime(Pigeon $pigeon, float $distance, float $progress, string $raceType): float
     {
-        // Base speed: 40 km/h to 100 km/h based on speed stat (10-100)
-        $baseSpeedKmh = 40 + ($pigeon->speed * 0.6);
+        // Calculate base speed based on race type requirements
+        switch ($raceType) {
+            case 'exhibition':
+                // Beauty focus
+                $baseSpeedKmh = 40 + ($pigeon->beauty * 0.6);
+                break;
+            case 'highflyer':
+                // Endurance + Navigation focus
+                $baseSpeedKmh = 40 + (($pigeon->endurance + $pigeon->navigation) * 0.3);
+                break;
+            case 'racing':
+            default:
+                // Speed + Endurance focus
+                $baseSpeedKmh = 40 + (($pigeon->speed * 0.4) + ($pigeon->endurance * 0.2));
+                break;
+        }
         
-        // Endurance factor: as progress increases, speed might drop
         // Fatigue penalty is higher if endurance is low
         $fatigue = max(0, ($progress - 0.5) * (110 - $pigeon->endurance) * 0.05);
         $currentSpeed = max(20, $baseSpeedKmh - $fatigue);
@@ -92,6 +110,9 @@ class RaceSimulationService
         // Temperament: minor daily/momentary boost or penalty
         $temperamentFactor = 0.95 + (($pigeon->temperament / 100) * 0.1); // 0.95 to 1.05
         $finalSpeed *= $temperamentFactor;
+
+        // Ensure finalSpeed is not zero to avoid division by zero
+        $finalSpeed = max(1, $finalSpeed);
 
         // time = distance / speed
         // distance in km, speed in km/h, result in hours -> seconds

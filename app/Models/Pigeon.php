@@ -4,12 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pigeon extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'loft_id',
         'name',
+        'level',
+        'type',
+        'gender',
+        'sire_id',
+        'dam_id',
+        'birth_at',
+        'hatch_at',
+        'eyes',
+        'beak',
+        'legs',
+        'feather_quality',
+        'pattern',
+        'color',
+        'purity',
+        'rarity',
         'speed',
         'endurance',
         'navigation',
@@ -21,7 +39,29 @@ class Pigeon extends Model
 
     protected $casts = [
         'last_trained_at' => 'datetime',
+        'birth_at' => 'datetime',
+        'hatch_at' => 'datetime',
     ];
+
+    /**
+     * Get the average beauty score.
+     */
+    public function getBeautyAttribute(): float
+    {
+        $avg = ($this->eyes + $this->beak + $this->legs + $this->feather_quality + $this->pattern + $this->color + $this->purity) / 7;
+        return round($avg, 2);
+    }
+
+    /**
+     * Get the pigeon's total score based on stats.
+     */
+    public function getTotalScoreAttribute(): float
+    {
+        // Score = (Stats) + (Beauty * Multiplier)
+        return $this->speed + $this->endurance + $this->navigation + $this->temperament + ($this->beauty * 2);
+    }
+
+    protected $appends = ['beauty', 'total_score'];
 
     public function loft(): BelongsTo
     {

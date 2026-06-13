@@ -6,10 +6,28 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use App\Services\LoftService;
 
+use Livewire\Attributes\On;
+
 class LoftDashboard extends Component
 {
     public $loftName = '';
     public $showCreateForm = false;
+
+    #[On('loft-updated')]
+    public function refreshLoft()
+    {
+        // Simply re-rendering is enough as render() uses Auth::user()->loft
+    }
+
+    public function upgrade(LoftService $loftService)
+    {
+        if ($loftService->upgradeLoft(Auth::user()->loft)) {
+            $this->dispatch('loft-updated');
+            session()->flash('message', 'Loft upgraded successfully!');
+        } else {
+            session()->flash('error', 'Not enough XP or coins to upgrade.');
+        }
+    }
 
     public function mount()
     {

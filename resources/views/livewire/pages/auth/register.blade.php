@@ -41,6 +41,15 @@ new #[Layout('layouts.guest')] class extends Component
         <h2 class="text-3xl font-black text-white mb-6">Create Your Loft</h2>
         
         <form wire:submit="register">
+            @if ($errors->any())
+                <div class="mb-4 text-red-400 text-sm">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="mb-4">
                 <label class="block text-gray-400 mb-2">Name</label>
                 <input wire:model="name" type="text" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500">
