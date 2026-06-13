@@ -44,12 +44,6 @@ class PigeonMaturationCommand extends Command
         // 3. Process Maturation
         \App\Models\Pigeon::chunk(100, function ($pigeons) use ($beautyAttributes) {
             foreach ($pigeons as $pigeon) {
-                // Passive Energy Recovery (Only for non-eggs/hatchlings)
-                if ($pigeon->status !== 'egg' && $pigeon->energy < 100) {
-                    $pigeon->increment('energy', 5);
-                    if ($pigeon->energy > 100) $pigeon->update(['energy' => 100]);
-                }
-
                 // Passive Beauty Growth (Only for Juveniles/Adults)
                 if ($pigeon->birth_at && $pigeon->birth_at->addDays(2)->isPast()) {
                     $updates = [];

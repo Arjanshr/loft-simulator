@@ -54,6 +54,13 @@ class AdminDashboard extends Component
         session()->flash('message', 'Passive income distribution executed successfully.');
     }
 
+    public function runEnergyRecovery()
+    {
+        \Illuminate\Support\Facades\Log::info('Admin Energy Recovery Triggered');
+        Artisan::call('pigeons:recover-energy');
+        session()->flash('message', 'Energy recovery sequence executed successfully.');
+    }
+
     public function render()
     {
         return view('livewire.admin-dashboard')->layout('layouts.app', ['header' => 'Admin Panel']);

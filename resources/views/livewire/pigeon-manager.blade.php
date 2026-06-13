@@ -1,4 +1,4 @@
-<div class="text-slate-200" x-data="{}" x-on:pigeon-leveled-up.window="alert('Congratulations! ' + $event.detail.name + ' reached a new rank!')">
+<div class="text-slate-200" x-data="{}" x-on:pigeon-leveled-up.window="alert('Congratulations! ' + $event.detail.name + ' reached a new rank!')" wire:poll.60s>
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
              class="fixed top-20 right-4 z-50 bg-yellow-500 text-black px-6 py-3 rounded-xl shadow-2xl font-black font-industrial animate-bounce">
@@ -24,6 +24,7 @@
                             <div class="flex items-center gap-3 mb-2">
                                 <span class="bg-yellow-500 text-black font-industrial font-black text-xs px-2 py-0.5 rounded italic">LV.{{ $pigeon->level }}</span>
                                 <input type="text" wire:model.lazy="newName.{{ $pigeon->id }}" 
+                                       wire:keydown.enter="updateName({{ $pigeon->id }})"
                                        placeholder="{{ $pigeon->name }}" 
                                        class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/20">
                             </div>
