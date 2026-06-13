@@ -61,6 +61,40 @@ class PigeonService
         return true;
     }
 
+    public function createAdult(Loft $loft, string $name, string $gender): Pigeon
+    {
+        return Pigeon::create([
+            'loft_id' => $loft->id,
+            'name' => $name,
+            'level' => 1,
+            'type' => 'fancy',
+            'gender' => $gender,
+            'birth_at' => now()->subDays(10), // Adult
+            'hatch_at' => now()->subDays(6),
+            'eyes' => 1, 'beak' => 1, 'legs' => 1, 'feather_quality' => 1, 'pattern' => 1, 'color' => 1, 'purity' => 1,
+            'rarity' => 'common',
+            'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
+            'energy' => 100, 'status' => 'idle',
+        ]);
+    }
+
+    public function createJuvenile(Loft $loft, string $name): Pigeon
+    {
+        return Pigeon::create([
+            'loft_id' => $loft->id,
+            'name' => $name,
+            'level' => 1,
+            'type' => 'fancy',
+            'gender' => fake()->randomElement(['male', 'female']),
+            'birth_at' => now()->subDays(2), // Juvenile
+            'hatch_at' => now()->subDays(1),
+            'eyes' => 1, 'beak' => 1, 'legs' => 1, 'feather_quality' => 1, 'pattern' => 1, 'color' => 1, 'purity' => 1,
+            'rarity' => 'common',
+            'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
+            'energy' => 100, 'status' => 'idle',
+        ]);
+    }
+
     public function train(Pigeon $pigeon, string $stat): bool
     {
         $validStats = ['speed', 'endurance', 'navigation', 'temperament'];

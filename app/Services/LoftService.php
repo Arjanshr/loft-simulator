@@ -21,9 +21,9 @@ class LoftService
             ]);
 
             $pigeonService = new PigeonService();
-            for ($i = 1; $i <= 3; $i++) {
-                $pigeonService->createStarter($loft, "Starter Bird #$i");
-            }
+            $pigeonService->createAdult($loft, 'Sire', 'male');
+            $pigeonService->createAdult($loft, 'Dam', 'female');
+            $pigeonService->createJuvenile($loft, 'Chick');
 
             return $loft;
         });
