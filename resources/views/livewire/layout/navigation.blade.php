@@ -5,127 +5,66 @@ use Livewire\Volt\Component;
 
 new class extends Component
 {
-    /**
-     * Log the current user out of the application.
-     */
     public function logout(Logout $logout): void
     {
         $logout();
-
         $this->redirect('/', navigate: true);
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="bg-black border-b border-yellow-500">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="font-black text-xl text-yellow-500">
-                        Pigeon Racer
-                    </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate class="text-white hover:text-yellow-400">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('tournaments')" :active="request()->routeIs('tournaments')" wire:navigate class="text-white hover:text-yellow-400">
-                        {{ __('Tournaments') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('marketplace')" :active="request()->routeIs('marketplace')" wire:navigate class="text-white hover:text-yellow-400">
-                        {{ __('Marketplace') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('leaderboard')" :active="request()->routeIs('leaderboard')" wire:navigate class="text-white hover:text-yellow-400">
-                        {{ __('Leaderboard') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('activity.log')" :active="request()->routeIs('activity.log')" wire:navigate class="text-white hover:text-yellow-400">
-                        {{ __('Activity') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('faq')" :active="request()->routeIs('faq')" wire:navigate class="text-white hover:text-yellow-400">
-                        {{ __('FAQ') }}
-                    </x-nav-link>
-                    @if(auth()->user()->is_admin)
-                        <x-nav-link :href="route('admin')" :active="request()->routeIs('admin')" wire:navigate class="text-white hover:text-yellow-400">
-                            {{ __('Admin') }}
-                        </x-nav-link>
-                    @endif
-                    </div>
-            </div>
-
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-slate-200 bg-black hover:text-yellow-400 focus:outline-none transition ease-in-out duration-150">
-                            <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content" class="bg-black text-slate-200">
-                        <x-dropdown-link :href="route('profile')" wire:navigate class="text-slate-800">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link class="text-slate-800">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </button>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+<div class="flex flex-col h-full">
+    <!-- Brand Logo -->
+    <div class="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-yellow-500/10">
+        <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
+            <span class="text-2xl">🕊️</span>
+            <span class="hidden lg:block font-industrial font-black text-yellow-500 tracking-tighter text-lg italic">ELITE LOFT</span>
+        </a>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+    <!-- Nav Links -->
+    <nav class="flex-1 px-2 lg:px-4 py-6 space-y-2">
+        <x-v2-nav-link :href="route('dashboard')" icon="m19 11-7-7-7 7m14 0v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8m14 0L12 5.41 5 11" :active="request()->routeIs('dashboard')">
+            Dashboard
+        </x-v2-nav-link>
+
+        <x-v2-nav-link :href="route('tournaments')" icon="M13 10V3L4 14h7v7l9-11h-7z" :active="request()->routeIs('tournaments')">
+            Tournaments
+        </x-v2-nav-link>
+
+        <x-v2-nav-link :href="route('breeding.center')" icon="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" :active="request()->routeIs('breeding.center')">
+            Breeding
+        </x-v2-nav-link>
+
+        <x-v2-nav-link :href="route('marketplace')" icon="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" :active="request()->routeIs('marketplace')">
+            Marketplace
+        </x-v2-nav-link>
+
+        <x-v2-nav-link :href="route('leaderboard')" icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" :active="request()->routeIs('leaderboard')">
+            Rankings
+        </x-v2-nav-link>
+
+        <x-v2-nav-link :href="route('activity.log')" icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" :active="request()->routeIs('activity.log')">
+            Log
+        </x-v2-nav-link>
+
+        <div class="pt-4 mt-4 border-t border-yellow-500/10">
+            <x-v2-nav-link :href="route('faq')" icon="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" :active="request()->routeIs('faq')">
+                Help
+            </x-v2-nav-link>
+
+            @if(auth()->user()->is_admin)
+                <x-v2-nav-link :href="route('admin')" icon="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" :active="request()->routeIs('admin')">
+                    Admin
+                </x-v2-nav-link>
+            @endif
         </div>
+    </nav>
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-                <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <button wire:click="logout" class="w-full text-start">
-                    <x-responsive-nav-link>
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </button>
-            </div>
-        </div>
+    <!-- User Section footer -->
+    <div class="p-4 border-t border-yellow-500/10">
+        <button wire:click="logout" class="w-full flex items-center justify-center lg:justify-start gap-4 px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all group">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            <span class="hidden lg:block font-bold text-sm">Logout</span>
+        </button>
     </div>
-</nav>
+</div>

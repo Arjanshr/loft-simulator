@@ -36,41 +36,55 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen bg-slate-900 flex flex-col justify-center items-center">
-    <div class="w-full max-w-md bg-slate-800 p-8 rounded-2xl shadow-xl">
-        <h2 class="text-3xl font-black text-white mb-6">Create Your Loft</h2>
-        
-        <form wire:submit="register">
-            @if ($errors->any())
-                <div class="mb-4 text-red-400 text-sm">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            <div class="mb-4">
-                <label class="block text-gray-400 mb-2">Name</label>
-                <input wire:model="name" type="text" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500">
+<div>
+    <h2 class="font-industrial text-2xl font-black text-white text-center mb-8 uppercase tracking-widest italic text-yellow-500">Recruitment</h2>
+
+    <form wire:submit="register" class="space-y-4">
+        @if ($errors->any())
+            <div class="p-4 bg-red-500/10 border border-red-500/50 rounded-2xl animate-pulse">
+                <ul class="text-xs text-red-400 font-bold space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>⚠ {{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            <div class="mb-4">
-                <label class="block text-gray-400 mb-2">Email</label>
-                <input wire:model="email" type="email" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div class="mb-4">
-                <label class="block text-gray-400 mb-2">Password</label>
-                <input wire:model="password" type="password" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <div class="mb-6">
-                <label class="block text-gray-400 mb-2">Confirm Password</label>
-                <input wire:model="password_confirmation" type="password" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-500">Register</button>
-        </form>
-        
-        <p class="text-center text-gray-400 mt-6">
-            Already have a loft? <a href="{{ route('login') }}" class="text-indigo-400 hover:underline">Log In</a>
+        @endif
+
+        <div>
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Operator Name</label>
+            <input wire:model="name" type="text" required autofocus
+                   class="w-full bg-black/50 border-2 border-slate-800 rounded-xl p-3 text-white placeholder-slate-700 focus:border-yellow-500 transition-all font-bold text-sm">
+        </div>
+
+        <div>
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Email Address</label>
+            <input wire:model="email" type="email" required
+                   class="w-full bg-black/50 border-2 border-slate-800 rounded-xl p-3 text-white placeholder-slate-700 focus:border-yellow-500 transition-all font-bold text-sm">
+        </div>
+
+        <div>
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Secure Key</label>
+            <input wire:model="password" type="password" required
+                   class="w-full bg-black/50 border-2 border-slate-800 rounded-xl p-3 text-white placeholder-slate-700 focus:border-yellow-500 transition-all font-bold text-sm">
+        </div>
+
+        <div>
+            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1 ml-1">Confirm Key</label>
+            <input wire:model="password_confirmation" type="password" required
+                   class="w-full bg-black/50 border-2 border-slate-800 rounded-xl p-3 text-white placeholder-slate-700 focus:border-yellow-500 transition-all font-bold text-sm">
+        </div>
+
+        <div class="pt-4">
+            <button type="submit" 
+                    class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-industrial font-black text-lg rounded-2xl transition-all shadow-xl shadow-yellow-500/20 active:scale-[0.98] uppercase">
+                Establish Loft
+            </button>
+        </div>
+    </form>
+    
+    <div class="mt-8 pt-6 border-t border-slate-800 text-center">
+        <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">
+            Already verified? <a href="{{ route('login') }}" class="text-yellow-500 hover:text-yellow-400 underline decoration-2 underline-offset-4 ml-1">Login</a>
         </p>
     </div>
 </div>

@@ -1,18 +1,46 @@
-<div class="p-6 max-w-4xl mx-auto">
-    <div class="bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-700">
-        <h2 class="text-2xl font-black text-white mb-6">Activity Log</h2>
-        <div class="space-y-3">
-            @forelse($activities as $activity)
-                <div class="flex justify-between items-center text-sm border-b border-slate-700 pb-3">
-                    <span class="text-white">{{ $activity->description }}</span>
-                    <span class="text-yellow-500 font-bold text-xs">{{ $activity->created_at->diffForHumans() }}</span>
-                </div>
-            @empty
-                <p class="text-slate-500 text-sm italic">No recent activity.</p>
-            @endforelse
-        </div>
-        <div class="mt-6">
-            {{ $activities->links() }}
+<div class="space-y-12">
+    <div class="bg-slate-950 p-10 rounded-[3rem] border-2 border-slate-800 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-8 opacity-5 text-8xl font-industrial font-black italic select-none pointer-events-none uppercase">Archive</div>
+
+        <div class="relative z-10">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-1 bg-yellow-500 rounded-full"></div>
+                <h2 class="text-3xl font-industrial font-black text-white uppercase italic tracking-widest leading-none">Operational Logs</h2>
+            </div>
+
+            <div class="bg-black/40 rounded-[2.5rem] border border-slate-800 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-slate-900/50 border-b border-slate-800">
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Temporal Stamp</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Event Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/50">
+                        @forelse($activities as $activity)
+                            <tr class="group hover:bg-yellow-500/5 transition-colors">
+                                <td class="px-8 py-5">
+                                    <span class="font-industrial text-[10px] font-black text-yellow-500 italic">{{ $activity->created_at->format('Y-m-d H:i:s') }}</span>
+                                    <span class="block text-[8px] text-slate-600 font-bold mt-1 uppercase">{{ $activity->created_at->diffForHumans() }}</span>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <p class="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">{{ $activity->description }}</p>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="2" class="px-8 py-12 text-center">
+                                    <p class="font-industrial font-black text-slate-700 text-xl uppercase italic tracking-widest">No archival data found in main sequence</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-12 px-2">
+                {{ $activities->links() }}
+            </div>
         </div>
     </div>
 </div>

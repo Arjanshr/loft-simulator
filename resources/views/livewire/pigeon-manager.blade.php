@@ -1,123 +1,150 @@
-<div class="text-slate-200" x-data="{}" x-on:pigeon-leveled-up.window="alert('Congratulations! ' + $event.detail.name + ' leveled up!')">
+<div class="text-slate-200" x-data="{}" x-on:pigeon-leveled-up.window="alert('Congratulations! ' + $event.detail.name + ' reached a new rank!')">
     @if (session()->has('message'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="fixed top-4 right-4 z-50 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg">
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             class="fixed top-20 right-4 z-50 bg-yellow-500 text-black px-6 py-3 rounded-xl shadow-2xl font-black font-industrial animate-bounce">
             {{ session('message') }}
         </div>
     @endif
 
     @if (session()->has('error'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="fixed top-4 right-4 z-50 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg">
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             class="fixed top-20 right-4 z-50 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold font-industrial">
             {{ session('error') }}
         </div>
     @endif
 
-    <div class="space-y-4">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
         @foreach($pigeons as $pigeon)
-            <div class="border rounded-lg p-4 bg-slate-800 border-slate-700">
-                <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <input type="text" wire:model="newName.{{ $pigeon->id }}" placeholder="{{ $pigeon->name }}" class="bg-slate-700 border-none rounded p-1 text-sm font-bold text-white w-32 focus:ring-2 focus:ring-yellow-500">
-                            <button wire:click="updateName({{ $pigeon->id }})" class="text-[10px] bg-yellow-500 text-black px-2 py-1 rounded font-bold hover:bg-yellow-400 transition">Rename</button>
-                        </div>
-                        <span class="text-xs text-yellow-500 font-bold ml-1">Lv.{{ $pigeon->level }}</span>
-                        <div class="flex gap-2 mt-1">
-                            <span class="text-[10px] bg-slate-700 px-2 py-0.5 rounded uppercase text-slate-300">{{ $pigeon->type }}</span>
-                            <span class="text-[10px] bg-indigo-500 px-2 py-0.5 rounded uppercase text-white">{{ ucfirst($pigeon->gender) }}</span>
-                            <span class="text-[10px] bg-yellow-600/20 text-yellow-500 px-2 py-0.5 rounded uppercase">{{ $pigeon->rarity }}</span>
-                            @php
-                                $ageDays = $pigeon->birth_at ? $pigeon->birth_at->diffInDays(now()) : 0;
-                                $status = 'Adult';
-                                if (!$pigeon->hatch_at || $pigeon->hatch_at->isFuture()) $status = 'Egg';
-                                elseif ($pigeon->hatch_at->addDay()->isFuture()) $status = 'Hatchling';
-                                elseif ($pigeon->birth_at->addDays(4)->isFuture()) $status = 'Juvenile';
-                            @endphp
-                            <span class="text-[10px] bg-slate-700 px-2 py-0.5 rounded uppercase text-slate-300">{{ $status }} ({{ $ageDays }} days)</span>
-                        </div>
-                        
-                        @php
-                            $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
-                            $required = $pigeon->level * 30;
-                            $progress = min(100, ($totalStats / ($required ?: 1)) * 100);
-                        @endphp
-
-                        <div class="mt-4">
-                            <div class="flex justify-between text-[10px] text-slate-400 mb-1">
-                                <span class="font-bold text-slate-200">Lv. {{ $pigeon->level }} → Lv. {{ $pigeon->level + 1 }}</span>
-                                <span>{{ $totalStats }} / {{ $required }} Stats</span>
+            <div class="group relative bg-slate-950 rounded-[2rem] border-2 border-slate-800 hover:border-yellow-500/50 transition-all duration-500 overflow-hidden shadow-2xl">
+                <!-- ID Card Header -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-6 border-b border-slate-800">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <!-- Name & Rank -->
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-yellow-500 text-black font-industrial font-black text-xs px-2 py-0.5 rounded italic">LV.{{ $pigeon->level }}</span>
+                                <input type="text" wire:model.lazy="newName.{{ $pigeon->id }}" 
+                                       placeholder="{{ $pigeon->name }}" 
+                                       class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/20">
                             </div>
-                            <div class="w-full bg-slate-700 rounded-full h-2">
-                                <div class="bg-yellow-500 h-2 rounded-full transition-all duration-500" style="width: {{ $progress }}%"></div>
+                            
+                            <!-- Badges -->
+                            <div class="flex flex-wrap gap-2">
+                                <span class="text-[9px] font-black uppercase tracking-widest border border-slate-700 text-slate-500 px-2 py-1 rounded-full">{{ $pigeon->type }}</span>
+                                <span class="text-[9px] font-black uppercase tracking-widest border border-yellow-500/30 text-yellow-500 px-2 py-1 rounded-full">{{ $pigeon->rarity }}</span>
+                                <span class="text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-pink-500/10 text-pink-400 border-pink-500/20' }} px-2 py-1 border rounded-full">
+                                    {{ $pigeon->gender == 'male' ? '♂ MALE' : '♀ FEMALE' }}
+                                </span>
                             </div>
                         </div>
 
-                        @if($totalStats >= $required && $pigeon->level < 100)
-                            <button wire:click="levelUp({{ $pigeon->id }})" class="mt-2 w-full text-[10px] bg-yellow-500 text-black px-2 py-1 rounded font-bold hover:bg-yellow-400 transition">Level Up!</button>
-                        @endif
-                    </div>
-                    
-                    <div class="text-right">
-                        <div class="text-sm font-medium">⚡ Energy: {{ $pigeon->energy }}%</div>
-                        <div class="w-24 bg-slate-700 rounded-full h-1.5 mt-1">
-                            <div class="bg-yellow-500 h-1.5 rounded-full" style="width: {{ $pigeon->energy }}%"></div>
+                        <!-- Energy Meter -->
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Vitality</span>
+                            <div class="relative w-12 h-12 flex items-center justify-center">
+                                <svg class="w-12 h-12 transform -rotate-90">
+                                    <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="4" fill="transparent" class="text-slate-800" />
+                                    <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="4" fill="transparent"
+                                            stroke-dasharray="125.6"
+                                            stroke-dashoffset="{{ 125.6 * (1 - ($pigeon->energy / 100)) }}"
+                                            class="{{ $pigeon->energy > 30 ? 'text-yellow-500' : 'text-red-500' }} transition-all duration-1000" />
+                                </svg>
+                                <span class="absolute text-[10px] font-black text-white">{{ $pigeon->energy }}%</span>
+                            </div>
+                            @if($pigeon->energy < 100)
+                                <button wire:click="rest({{ $pigeon->id }})" class="mt-2 text-[8px] font-black bg-slate-800 hover:bg-yellow-500 hover:text-black text-slate-400 px-2 py-0.5 rounded transition">
+                                    RESTORE (50💰)
+                                </button>
+                            @endif
                         </div>
-                        @if($pigeon->energy < 100)
-                            <button wire:click="rest({{ $pigeon->id }})" class="mt-2 w-full text-[9px] bg-slate-700 text-slate-300 px-2 py-1 rounded hover:bg-slate-600 transition font-bold">
-                                Rest (50 💰)
-                            </button>
-                        @endif
                     </div>
                 </div>
 
-                <!-- Stats & Beauty -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
-                    <!-- Trainable Stats -->
-                    <div class="grid grid-cols-2 gap-4">
-                        @foreach(['speed' => '🏃', 'endurance' => '🔋', 'navigation' => '🧭', 'temperament' => '🧘'] as $stat => $icon)
-                            <div class="bg-slate-900 p-2 rounded border border-slate-700">
-                                <div class="flex justify-between text-[10px] mb-1 text-slate-400">
-                                    <span class="truncate">{{ $icon }} {{ ucfirst($stat) }}</span>
-                                    <span class="font-bold text-white">{{ $pigeon->$stat }}</span>
-                                </div>
-                                <div class="w-full bg-slate-700 rounded-full h-1 mb-2">
-                                    <div class="bg-yellow-500 h-1 rounded-full transition-all duration-500" style="width: {{ ($pigeon->$stat / ($pigeon->level * 10)) * 100 }}%"></div>
-                                </div>
-                                <button 
-                                    wire:click="train({{ $pigeon->id }}, '{{ $stat }}')"
-                                    wire:loading.attr="disabled"
-                                    class="w-full text-[9px] bg-slate-800 hover:bg-yellow-600 hover:text-black text-slate-300 py-0.5 rounded transition font-bold"
-                                    @if($pigeon->energy < 20 || $pigeon->status !== 'idle') disabled @endif
-                                >
-                                    Train
-                                </button>
+                <div class="p-6">
+                    <!-- Lifecycle Ribbon -->
+                    @php
+                        $ageDays = $pigeon->birth_at ? $pigeon->birth_at->diffInDays(now()) : 0;
+                        $status = 'Adult';
+                        if (!$pigeon->hatch_at || $pigeon->hatch_at->isFuture()) $status = 'Egg';
+                        elseif ($pigeon->hatch_at->addDay()->isFuture()) $status = 'Hatchling';
+                        elseif ($pigeon->birth_at->addDays(4)->isFuture()) $status = 'Juvenile';
+
+                        $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
+                        $required = $pigeon->level * 30;
+                        $progress = min(100, ($totalStats / ($required ?: 1)) * 100);
+                    @endphp
+                    
+                    <div class="flex items-center gap-4 mb-6 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                        <div class="flex-1">
+                            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+                                <span>Lifecycle: {{ $status }}</span>
+                                <span>{{ $totalStats }} / {{ $required }} EXP</span>
                             </div>
-                        @endforeach
+                            <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-yellow-500 transition-all duration-700 shadow-[0_0_10px_rgba(250,204,21,0.5)]" style="width: {{ $progress }}%"></div>
+                            </div>
+                        </div>
+                        @if($totalStats >= $required && $pigeon->level < 100)
+                            <button wire:click="levelUp({{ $pigeon->id }})" 
+                                    class="bg-yellow-500 text-black font-industrial font-black text-[10px] px-4 py-2 rounded-xl hover:scale-105 transition shadow-lg shadow-yellow-500/20 uppercase tracking-tighter">
+                                Rank Up
+                            </button>
+                        @endif
                     </div>
 
-                    <!-- Beauty Attributes -->
-                    <div class="bg-slate-950 p-4 rounded-lg border border-slate-700">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="font-bold text-sm text-white">Aesthetics <span class="text-yellow-500">(Beauty: {{ number_format($pigeon->beauty, 1) }})</span></h4>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            @foreach(['eyes' => '👁️', 'beak' => '👃', 'legs' => '🦵', 'feather_quality' => '✨', 'pattern' => '🎨', 'color' => '🌈', 'purity' => '💎'] as $stat => $icon)
-                                <div class="flex flex-col gap-1 bg-slate-900 px-2 py-1 rounded border border-slate-700 text-slate-300">
-                                    <div class="flex justify-between">
-                                        <span>{{ $icon }} {{ ucfirst(str_replace('_', ' ', $stat)) }}</span>
-                                        <span class="font-bold text-white">{{ number_format($pigeon->$stat, 1) }}</span>
+                    <!-- Grid: Stats & Aesthetics -->
+                    <div class="grid grid-cols-2 gap-8">
+                        <!-- Left: Core Performance -->
+                        <div class="space-y-4">
+                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Core Performance</h4>
+                            @foreach(['speed' => 'RUN', 'endurance' => 'POW', 'navigation' => 'DIR', 'temperament' => 'MND'] as $stat => $label)
+                                <div class="relative">
+                                    <div class="flex justify-between items-end mb-1">
+                                        <span class="text-[9px] font-black text-slate-400">{{ $label }}</span>
+                                        <span class="text-xs font-black text-white">{{ $pigeon->$stat }} <span class="text-yellow-500 text-[10px] ml-1">{{ $pigeon->stat_grades[$stat] }}</span></span>
                                     </div>
-                                    @if(in_array($stat, ['feather_quality', 'pattern', 'color']))
-                                        <button 
-                                            wire:click="improveAesthetic({{ $pigeon->id }}, '{{ $stat }}')"
-                                            class="mt-1 w-full text-[8px] bg-yellow-600/20 text-yellow-500 hover:bg-yellow-600 hover:text-black py-0.5 rounded transition font-bold"
-                                        >
-                                            Improve ({{ number_format(50 * pow(1.15, $pigeon->$stat)) }} 💰)
+                                    <div class="flex gap-1">
+                                        <div class="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+                                            <div class="h-full bg-yellow-500 transition-all duration-1000" style="width: {{ ($pigeon->$stat / ($pigeon->level * 10)) * 100 }}%"></div>
+                                        </div>
+                                        <button wire:click="train({{ $pigeon->id }}, '{{ $stat }}')" 
+                                                class="w-8 h-4 flex items-center justify-center bg-slate-800 hover:bg-yellow-500 text-slate-500 hover:text-black rounded text-[8px] font-black transition"
+                                                @if($pigeon->energy < 20 || $pigeon->status !== 'idle') disabled @endif>
+                                            +
                                         </button>
-                                    @endif
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
+
+                        <!-- Right: Aesthetics -->
+                        <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
+                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 text-center">Visual Grade: {{ $pigeon->stat_grades['beauty'] }}</h4>
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                                @foreach(['eyes' => '👁️', 'beak' => '👃', 'legs' => '🦵', 'feather_quality' => '✨', 'pattern' => '🎨', 'color' => '🌈', 'purity' => '💎'] as $stat => $icon)
+                                    <div class="flex flex-col">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-[8px] text-slate-500 uppercase font-black truncate">{{ str_replace('_', ' ', $stat) }}</span>
+                                            <span class="text-[9px] text-white font-bold">{{ number_format($pigeon->$stat, 1) }}</span>
+                                        </div>
+                                        @if(in_array($stat, ['feather_quality', 'pattern', 'color']))
+                                            @php $cost = (int) (50 * pow(1.15, $pigeon->$stat)); @endphp
+                                            <button wire:click="improveAesthetic({{ $pigeon->id }}, '{{ $stat }}')" 
+                                                    class="mt-1 text-[7px] font-black text-yellow-500 hover:text-white transition uppercase text-left">
+                                                MOD ({{ $cost }}💰)
+                                            </button>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
+                </div>
+
+                <!-- Footer Info -->
+                <div class="px-6 py-3 bg-black/40 flex justify-between items-center">
+                    <span class="text-[8px] font-black text-slate-600 uppercase tracking-widest italic">Operational Status: {{ strtoupper($pigeon->status) }}</span>
+                    <span class="text-[8px] font-black text-slate-600 uppercase tracking-widest italic">Age: {{ $ageDays }} Days</span>
                 </div>
             </div>
         @endforeach

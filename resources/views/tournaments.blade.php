@@ -1,20 +1,27 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-black text-xl text-yellow-500 uppercase tracking-widest">
-            {{ __('Tournaments') }}
-        </h2>
+        {{ __('Battle Arena') }}
     </x-slot>
 
-    <div class="py-12 bg-black min-h-screen">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-700">
-                <h2 class="text-2xl font-black text-white mb-6">Available Tournaments</h2>
+    <div class="space-y-12">
+        <div class="bg-slate-950 p-10 rounded-[3rem] border-2 border-slate-800 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-5 text-8xl font-industrial font-black italic select-none pointer-events-none uppercase">Combat</div>
+            
+            <div class="relative z-10">
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="w-12 h-1 bg-yellow-500 rounded-full"></div>
+                    <h2 class="text-3xl font-industrial font-black text-white uppercase italic tracking-widest">Available Operations</h2>
+                </div>
                 <livewire:race-lobby />
             </div>
-            
-            <div class="mt-8">
-                <livewire:race-history-display />
+        </div>
+        
+        <div class="bg-slate-950 p-10 rounded-[3rem] border-2 border-slate-800 shadow-2xl">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-1 bg-yellow-500 rounded-full"></div>
+                <h2 class="text-2xl font-industrial font-black text-white uppercase italic tracking-widest">Deployment History</h2>
             </div>
+            <livewire:race-history-display />
         </div>
     </div>
 </x-app-layout>

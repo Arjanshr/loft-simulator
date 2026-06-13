@@ -61,7 +61,30 @@ class Pigeon extends Model
         return $this->speed + $this->endurance + $this->navigation + $this->temperament + ($this->beauty * 2);
     }
 
-    protected $appends = ['beauty', 'total_score'];
+    protected $appends = ['beauty', 'total_score', 'stat_grades'];
+
+    /**
+     * Get visual grades for all trainable stats.
+     */
+    public function getStatGradesAttribute(): array
+    {
+        $stats = ['speed', 'endurance', 'navigation', 'temperament', 'beauty'];
+        $grades = [];
+
+        foreach ($stats as $stat) {
+            $value = $this->{$stat};
+            $grades[$stat] = match (true) {
+                $value >= 95 => 'S+',
+                $value >= 90 => 'S',
+                $value >= 80 => 'A',
+                $value >= 65 => 'B',
+                $value >= 45 => 'C',
+                default => 'D',
+            };
+        }
+
+        return $grades;
+    }
 
     public function loft(): BelongsTo
     {
