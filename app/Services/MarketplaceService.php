@@ -13,7 +13,6 @@ class MarketplaceService
     public function listPigeon(Pigeon $pigeon, int $price): bool
     {
         if ($pigeon->status !== 'idle' || ($pigeon->sire_id !== null && $pigeon->birth_at->addDays(4)->isFuture())) {
-            // Can't sell if busy, or juvenile
             return false;
         }
 
@@ -21,6 +20,7 @@ class MarketplaceService
             'loft_id' => $pigeon->loft_id,
             'pigeon_id' => $pigeon->id,
             'price' => $price,
+            'expires_at' => now()->addDay(), // 24-hour auction
             'is_active' => true,
         ]);
 
@@ -37,6 +37,11 @@ class MarketplaceService
 
         if ($buyerLoft->id === $sellerLoft->id) {
             return false; // Can't buy own pigeon
+        }
+
+        // Level Constraint: Cannot purchase pigeons more than 1 level higher than loft level
+        if ($pigeon->level > ($buyerLoft->level + 1)) {
+            return false;
         }
 
         if ($buyerLoft->coins < $listing->price) {

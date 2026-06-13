@@ -56,8 +56,13 @@ This document serves as the master record for all game mechanics, processes, and
 
 ---
 
-## 4. Economy
+## 4. Economy & Marketplace V3
 *   **Coins:** Earned from tournament prizes and leveling up pigeons.
+*   **Auction House:**
+    *   **Time-Limited:** Every listing has a 24-hour expiry timer. Expired units are returned to their loft.
+    *   **Level Constraints:** You can only view and purchase pigeons that are at most `Loft Level + 1`.
+    *   **Autonomous AI:** AI lofts actively trade in the market, listing and buying units within their own level range (`±1`).
+    *   **Market Cycle:** The economy processes a "Market Tick" every hour to simulate AI activity.
 *   **Spending:**
     *   Entering tournaments.
     *   Training (stat boosts).
@@ -68,4 +73,4 @@ This document serves as the master record for all game mechanics, processes, and
 ---
 
 ## 5. Admin Controls
-*   Admin can trigger the hourly maturation and passive energy recovery process manually via the Admin Dashboard.
+*   Admin can trigger the hourly maturation (hatching, growth, auction cleanup) and market ticks manually via the Admin Dashboard.

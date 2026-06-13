@@ -24,11 +24,17 @@ class Marketplace extends Component
 
     public function render()
     {
+        $userLoft = Auth::user()->loft;
+        $maxLevel = $userLoft->level + 1;
+
         return view('livewire.marketplace', [
             'listings' => Listing::where('is_active', true)
-                ->where('loft_id', '!=', Auth::user()->loft->id)
+                ->where('loft_id', '!=', $userLoft->id)
+                ->whereHas('pigeon', function($q) use ($maxLevel) {
+                    $q->where('level', '<=', $maxLevel);
+                })
                 ->with(['pigeon', 'loft'])
                 ->get(),
-        ])->layout('layouts.app', ['header' => 'Marketplace']);
+        ])->layout('layouts.app', ['header' => 'Auction House']);
     }
 }

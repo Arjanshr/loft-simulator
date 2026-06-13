@@ -36,6 +36,13 @@
                                         <span class="text-[9px] font-black bg-yellow-500 text-black px-2 py-0.5 rounded italic">LV.{{ $listing->pigeon->level }}</span>
                                         <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest border border-slate-800 px-2 py-0.5 rounded-full">{{ $listing->pigeon->rarity }}</span>
                                     </div>
+                                    
+                                    @php
+                                        $remainingSecs = now()->diffInSeconds($listing->expires_at, false);
+                                    @endphp
+                                    <div class="mt-2 text-[10px] font-black text-red-500 uppercase tracking-widest italic">
+                                        ⏱ Ends: {{ $remainingSecs > 0 ? gmdate("H:i:s", $remainingSecs) : 'EXPIRED' }}
+                                    </div>
                                 </div>
                                 <div class="text-right">
                                     <span class="text-[9px] font-black text-slate-600 uppercase block mb-1">Asking Price</span>

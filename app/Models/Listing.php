@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Listing extends Model
 {
-    protected $fillable = ['loft_id', 'pigeon_id', 'price', 'is_active'];
+    protected $fillable = ['loft_id', 'pigeon_id', 'price', 'expires_at', 'is_active'];
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
 
     public function loft(): BelongsTo
     {

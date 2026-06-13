@@ -72,9 +72,9 @@ class BreedingService
         }
 
         $record->delete();
-        $sire->update(['status' => 'idle']);
-        $dam->update(['status' => 'idle']);
-        (new ActivityService())->log($loft, "Pair {$sire->name} + {$dam->name} successfully hatched 2 chicks.");
+        $sire->update(['status' => 'nursing']);
+        $dam->update(['status' => 'nursing']);
+        (new ActivityService())->log($loft, "Pair {$sire->name} + {$dam->name} successfully hatched 2 chicks. Parents are now nursing.");
     }
 
     private function calculateInheritedStats(Pigeon $sire, Pigeon $dam): array

@@ -25,7 +25,7 @@
             
             <div class="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-12">
                 <div class="text-center lg:text-left">
-                    <span class="text-yellow-500 font-industrial font-black text-sm tracking-[0.3em] uppercase mb-2 block">Command Center</span>
+                    <span class="text-yellow-500 font-industrial font-black text-sm tracking-[0.3em] uppercase mb-2 block">Intelligence Hub</span>
                     <h1 class="text-5xl lg:text-7xl font-industrial font-black text-white italic uppercase tracking-tighter leading-none mb-4">{{ $loft->name }}</h1>
                     
                     <div class="flex items-center gap-4 justify-center lg:justify-start">
@@ -58,15 +58,86 @@
             </div>
         </div>
 
-        <!-- Pigeons Section -->
-        <section>
-            <div class="flex items-center gap-4 mb-8 px-2">
-                <div class="w-12 h-1 bg-yellow-500 rounded-full"></div>
-                <h2 class="text-2xl font-industrial font-black text-white uppercase italic tracking-widest">Active Units</h2>
-                <div class="flex-1 h-[1px] bg-slate-800"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Operational Summary -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-slate-950 p-8 rounded-[2rem] border-2 border-slate-800 shadow-xl">
+                    <h2 class="text-xl font-industrial font-black text-white uppercase italic tracking-widest mb-6">Inventory Analysis</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="bg-black/40 p-4 rounded-2xl border border-slate-800 text-center">
+                            <span class="block text-3xl font-industrial font-black text-white">{{ $loft->pigeons->count() }}</span>
+                            <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest">Total Units</span>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-2xl border border-slate-800 text-center">
+                            <span class="block text-3xl font-industrial font-black text-yellow-500">{{ $loft->pigeons->where('type', 'racer')->count() }}</span>
+                            <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest">Racers</span>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-2xl border border-slate-800 text-center">
+                            <span class="block text-3xl font-industrial font-black text-indigo-400">{{ $loft->pigeons->where('type', 'fancy')->count() }}</span>
+                            <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest">Fancy</span>
+                        </div>
+                        <div class="bg-black/40 p-4 rounded-2xl border border-slate-800 text-center">
+                            <span class="block text-3xl font-industrial font-black text-green-400">{{ $loft->pigeons->where('type', 'highflyer')->count() }}</span>
+                            <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest">Highflyers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Assets (Top 3) -->
+                <div class="bg-slate-950 p-8 rounded-[2rem] border-2 border-slate-800 shadow-xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-industrial font-black text-white uppercase italic tracking-widest">Elite Assets</h2>
+                        <a href="{{ route('pigeons.index') }}" class="text-[10px] font-black text-yellow-500 uppercase tracking-widest hover:underline">Manage All Units →</a>
+                    </div>
+                    <div class="space-y-4">
+                        @foreach($loft->pigeons->sortByDesc('total_score')->take(3) as $p)
+                            <div class="flex justify-between items-center bg-black/40 p-4 rounded-2xl border border-slate-800">
+                                <div class="flex items-center gap-4">
+                                    <span class="font-industrial font-black text-yellow-500 italic text-sm">LV.{{ $p->level }}</span>
+                                    <span class="font-bold text-white uppercase text-sm tracking-wider">{{ $p->name }}</span>
+                                </div>
+                                <span class="font-industrial font-black text-yellow-500">{{ number_format($p->total_score, 1) }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
-            
-            <livewire:pigeon-manager />
-        </section>
+
+            <!-- Intelligence Sidebar -->
+            <div class="space-y-8">
+                <!-- Status Module -->
+                <div class="bg-slate-950 p-8 rounded-[2rem] border-2 border-slate-800 shadow-xl">
+                    <h2 class="text-xl font-industrial font-black text-white uppercase italic tracking-widest mb-6">Real-time Feed</h2>
+                    <div class="space-y-4">
+                        @php
+                            $breedingCount = $loft->breedingRecords->count();
+                        @endphp
+                        @if($breedingCount > 0)
+                            <div class="bg-yellow-500/10 p-4 rounded-2xl border border-yellow-500/20">
+                                <p class="text-yellow-500 font-black text-xs uppercase tracking-widest animate-pulse">🧬 Genetic Link Active</p>
+                                <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">{{ $breedingCount }} pairs currently in incubation protocol.</p>
+                            </div>
+                        @endif
+                        
+                        <div class="bg-black/40 p-4 rounded-2xl border border-slate-800">
+                            <p class="text-white font-black text-xs uppercase tracking-widest">🏆 Field Status</p>
+                            <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">{{ $loft->pigeons->where('status', 'racing')->count() }} units currently deployed to tournaments.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Access -->
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="{{ route('tournaments') }}" class="bg-slate-900 hover:bg-yellow-500 group p-4 rounded-[1.5rem] border-2 border-slate-800 transition-all text-center">
+                        <span class="block text-2xl mb-1">🏁</span>
+                        <span class="text-[8px] font-black text-slate-500 group-hover:text-black uppercase tracking-widest">Combat</span>
+                    </a>
+                    <a href="{{ route('breeding.center') }}" class="bg-slate-900 hover:bg-yellow-500 group p-4 rounded-[1.5rem] border-2 border-slate-800 transition-all text-center">
+                        <span class="block text-2xl mb-1">🧬</span>
+                        <span class="text-[8px] font-black text-slate-500 group-hover:text-black uppercase tracking-widest">Genetics</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     @endif
 </div>

@@ -8,6 +8,10 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::view('pigeons', 'pigeons')
+    ->middleware(['auth', 'verified'])
+    ->name('pigeons.index');
+
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');

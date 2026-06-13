@@ -52,10 +52,16 @@
                         </div>
                     </div>
 
-                    <button wire:click="runMaturation" 
-                            class="w-full py-4 bg-white hover:bg-indigo-600 hover:text-white text-black font-industrial font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 uppercase italic tracking-widest mt-8">
-                        Execute Cycle
-                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                        <button wire:click="runMaturation" 
+                                class="w-full py-4 bg-white hover:bg-indigo-600 hover:text-white text-black font-industrial font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 uppercase italic tracking-widest">
+                            Execute Lifecycle
+                        </button>
+                        <button wire:click="runMarketTick" 
+                                class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-industrial font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 uppercase italic tracking-widest">
+                            Execute Market Tick
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

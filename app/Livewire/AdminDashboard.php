@@ -40,6 +40,13 @@ class AdminDashboard extends Component
         session()->flash('message', 'Maturation command executed successfully.');
     }
 
+    public function runMarketTick()
+    {
+        \Illuminate\Support\Facades\Log::info('Admin Market Tick Triggered');
+        Artisan::call('pigeons:market-tick');
+        session()->flash('message', 'Market ecosystem tick executed successfully.');
+    }
+
     public function render()
     {
         return view('livewire.admin-dashboard')->layout('layouts.app', ['header' => 'Admin Panel']);

@@ -46,7 +46,12 @@
                         <div class="absolute top-0 right-0 p-4 opacity-5 text-4xl font-industrial font-black italic select-none pointer-events-none uppercase">Selling</div>
                         <div class="relative z-10">
                             <h4 class="font-industrial font-black text-white uppercase tracking-wider text-sm">{{ $listing->pigeon->name }}</h4>
-                            <p class="text-[9px] font-black text-yellow-500/50 uppercase tracking-widest">LISTED FOR {{ number_format($listing->price) }} 💰</p>
+                            @php
+                                $remainingSecs = now()->diffInSeconds($listing->expires_at, false);
+                            @endphp
+                            <p class="text-[9px] font-black text-yellow-500/50 uppercase tracking-widest italic">
+                                EXPIRES IN: {{ $remainingSecs > 0 ? gmdate("H:i:s", $remainingSecs) : 'EXPIRED' }}
+                            </p>
                         </div>
                         <div class="relative z-10 text-xl font-industrial font-black text-yellow-500">
                             {{ number_format($listing->price) }}💰

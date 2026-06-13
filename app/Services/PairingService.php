@@ -24,6 +24,18 @@ class PairingService
             return false;
         }
 
+        // Inbreeding check: 
+        // 1. Cannot be parent/child
+        if ($male->id === $female->sire_id || $female->id === $male->dam_id) {
+            return false;
+        }
+
+        // 2. Cannot share ANY parent (Full or Half siblings)
+        if (($male->sire_id !== null && ($male->sire_id === $female->sire_id)) || 
+            ($male->dam_id !== null && ($male->dam_id === $female->dam_id))) {
+            return false;
+        }
+
         // Check if either is already paired
         $isAlreadyPaired = Pair::where('is_active', true)
             ->where(function($q) use ($maleId, $femaleId) {

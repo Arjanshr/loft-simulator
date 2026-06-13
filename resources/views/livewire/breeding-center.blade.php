@@ -105,12 +105,24 @@
                                 @endif
                             </div>
 
-                            <div class="flex gap-4">
+                            <div class="flex gap-2">
+                                @php
+                                    $readyToBreedTime = $pair->created_at->addHours(6);
+                                    $timeUntilReady = now()->diffInSeconds($readyToBreedTime, false);
+                                @endphp
+
                                 @if(!$record)
-                                    <button wire:click="breedPair({{ $pair->id }})" 
-                                            class="flex-1 py-4 bg-white hover:bg-yellow-500 text-black font-industrial font-black text-[10px] rounded-2xl transition-all shadow-xl uppercase italic tracking-widest">
-                                        Start (100💰)
-                                    </button>
+                                    @if($timeUntilReady > 0)
+                                        <div class="text-right">
+                                            <span class="text-[8px] font-black text-slate-500 uppercase block mb-1">Pairing Bond</span>
+                                            <span class="text-xs font-industrial font-black text-white tracking-widest">{{ gmdate("H:i:s", $timeUntilReady) }}</span>
+                                        </div>
+                                    @else
+                                        <button wire:click="breedPair({{ $pair->id }})" 
+                                                class="flex-1 py-4 bg-white hover:bg-yellow-500 text-black font-industrial font-black text-[10px] rounded-2xl transition-all shadow-xl uppercase italic tracking-widest">
+                                            Breed (100💰)
+                                        </button>
+                                    @endif
                                     <button wire:click="disband({{ $pair->id }})" 
                                             class="py-4 px-6 bg-slate-800 hover:bg-red-600 text-slate-400 hover:text-white font-industrial font-black text-[10px] rounded-2xl transition-all uppercase italic">
                                         End
