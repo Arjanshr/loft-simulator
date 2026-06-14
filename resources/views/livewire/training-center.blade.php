@@ -38,13 +38,13 @@
                     Distance Training <span class="block text-[9px] text-slate-500 font-normal normal-case">Cost: 20 Energy/bird</span>
                 </button>
                 <button wire:click="train('grooming')" class="p-4 bg-slate-950 hover:bg-slate-800 rounded-xl border border-slate-700 text-white font-black italic uppercase transition-all">
-                    Grooming <span class="block text-[9px] text-slate-500 font-normal normal-case">Total: {{ number_format($totalGroomingCost) }} 💰</span>
+                    Grooming <span class="block text-[9px] text-slate-500 font-normal normal-case">Total: {{ number_format($totalCost) }} 💰</span>
                 </button>
                 <button wire:click="train('physical_care')" class="p-4 bg-slate-950 hover:bg-slate-800 rounded-xl border border-slate-700 text-white font-black italic uppercase transition-all">
-                    Physical Care <span class="block text-[9px] text-slate-500 font-normal normal-case">Total: {{ number_format($totalGroomingCost) }} 💰</span>
+                    Physical Care <span class="block text-[9px] text-slate-500 font-normal normal-case">Total: {{ number_format($totalCost) }} 💰</span>
                 </button>
                 <button wire:click="train('gene_therapy')" class="p-4 bg-slate-950 hover:bg-slate-800 rounded-xl border border-slate-700 text-white font-black italic uppercase transition-all">
-                    Gene Therapy <span class="block text-[9px] text-slate-500 font-normal normal-case">Total: {{ number_format($totalGroomingCost) }} 💰</span>
+                    Gene Therapy <span class="block text-[9px] text-slate-500 font-normal normal-case">Total: {{ number_format($totalCost) }} 💰</span>
                 </button>
                 <button wire:click="restAll" class="p-4 bg-slate-950 hover:bg-slate-800 rounded-xl border border-yellow-500/50 text-yellow-500 font-black italic uppercase transition-all">
                     Restore Energy <span class="block text-[9px] text-yellow-500/70 font-normal normal-case">Cost: {{ $restCost * count($selectedPigeonIds) }} 💰</span>
