@@ -15,20 +15,26 @@ class TrainingCenter extends Component
 
     public function train($type)
     {
+        \Illuminate\Support\Facades\Log::info('Training initiated', ['type' => $type, 'pigeonIds' => $this->selectedPigeonIds]);
         if (empty($this->selectedPigeonIds)) {
             session()->flash('error', 'Please select at least one pigeon.');
             return;
         }
 
         $userLoft = Auth::user()->loft;
+        \Illuminate\Support\Facades\Log::info('User loft', ['loftId' => $userLoft->id]);
         $this->statGains = [];
         $points = rand(1, 5);
         $energyCost = 20;
 
         foreach ($this->selectedPigeonIds as $pigeonId) {
             $pigeon = Pigeon::findOrFail($pigeonId);
+            \Illuminate\Support\Facades\Log::info('Pigeon found', ['pigeonId' => $pigeonId, 'loftId' => $pigeon->loft_id]);
 
-            if ($pigeon->loft_id !== $userLoft->id) continue;
+            if ($pigeon->loft_id !== $userLoft->id) {
+                \Illuminate\Support\Facades\Log::warning('Pigeon not in user loft', ['pigeonId' => $pigeonId, 'pigeonLoftId' => $pigeon->loft_id, 'userLoftId' => $userLoft->id]);
+                continue;
+            }
 
             $intelligenceBonus = $pigeon->intelligence / 20;
             $maxGain = $points + $intelligenceBonus;
