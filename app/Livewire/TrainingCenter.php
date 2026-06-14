@@ -31,7 +31,8 @@ class TrainingCenter extends Component
             if ((int)$pigeon->loft_id !== (int)$userLoft->id) continue;
 
             $intelligenceBonus = $pigeon->intelligence / 20;
-            $maxGain = $points + $intelligenceBonus;
+            $levelBonus = $pigeon->level * 1.5;
+            $maxGain = $points + $intelligenceBonus + $levelBonus;
             
             $cost = 100 + ($pigeon->beauty * 10);
 
@@ -47,7 +48,7 @@ class TrainingCenter extends Component
 
                         foreach ($statsToTrain as $stat) {
                             if ($stat === $statToForce || rand(0, 1)) {
-                                $gain = rand(1, ceil($maxGain)); // Ensure at least 1 point
+                                $gain = rand(1, (int)ceil($maxGain)); // Ensure at least 1 point
                                 $pigeon->increment($stat, $gain);
                                 $this->statGains[$pigeonId][$stat] = $gain;
                             }
@@ -58,7 +59,7 @@ class TrainingCenter extends Component
 
                         foreach ($statsToTrain as $stat) {
                             if ($stat === $statToForce || rand(0, 1)) {
-                                $gain = rand(1, ceil($maxGain)); // Ensure at least 1 point
+                                $gain = rand(1, (int)ceil($maxGain)); // Ensure at least 1 point
                                 $pigeon->increment($stat, $gain);
                                 $this->statGains[$pigeonId][$stat] = $gain;
                             }
@@ -72,7 +73,7 @@ class TrainingCenter extends Component
                     $userLoft->decrement('coins', $cost);
                     
                     if ($type === 'grooming') {
-                        $totalPoints = rand(1, ceil($maxGain)) * $pigeon->level;
+                        $totalPoints = rand(1, (int)ceil($maxGain));
                         $attributes = ['feather_quality', 'color', 'pattern'];
                         foreach($attributes as $attr) {
                             $attrGains = 0;
