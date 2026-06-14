@@ -30,6 +30,9 @@ class TrainingCenter extends Component
 
             if ($pigeon->loft_id !== $userLoft->id) continue;
 
+            $intelligenceBonus = $pigeon->intelligence / 20;
+            $maxGain = $points + $intelligenceBonus;
+            
             $cost = 100 + ($pigeon->beauty * 10);
 
             switch ($type) {
@@ -44,7 +47,7 @@ class TrainingCenter extends Component
 
                         foreach ($statsToTrain as $stat) {
                             if ($stat === $statToForce || rand(0, 1)) {
-                                $gain = rand(1, $points); // Ensure at least 1 point
+                                $gain = rand(1, ceil($maxGain)); // Ensure at least 1 point
                                 $pigeon->increment($stat, $gain);
                                 $this->statGains[$pigeonId][$stat] = $gain;
                             }
@@ -55,7 +58,7 @@ class TrainingCenter extends Component
 
                         foreach ($statsToTrain as $stat) {
                             if ($stat === $statToForce || rand(0, 1)) {
-                                $gain = rand(1, $points); // Ensure at least 1 point
+                                $gain = rand(1, ceil($maxGain)); // Ensure at least 1 point
                                 $pigeon->increment($stat, $gain);
                                 $this->statGains[$pigeonId][$stat] = $gain;
                             }
@@ -69,7 +72,7 @@ class TrainingCenter extends Component
                     $userLoft->decrement('coins', $cost);
                     
                     if ($type === 'grooming') {
-                        $totalPoints = rand(1, 5) * $pigeon->level;
+                        $totalPoints = rand(1, ceil($maxGain)) * $pigeon->level;
                         $attributes = ['feather_quality', 'color', 'pattern'];
                         foreach($attributes as $attr) {
                             $attrGains = 0;
@@ -85,11 +88,11 @@ class TrainingCenter extends Component
                         }
                     } elseif ($type === 'physical_care') {
                         $attr = ['eyes', 'beak', 'legs'][rand(0,2)];
-                        $gain = rand(0, $points);
+                        $gain = rand(1, ceil($maxGain));
                         $pigeon->increment($attr, $gain);
                         $this->statGains[$pigeonId][$attr] = $gain;
                     } else {
-                        $gain = rand(0, $points);
+                        $gain = rand(1, ceil($maxGain));
                         $pigeon->increment('purity', $gain);
                         $this->statGains[$pigeonId]['purity'] = $gain;
                     }
@@ -123,12 +126,12 @@ class TrainingCenter extends Component
         $pigeons = $userLoft->pigeons()->get();
         $selectedPigeons = $userLoft->pigeons()->whereIn('id', $this->selectedPigeonIds)->get();
         
-        $totalGroomingCost = $selectedPigeons->sum(fn($p) => 100 + ($p->beauty * 10));
+        $totalCost = $selectedPigeons->sum(fn($p) => 100 + ($p->beauty * 10));
 
         return view('livewire.training-center', [
             'pigeons' => $pigeons,
             'selectedPigeons' => $selectedPigeons,
-            'totalGroomingCost' => $totalGroomingCost,
+            'totalCost' => $totalCost,
         ])->layout('layouts.app', ['header' => 'Training Center']);
     }
 }

@@ -23,7 +23,6 @@
                 <div class="w-12 h-1 bg-yellow-500 rounded-full"></div>
                 <h2 class="text-3xl font-industrial font-black text-white uppercase italic tracking-widest">Global Terminal</h2>
                 <div class="flex-1 h-[1px] bg-slate-800"></div>
-                <input wire:model.live="levelFilter" type="number" placeholder="Filter by Level" class="bg-black/50 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm font-bold w-32 focus:ring-2 focus:ring-yellow-500">
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

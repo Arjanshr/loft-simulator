@@ -1,6 +1,6 @@
-# Pigeon Racer: Game Rules & Mechanics
+# Loft Manager: Game Rules & Mechanics
 
-This document serves as the master record for all game mechanics, processes, and rules in the Pigeon Racer simulation.
+This document serves as the master record for all game mechanics, processes, and rules in the Loft Manager simulation.
 
 ---
 

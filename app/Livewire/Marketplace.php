@@ -9,8 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class Marketplace extends Component
 {
-    public $levelFilter = '';
-
     public function buy($listingId, MarketplaceService $marketplaceService)
     {
         $listing = Listing::findOrFail($listingId);
@@ -39,10 +37,6 @@ class Marketplace extends Component
                                  ->whereRaw('RAND() < 0.05');
                           });
                 });
-                
-                if ($this->levelFilter) {
-                    $q->where('level', $this->levelFilter);
-                }
             })
             ->with(['pigeon', 'loft'])
             ->latest()
