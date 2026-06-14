@@ -24,33 +24,10 @@ class PigeonManager extends Component
         session()->flash('message', "Pigeon renamed to {$pigeon->name}!");
     }
 
-    public function train($pigeonId, $stat, PigeonService $pigeonService)
-    {
-        $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
-        
-        if ($pigeonService->train($pigeon, $stat)) {
-            session()->flash('message', "{$pigeon->name} improved their {$stat}!");
-        } else {
-            session()->flash('error', "Not enough energy or training is on cooldown.");
-        }
-    }
-
-    public function improveAesthetic($pigeonId, $attribute, PigeonService $pigeonService)
-    {
-        $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
-        
-        if ($pigeonService->improveAesthetics($pigeon, $attribute)) {
-            $this->dispatch('loft-updated');
-            session()->flash('message', "{$pigeon->name}'s " . str_replace('_', ' ', $attribute) . " improved!");
-        } else {
-            session()->flash('error', "Not enough coins or attribute maxed out.");
-        }
-    }
-
     public function rest($pigeonId, PigeonService $pigeonService)
     {
         $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
-        
+
         if ($pigeonService->instantRest($pigeon)) {
             $this->dispatch('loft-updated');
             session()->flash('message', "{$pigeon->name} is fully rested!");

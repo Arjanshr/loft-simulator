@@ -28,28 +28,6 @@ class UnitManager extends Component
         }
     }
 
-    public function train($pigeonId, $stat, PigeonService $pigeonService)
-    {
-        $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
-        if ($pigeonService->train($pigeon, $stat)) {
-            $this->dispatch('loft-updated');
-            session()->flash('message', "{$pigeon->name} trained successfully.");
-        } else {
-            session()->flash('error', "Training failed.");
-        }
-    }
-
-    public function improveAesthetic($pigeonId, $attribute, PigeonService $pigeonService)
-    {
-        $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
-        if ($pigeonService->improveAesthetics($pigeon, $attribute)) {
-            $this->dispatch('loft-updated');
-            session()->flash('message', "{$pigeon->name} aesthetics improved.");
-        } else {
-            session()->flash('error', "Aesthetic improvement failed.");
-        }
-    }
-
     public function rest($pigeonId, PigeonService $pigeonService)
     {
         $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);

@@ -52,4 +52,8 @@ Route::get('breeding-center', \App\Livewire\BreedingCenter::class)
     ->middleware(['auth'])
     ->name('breeding.center');
 
+Route::get('training-center', \App\Livewire\TrainingCenter::class)
+    ->middleware(['auth'])
+    ->name('training.center');
+
 require __DIR__.'/auth.php';

@@ -135,11 +135,6 @@
                                         <div class="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
                                             <div class="h-full bg-yellow-500 transition-all duration-1000" style="width: {{ ($pigeon->$stat / ($pigeon->level * 10)) * 100 }}%"></div>
                                         </div>
-                                        <button wire:click="train({{ $pigeon->id }}, '{{ $stat }}')" 
-                                                class="w-8 h-4 flex items-center justify-center bg-slate-800 hover:bg-yellow-500 text-slate-500 hover:text-black rounded text-[8px] font-black transition"
-                                                @if($pigeon->energy < 20 || $pigeon->status !== 'idle') disabled @endif>
-                                            +
-                                        </button>
                                     </div>
                                 </div>
                             @endforeach
@@ -154,13 +149,6 @@
                                             <span class="text-[8px] text-slate-500 uppercase font-black truncate">{{ str_replace('_', ' ', $stat) }}</span>
                                             <span class="text-[9px] text-white font-bold">{{ number_format($pigeon->$stat, 1) }}</span>
                                         </div>
-                                        @if(in_array($stat, ['feather_quality', 'pattern', 'color']))
-                                            @php $cost = (int) (50 * pow(1.15, $pigeon->$stat)); @endphp
-                                            <button wire:click="improveAesthetic({{ $pigeon->id }}, '{{ $stat }}')" 
-                                                    class="mt-1 text-[7px] font-black text-yellow-500 hover:text-white transition uppercase text-left">
-                                                MOD ({{ $cost }}💰)
-                                            </button>
-                                        @endif
                                     </div>
                                 @endforeach
                             </div>

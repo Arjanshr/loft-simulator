@@ -35,6 +35,8 @@ class Pigeon extends Model
         'energy',
         'status',
         'last_trained_at',
+        'loyalty',
+        'intelligence',
     ];
 
     protected $casts = [

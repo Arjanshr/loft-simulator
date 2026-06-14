@@ -18,10 +18,13 @@ class MassDataSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($level = 1; $level <= 20; $level++) {
+        $levels = 3;
+        $num_ai=5;
+        $num_pigeons_per_ai = 3;   
+        for ($level = 1; $level <= $levels; $level++) {
             $this->command->info("Seeding Level $level");
             
-            for ($i = 1; $i <= 50; $i++) {
+            for ($i = 1; $i <= $num_ai; $i++) {
                 $aiUser = User::factory()->create([
                     'name' => "AI Level $level - $i",
                     'is_ai' => true
@@ -35,13 +38,23 @@ class MassDataSeeder extends Seeder
                 ]);
 
                 $pigeonsData = [];
-                for ($j = 0; $j < 10; $j++) {
+                for ($j = 0; $j < 100; $j++) {
                     $pigeonLevel = rand(1, $level);
+                    $intelligence = rand(1, 100);
+
+                    $rarity = 'common';
+                    if ($intelligence > 99) {
+                        $rarity = 'legendary';
+                    } elseif ($intelligence > 80) {
+                        $rarity = 'rare';
+                    }
 
                     $pigeonsData[] = [
                         'loft_id' => $aiLoft->id,
                         'name' => "AI Bird " . fake()->word() . rand(1, 9999),
                         'level' => $pigeonLevel,
+                        'intelligence' => $intelligence,
+                        'rarity' => $rarity,
                         'type' => fake()->randomElement(['fancy', 'racer', 'highflyer']),
                         'gender' => fake()->randomElement(['male', 'female']),
                         'birth_at' => now()->subDays(10),
@@ -53,16 +66,11 @@ class MassDataSeeder extends Seeder
                         'pattern' => rand(1, $pigeonLevel * 10),
                         'color' => rand(1, $pigeonLevel * 10),
                         'purity' => rand(1, $pigeonLevel * 10),
-                        'rarity' => (function() {
-                            $rand = rand(1, 1000);
-                            if ($rand <= 2) return 'legendary';
-                            if ($rand <= 50) return 'rare';
-                            return 'common';
-                        })(),
                         'speed' => rand(1, $pigeonLevel * 10),
                         'endurance' => rand(1, $pigeonLevel * 10),
                         'navigation' => rand(1, $pigeonLevel * 10),
                         'temperament' => rand(1, $pigeonLevel * 10),
+                        'loyalty' => rand(1, 100),
                         'energy' => 100,
                         'status' => 'idle',
                         'created_at' => now(),
