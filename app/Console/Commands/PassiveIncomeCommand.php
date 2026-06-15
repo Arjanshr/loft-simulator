@@ -27,17 +27,24 @@ class PassiveIncomeCommand extends Command
      */
     public function handle()
     {
-        \App\Models\Pigeon::where('type', 'fancy')
-            ->where('status', '!=', 'egg')
+        \App\Models\Pigeon::where('status', '!=', 'egg')
             ->with('loft')
             ->chunk(100, function ($pigeons) {
                 foreach ($pigeons as $pigeon) {
-                    // Formula: 1 base coin + (beauty score / 10)
-                    $income = 1 + ($pigeon->beauty / 10);
-                    $pigeon->loft->increment('coins', (int) $income);
+                    // 1. Passive Income for Fancy types
+                    if ($pigeon->type === 'fancy') {
+                        // Formula: 1 base coin + (beauty score / 10)
+                        $income = 1 + ($pigeon->beauty / 10);
+                        $pigeon->loft->increment('coins', (int) $income);
+                    }
+
+                    // 2. Passive Loyalty growth for all
+                    if ($pigeon->loyalty < 100) {
+                        $pigeon->increment('loyalty');
+                    }
                 }
             });
 
-        $this->info('Passive income distributed successfully.');
+        $this->info('Passive income and loyalty growth processed successfully.');
     }
 }

@@ -28,6 +28,7 @@ class Marketplace extends Component
         $userLevel = $userLoft->level;
 
         $query = Listing::where('is_active', true)
+            ->where('expires_at', '>', now())
             ->where('loft_id', '!=', $userLoft->id)
             ->whereHas('pigeon', function($q) use ($userLevel) {
                 $q->where(function($query) use ($userLevel) {

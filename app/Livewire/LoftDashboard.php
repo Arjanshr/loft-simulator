@@ -23,9 +23,9 @@ class LoftDashboard extends Component
     {
         if ($loftService->upgradeLoft(Auth::user()->loft)) {
             $this->dispatch('loft-updated');
-            session()->flash('message', 'Loft upgraded successfully!');
+            $this->dispatch('notify', message: 'Loft upgraded successfully!', type: 'success');
         } else {
-            session()->flash('error', 'Not enough XP or coins to upgrade.');
+            $this->dispatch('notify', message: 'Not enough XP or coins to upgrade.', type: 'error');
         }
     }
 

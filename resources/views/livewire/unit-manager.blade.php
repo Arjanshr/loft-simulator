@@ -1,6 +1,7 @@
 <div class="text-slate-200" x-data="{}" x-on:pigeon-leveled-up.window="alert('Congratulations! ' + $event.detail.name + ' reached a new rank!')" wire:poll.60s>
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             wire:key="msg-{{ microtime() }}"
              class="fixed top-20 right-4 z-50 bg-yellow-500 text-black px-6 py-3 rounded-xl shadow-2xl font-black font-industrial animate-bounce">
             {{ session('message') }}
         </div>

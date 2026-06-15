@@ -37,4 +37,17 @@ return [
         'cost_exponent' => 1.15,
         'max_value' => 100,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Marketplace Settings
+    |--------------------------------------------------------------------------
+    */
+    'marketplace' => [
+        'listing_duration_hours' => 24,
+        'sell_price_multiplier' => 500, // level * 500
+        'sell_price_intelligence_bonus' => 10, // intelligence * 10
+        'visibility_level_diff' => 1, // Loft Level + 1
+        'visibility_chance' => 0.05, // 5% chance for higher level pigeons
+    ],
 ];

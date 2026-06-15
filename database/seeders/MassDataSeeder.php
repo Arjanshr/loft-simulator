@@ -18,9 +18,9 @@ class MassDataSeeder extends Seeder
      */
     public function run(): void
     {
-        $levels = 3;
-        $num_ai=5;
-        $num_pigeons_per_ai = 3;   
+        $levels = 20;
+        $num_ai=50;
+        $num_pigeons_per_ai = 100;   
         for ($level = 1; $level <= $levels; $level++) {
             $this->command->info("Seeding Level $level");
             
@@ -38,7 +38,7 @@ class MassDataSeeder extends Seeder
                 ]);
 
                 $pigeonsData = [];
-                for ($j = 0; $j < 100; $j++) {
+                for ($j = 0; $j < $num_pigeons_per_ai; $j++) {
                     $pigeonLevel = rand(1, $level);
                     $intelligence = rand(1, 100);
 
@@ -70,7 +70,7 @@ class MassDataSeeder extends Seeder
                         'endurance' => rand(1, $pigeonLevel * 10),
                         'navigation' => rand(1, $pigeonLevel * 10),
                         'temperament' => rand(1, $pigeonLevel * 10),
-                        'loyalty' => rand(1, 100),
+                        'loyalty' => 0,
                         'energy' => 100,
                         'status' => 'idle',
                         'created_at' => now(),

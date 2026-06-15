@@ -1,6 +1,7 @@
 <div class="text-slate-200" x-data="{}" x-on:pigeon-leveled-up.window="alert('Congratulations! ' + $event.detail.name + ' reached a new rank!')" wire:poll.60s>
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             wire:key="msg-{{ microtime() }}"
              class="fixed top-20 right-4 z-50 bg-yellow-500 text-black px-6 py-3 rounded-xl shadow-2xl font-black font-industrial animate-bounce">
             {{ session('message') }}
         </div>
@@ -8,6 +9,7 @@
 
     @if (session()->has('error'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             wire:key="err-{{ microtime() }}"
              class="fixed top-20 right-4 z-50 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold font-industrial">
             {{ session('error') }}
         </div>
@@ -80,6 +82,18 @@
                         $progress = min(100, ($totalStats / ($required ?: 1)) * 100);
                     @endphp
                     
+                    <div class="flex items-center gap-4 mb-3 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
+                        <div class="flex-1">
+                            <div class="flex justify-between text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+                                <span>Loyalty: {{ $pigeon->loyalty }}%</span>
+                                <span class="text-blue-400 italic">Homing Instinct</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 transition-all duration-700 shadow-[0_0_10px_rgba(59,130,246,0.5)]" style="width: {{ $pigeon->loyalty }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="flex items-center gap-4 mb-6 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
                         <div class="flex-1">
                             <div class="flex justify-between text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">

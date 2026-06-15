@@ -39,17 +39,8 @@ class MarketEcosystemService
             \Illuminate\Support\Facades\Log::info("AI Market Tick: Checking loft {$loft->name}. Found pigeon: " . ($pigeon ? $pigeon->name : 'none'));
 
             if ($pigeon) { 
-                // Force to 100% chance for debugging
-                // Price formula: (Total Score * 10) + Rarity Premium
-                $rarityMulti = match($pigeon->rarity) {
-                    'legendary' => 500,
-                    'rare' => 200,
-                    default => 0
-                };
-                $price = (int) ($pigeon->total_score * 10) + $rarityMulti + rand(0, 100);
-                
-                (new MarketplaceService())->listPigeon($pigeon, $price);
-                \Illuminate\Support\Facades\Log::info("AI Market Tick: Listed {$pigeon->name} for {$price}.");
+                (new MarketplaceService())->listPigeon($pigeon, $pigeon->fixed_price);
+                \Illuminate\Support\Facades\Log::info("AI Market Tick: Listed {$pigeon->name} for {$pigeon->fixed_price}.");
             }
         }
     }

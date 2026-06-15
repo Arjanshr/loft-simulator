@@ -13,6 +13,12 @@ class Listing extends Model
         'expires_at' => 'datetime',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true)
+                     ->where('expires_at', '>', now());
+    }
+
     public function loft(): BelongsTo
     {
         return $this->belongsTo(Loft::class);

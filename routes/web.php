@@ -56,4 +56,8 @@ Route::get('training-center', \App\Livewire\TrainingCenter::class)
     ->middleware(['auth'])
     ->name('training.center');
 
+Route::get('strays', \App\Livewire\StrayObservationPage::class)
+    ->middleware(['auth'])
+    ->name('strays');
+
 require __DIR__.'/auth.php';

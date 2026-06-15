@@ -1,11 +1,4 @@
 <div class="space-y-12">
-    @if (session()->has('message'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
-             class="fixed top-20 right-4 z-50 bg-yellow-500 text-black px-6 py-3 rounded-xl shadow-2xl font-black font-industrial">
-            {{ session('message') }}
-        </div>
-    @endif
-
     @if($showCreateForm)
         <div class="max-w-md mx-auto glow-card p-10 rounded-[3rem] border-t-8 border-t-yellow-500 text-center">
             <h2 class="text-4xl font-industrial font-black text-white mb-4 uppercase italic">Establish Loft</h2>
@@ -25,7 +18,7 @@
             
             <div class="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-8 md:gap-12">
                 <div class="text-center lg:text-left">
-                    <span class="text-yellow-500 font-industrial font-black text-[10px] md:text-sm tracking-[0.3em] uppercase mb-2 block">Intelligence Hub</span>
+                    <span class="text-yellow-500 font-industrial font-black text-[10px] md:text-sm tracking-[0.3em] uppercase mb-2 block">Loft Manager</span>
                     <h1 class="text-3xl md:text-5xl lg:text-7xl font-industrial font-black text-white italic uppercase tracking-tighter leading-tight md:leading-none mb-4">{{ $loft->name }}</h1>
                     
                     <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
@@ -59,6 +52,8 @@
                 </div>
             </div>
         </div>
+
+        <livewire:stray-manager />
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             <!-- Operational Summary -->

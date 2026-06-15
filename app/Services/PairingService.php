@@ -58,6 +58,13 @@ class PairingService
             'female_id' => $female->id,
         ]);
 
+        $male->increment('loyalty', 5);
+        $female->increment('loyalty', 5);
+        
+        // Ensure loyalty doesn't exceed 100%
+        $male->update(['loyalty' => min(100, $male->loyalty)]);
+        $female->update(['loyalty' => min(100, $female->loyalty)]);
+
         (new ActivityService())->log($loft, "Formed breeding pair: {$male->name} ♂ + {$female->name} ♀.");
 
         return true;

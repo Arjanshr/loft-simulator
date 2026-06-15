@@ -40,8 +40,14 @@ class BreedingService
                 'eggs_laid_at' => now(),
             ]);
 
-            $sire->update(['status' => 'incubating']);
-            $dam->update(['status' => 'incubating']);
+            $sire->update([
+                'status' => 'incubating',
+                'loyalty' => min(100, $sire->loyalty + 10),
+            ]);
+            $dam->update([
+                'status' => 'incubating',
+                'loyalty' => min(100, $dam->loyalty + 10),
+            ]);
             (new ActivityService())->log($pair->loft, "Started incubation for pair: {$sire->name} ♂ + {$dam->name} ♀.");
         });
 

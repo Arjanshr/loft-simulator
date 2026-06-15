@@ -1,12 +1,14 @@
 <div class="space-y-12">
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             wire:key="msg-{{ microtime() }}"
              class="fixed top-20 right-4 z-50 bg-yellow-500 text-black px-6 py-3 rounded-xl shadow-2xl font-black font-industrial">
             {{ session('message') }}
         </div>
     @endif
     @if (session()->has('error'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             wire:key="err-{{ microtime() }}"
              class="fixed top-20 right-4 z-50 bg-red-600 text-white px-6 py-3 rounded-xl shadow-2xl font-bold font-industrial">
             {{ session('error') }}
         </div>

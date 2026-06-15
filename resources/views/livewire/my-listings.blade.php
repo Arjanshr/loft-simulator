@@ -14,13 +14,14 @@
                             <p class="font-industrial font-black text-white uppercase tracking-wider text-sm">{{ $pigeon->name }}</p>
                             <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest">LV.{{ $pigeon->level }} • {{ $pigeon->type }}</p>
                         </div>
-                        <div class="flex gap-2 items-center">
-                            <input type="number" wire:model="price.{{ $pigeon->id }}" 
-                                   placeholder="PRICE" 
-                                   class="bg-slate-900 border-none rounded-xl p-2 text-xs font-black text-yellow-500 w-24 text-center focus:ring-2 focus:ring-yellow-500 transition-all">
+                        <div class="flex gap-4 items-center">
+                            <div class="text-right">
+                                <span class="block text-[8px] font-black text-slate-500 uppercase">Valuation</span>
+                                <span class="text-sm font-industrial font-black text-yellow-500">{{ number_format($pigeon->fixed_price) }}💰</span>
+                            </div>
                             <button wire:click="listPigeon({{ $pigeon->id }})" 
-                                    class="bg-yellow-500 text-black font-black p-2 rounded-xl hover:bg-yellow-400 transition shadow-lg shadow-yellow-500/10">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                    class="bg-yellow-500 text-black font-black px-4 py-2 rounded-xl hover:bg-yellow-400 transition shadow-lg shadow-yellow-500/10 text-[10px] uppercase tracking-tighter italic">
+                                LIST ASSET
                             </button>
                         </div>
                     </div>

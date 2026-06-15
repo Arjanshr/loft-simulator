@@ -10,7 +10,11 @@ This document serves as the master record for all game mechanics, processes, and
 *   **Pigeons:** Each pigeon has stats, a level (max 100), and aesthetic attributes.
     *   **Leveling:** Training milestone: Total stats must reach `level * 30` to advance. Leveling up rewards: `100 * level` coins.
     *   **Renaming:** You can rename your pigeons from the Pigeon Manager.
-    *   **Attributes:** Speed, Endurance, Navigation, Temperament (trainable), and 7 Aesthetic sub-attributes (Eyes, Beak, Legs, Feather Quality, Pattern, Color, Purity).
+    *   **Intelligence:** A critical stat that influences racing performance and training efficiency.
+    *   **Loyalty (Future Mechanic):** Represents a pigeon's bond to its current loft.
+        *   **Homing Instinct:** In the real world, pigeons always want to return to their original loft.
+        *   **Relocation:** New pigeons purchased from the market start with low loyalty to their new loft, making it difficult for them to "get home" (complete races) initially until their loyalty is built up.
+    *   **Attributes:** Speed, Endurance, Navigation, Temperament, Intelligence (trainable), and 7 Aesthetic sub-attributes (Eyes, Beak, Legs, Feather Quality, Pattern, Color, Purity).
     *   **Beauty Score:** Calculated as the average of the 7 aesthetic sub-attributes.
 *   **Energy:**
     *   Passive recovery: Pigeons in `status: idle` recover 5% energy per hour (processed hourly).

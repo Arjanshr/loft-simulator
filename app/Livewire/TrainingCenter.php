@@ -49,7 +49,7 @@ class TrainingCenter extends Component
 
                     $statsToTrain = $type === 'flight' 
                         ? ['endurance', 'temperament', 'loyalty'] 
-                        : ['speed', 'navigation'];
+                        : ['speed', 'navigation', 'loyalty'];
                     
                     $anyStatTrained = false;
                     $statToForce = $statsToTrain[array_rand($statsToTrain)];
@@ -73,6 +73,24 @@ class TrainingCenter extends Component
 
                     if ($anyStatTrained) {
                         $pigeon->decrement('energy', $energyCost);
+
+                        // Lost Bird Mechanic: Only for Flight/Distance
+                        if ($pigeon->loyalty < 20) {
+                            $lostChance = (20 - $pigeon->loyalty) * 1.5;
+                            if (rand(1, 100) <= $lostChance) {
+                                $randomLoft = \App\Models\Loft::where('id', '!=', $userLoft->id)->inRandomOrder()->first();
+                                if ($randomLoft) {
+                                    $pigeon->update([
+                                        'status' => 'lost',
+                                        'lost_at' => now(),
+                                        'stray_at_loft_id' => $randomLoft->id
+                                    ]);
+                                    (new \App\Services\ActivityService())->log($userLoft, "ALERT: {$pigeon->name} got lost during training and was last seen flying toward another sector!");
+                                    $this->selectedPigeonIds = array_diff($this->selectedPigeonIds, [$pigeon->id]);
+                                    session()->flash('error', "CRITICAL: {$pigeon->name} has gone missing during the training exercise!");
+                                }
+                            }
+                        }
                     } else {
                         session()->flash('error', "Some pigeons have reached their Lv.{$pigeon->level} training limit!");
                     }
@@ -186,7 +204,7 @@ class TrainingCenter extends Component
     public function render()
     {
         $userLoft = Auth::user()->loft;
-        $pigeons = $userLoft->pigeons()->get();
+        $pigeons = $userLoft->pigeons()->where('status', '!=', 'lost')->get();
         $selectedPigeons = $userLoft->pigeons()->whereIn('id', $this->selectedPigeonIds)->get();
         
         $totalCost = $selectedPigeons->sum(fn($p) => 100 + ($p->beauty * 10));

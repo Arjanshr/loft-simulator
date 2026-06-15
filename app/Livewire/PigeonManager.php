@@ -52,7 +52,7 @@ class PigeonManager extends Component
     public function render()
     {
         return view('livewire.pigeon-manager', [
-            'pigeons' => Auth::user()->loft?->pigeons ?? collect(),
+            'pigeons' => Auth::user()->loft?->pigeons()->where('status', '!=', 'lost')->get() ?? collect(),
         ]);
     }
 }

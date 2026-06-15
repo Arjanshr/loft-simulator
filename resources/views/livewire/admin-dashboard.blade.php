@@ -1,6 +1,7 @@
 <div class="space-y-12">
     @if (session()->has('message'))
         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+             wire:key="msg-{{ microtime() }}"
              class="fixed top-20 right-4 z-50 bg-yellow-500 text-black px-6 py-3 rounded-xl shadow-2xl font-black font-industrial">
             {{ session('message') }}
         </div>
@@ -68,6 +69,10 @@
                         <button wire:click="runEnergyRecovery" 
                                 class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-industrial font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 uppercase italic tracking-widest col-span-1 md:col-span-2">
                             Recover Vitality Protocol
+                        </button>
+                        <button wire:click="runProcessLostBirds" 
+                                class="w-full py-4 bg-purple-600 hover:bg-purple-500 text-white font-industrial font-black text-sm rounded-2xl transition-all shadow-xl active:scale-95 uppercase italic tracking-widest col-span-1 md:col-span-2">
+                            Process Lost Birds
                         </button>
                     </div>
                 </div>

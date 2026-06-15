@@ -37,12 +37,15 @@ class Pigeon extends Model
         'last_trained_at',
         'loyalty',
         'intelligence',
+        'stray_at_loft_id',
+        'lost_at',
     ];
 
     protected $casts = [
         'last_trained_at' => 'datetime',
         'birth_at' => 'datetime',
         'hatch_at' => 'datetime',
+        'lost_at' => 'datetime',
     ];
 
     /**
@@ -62,7 +65,22 @@ class Pigeon extends Model
         // Score = (Stats) + (Beauty * Multiplier)
         return $this->speed + $this->endurance + $this->navigation + $this->temperament + ($this->beauty * 2);
     }
-protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute'];
+protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute', 'fixed_price'];
+
+/**
+ * Get the fixed market price for this pigeon.
+ */
+public function getFixedPriceAttribute(): int
+{
+    $rarityMultiplier = match(strtolower($this->rarity)) {
+        'legendary' => 5.0,
+        'rare' => 2.0,
+        default => 1.0,
+    };
+    
+    $basePrice = ($this->level * 200) + ($this->total_score * 5);
+    return (int) round($basePrice * $rarityMultiplier);
+}
 
 /**
  * Get the income generated per minute by this pigeon.

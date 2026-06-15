@@ -61,6 +61,13 @@ class AdminDashboard extends Component
         session()->flash('message', 'Energy recovery sequence executed successfully.');
     }
 
+    public function runProcessLostBirds()
+    {
+        \Illuminate\Support\Facades\Log::info('Admin Process Lost Birds Triggered');
+        Artisan::call('pigeons:process-lost');
+        session()->flash('message', 'Lost bird processing executed successfully.');
+    }
+
     public function render()
     {
         return view('livewire.admin-dashboard')->layout('layouts.app', ['header' => 'Admin Panel']);

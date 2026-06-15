@@ -39,6 +39,11 @@ class MarketplaceService
             return false; // Can't buy own pigeon
         }
 
+        // Expiry check
+        if ($listing->expires_at->isPast()) {
+            return false;
+        }
+
         // Level Constraint: Cannot purchase pigeons more than 1 level higher than loft level
         if ($pigeon->level > ($buyerLoft->level + 1)) {
             return false;
@@ -57,6 +62,7 @@ class MarketplaceService
             $pigeon->update([
                 'loft_id' => $buyerLoft->id,
                 'status' => 'idle',
+                'loyalty' => 0,
             ]);
 
             // 3. Close listing
