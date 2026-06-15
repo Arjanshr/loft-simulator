@@ -11,7 +11,7 @@ class PigeonService
 {
     public function instantRest(Pigeon $pigeon): bool
     {
-        $cost = 50;
+        $cost = config('game.training.rest_cost', 50);
 
         if ($pigeon->loft->coins < $cost || $pigeon->energy >= 100) {
             return false;
@@ -36,25 +36,27 @@ class PigeonService
         // Current level of the attribute
         $currentValue = $pigeon->{$attribute};
 
-        // Exponential cost calculation: base cost * (1.1 ^ level)
-        // Ensure we handle rounding to int
-        $cost = (int) (50 * pow(1.15, $currentValue));
+        // Exponential cost calculation: base cost * (exponent ^ level)
+        $baseCost = config('game.aesthetics.base_cost', 50);
+        $exponent = config('game.aesthetics.cost_exponent', 1.15);
+        $cost = (int) ($baseCost * pow($exponent, $currentValue));
 
         if ($pigeon->loft->coins < $cost) {
             return false;
         }
 
-        if ($currentValue >= 100) {
+        $maxValue = config('game.aesthetics.max_value', 100);
+        if ($currentValue >= $maxValue) {
             return false;
         }
 
         // Fractional growth: 0.5 to 1.0
         $gain = rand(5, 10) / 10;
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon, $attribute, $cost, $gain) {
+        \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon, $attribute, $cost, $gain, $maxValue) {
             $pigeon->loft->decrement('coins', $cost);
             $pigeon->update([
-                $attribute => min(100, $pigeon->{$attribute} + $gain),
+                $attribute => min($maxValue, $pigeon->{$attribute} + $gain),
             ]);
         });
 
@@ -104,12 +106,14 @@ class PigeonService
         }
 
         // Logic constraint: Pigeon level can't exceed Loft level
-        // Pigeon can only have max 10 points per level
-        if ($pigeon->{$stat} >= ($pigeon->level * 10)) {
+        // Pigeon can only have max X points per level
+        $multiplier = config('game.training.stat_threshold_multiplier', 10);
+        if ($pigeon->{$stat} >= ($pigeon->level * $multiplier)) {
             return false;
         }
 
-        if ($pigeon->energy < 20) {
+        $energyCost = config('game.training.energy_cost', 20);
+        if ($pigeon->energy < $energyCost) {
             return false;
         }
 
@@ -121,8 +125,8 @@ class PigeonService
         $gain = rand(1, 3);
         
         $pigeon->update([
-            $stat => min($pigeon->level * 10, $pigeon->{$stat} + $gain),
-            'energy' => max(0, $pigeon->energy - 20),
+            $stat => min($pigeon->level * $multiplier, $pigeon->{$stat} + $gain),
+            'energy' => max(0, $pigeon->energy - $energyCost),
             'last_trained_at' => now(),
         ]);
 
@@ -132,21 +136,24 @@ class PigeonService
     }
 public function levelUpPigeon(Pigeon $pigeon): bool
 {
-    if ($pigeon->level >= 100) {
+    $maxLevel = config('game.pigeons.max_level', 100);
+    if ($pigeon->level >= $maxLevel) {
         return false;
     }
 
-    // Milestone: Total stat points must be at least level * 30 to advance
+    // Milestone: Total stat points must be at least level * X to advance
     $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
-    $requiredStats = $pigeon->level * 30;
+    $multiplier = config('game.pigeons.level_up_stat_multiplier', 30);
+    $requiredStats = $pigeon->level * $multiplier;
 
     if ($totalStats < $requiredStats) {
         return false;
     }
 
-    \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon) {
+    $rewardBase = config('game.pigeons.level_up_reward_base', 100);
+    \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon, $rewardBase) {
         $pigeon->increment('level');
-        $pigeon->loft->increment('coins', 100 * $pigeon->level);
+        $pigeon->loft->increment('coins', $rewardBase * $pigeon->level);
         (new ActivityService())->log($pigeon->loft, "{$pigeon->name} reached Level {$pigeon->level}!");
     });
 

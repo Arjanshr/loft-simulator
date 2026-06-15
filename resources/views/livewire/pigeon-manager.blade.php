@@ -13,50 +13,52 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
         @foreach($pigeons as $pigeon)
             <div class="group relative bg-slate-950 rounded-[2rem] border-2 border-slate-800 hover:border-yellow-500/50 transition-all duration-500 overflow-hidden shadow-2xl">
                 <!-- ID Card Header -->
-                <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-6 border-b border-slate-800">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-4 md:p-6 border-b border-slate-800">
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+                        <div class="flex-1 w-full sm:w-auto">
                             <!-- Name & Rank -->
                             <div class="flex items-center gap-3 mb-2">
-                                <span class="bg-yellow-500 text-black font-industrial font-black text-xs px-2 py-0.5 rounded italic">LV.{{ $pigeon->level }}</span>
+                                <span class="bg-yellow-500 text-black font-industrial font-black text-[10px] md:text-xs px-2 py-0.5 rounded italic">LV.{{ $pigeon->level }}</span>
                                 <input type="text" wire:model.lazy="newName.{{ $pigeon->id }}" 
                                        wire:keydown.enter="updateName({{ $pigeon->id }})"
                                        placeholder="{{ $pigeon->name }}" 
-                                       class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/20">
+                                       class="bg-transparent border-none p-0 text-xl md:text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/20">
                             </div>
                             
                             <div class="flex flex-wrap gap-2 mt-1">
-                                <span class="text-[10px] font-black uppercase tracking-widest border border-slate-700 text-slate-500 px-2 py-1 rounded-full">{{ $pigeon->type }}</span>
-                                <span class="text-[10px] font-black uppercase tracking-widest border border-yellow-500/30 text-yellow-500 px-2 py-1 rounded-full">{{ $pigeon->rarity }}</span>
+                                <span class="text-[8px] md:text-[10px] font-black uppercase tracking-widest border border-slate-700 text-slate-500 px-2 py-1 rounded-full">{{ $pigeon->type }}</span>
+                                <span class="text-[8px] md:text-[10px] font-black uppercase tracking-widest border border-yellow-500/30 text-yellow-500 px-2 py-1 rounded-full">{{ $pigeon->rarity }}</span>
                                 @if($pigeon->income_per_minute > 0)
-                                    <span class="text-[10px] font-black uppercase tracking-widest bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded-full">+{{ $pigeon->income_per_minute }} 💰/MIN</span>
+                                    <span class="text-[8px] md:text-[10px] font-black uppercase tracking-widest bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded-full">+{{ $pigeon->income_per_minute }} 💰/MIN</span>
                                 @endif
-                                <span class="text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-pink-500/10 text-pink-400 border-pink-500/20' }} px-2 py-1 border rounded-full">
-                            ...
+                                <span class="text-[8px] md:text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 'bg-pink-500/10 text-pink-400 border-pink-500/20' }} px-2 py-1 border rounded-full">
                                     {{ $pigeon->gender == 'male' ? '♂ MALE' : '♀ FEMALE' }}
                                 </span>
                             </div>
                         </div>
 
                         <!-- Energy Meter -->
-                        <div class="flex flex-col items-end gap-1">
-                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-tighter">Vitality</span>
-                            <div class="relative w-12 h-12 flex items-center justify-center">
-                                <svg class="w-12 h-12 transform -rotate-90">
-                                    <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="4" fill="transparent" class="text-slate-800" />
-                                    <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="4" fill="transparent"
-                                            stroke-dasharray="125.6"
-                                            stroke-dashoffset="{{ 125.6 * (1 - ($pigeon->energy / 100)) }}"
+                        <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start w-full sm:w-auto gap-4 sm:gap-1 bg-black/40 sm:bg-transparent p-3 sm:p-0 rounded-2xl border border-slate-800 sm:border-none">
+                            <div class="flex flex-col sm:items-end">
+                                <span class="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-tighter">Vitality</span>
+                                <span class="text-white font-black text-sm sm:hidden">{{ $pigeon->energy }}%</span>
+                            </div>
+                            <div class="relative w-10 h-10 md:w-12 md:h-12 flex items-center justify-center">
+                                <svg class="w-10 h-10 md:w-12 md:h-12 transform -rotate-90">
+                                    <circle cx="20" cy="20" r="18" md:cx="24" md:cy="24" md:r="20" stroke="currentColor" stroke-width="3" md:stroke-width="4" fill="transparent" class="text-slate-800" />
+                                    <circle cx="20" cy="20" r="18" md:cx="24" md:cy="24" md:r="20" stroke="currentColor" stroke-width="3" md:stroke-width="4" fill="transparent"
+                                            stroke-dasharray="113.1" md:stroke-dasharray="125.6"
+                                            stroke-dashoffset="{{ 113.1 * (1 - ($pigeon->energy / 100)) }}"
                                             class="{{ $pigeon->energy > 30 ? 'text-yellow-500' : 'text-red-500' }} transition-all duration-1000" />
                                 </svg>
-                                <span class="absolute text-[10px] font-black text-white">{{ $pigeon->energy }}%</span>
+                                <span class="absolute text-[8px] md:text-[10px] font-black text-white">{{ $pigeon->energy }}%</span>
                             </div>
                             @if($pigeon->energy < 100)
-                                <button wire:click="rest({{ $pigeon->id }})" class="mt-2 text-[8px] font-black bg-slate-800 hover:bg-yellow-500 hover:text-black text-slate-400 px-2 py-0.5 rounded transition">
+                                <button wire:click="rest({{ $pigeon->id }})" class="text-[8px] font-black bg-slate-800 hover:bg-yellow-500 hover:text-black text-slate-400 px-2 py-1 rounded transition whitespace-nowrap">
                                     RESTORE (50💰)
                                 </button>
                             @endif
@@ -64,7 +66,7 @@
                     </div>
                 </div>
 
-                <div class="p-6">
+                <div class="p-4 md:p-6">
                     <!-- Lifecycle Ribbon -->
                     @php
                         $ageDays = $pigeon->birth_at ? $pigeon->birth_at->diffInDays(now()) : 0;
@@ -80,7 +82,7 @@
                     
                     <div class="flex items-center gap-4 mb-6 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
                         <div class="flex-1">
-                            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+                            <div class="flex justify-between text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
                                 <span>Lifecycle: {{ $status }}</span>
                                 <span>{{ $totalStats }} / {{ $required }} EXP</span>
                             </div>
@@ -90,22 +92,22 @@
                         </div>
                         @if($totalStats >= $required && $pigeon->level < 100)
                             <button wire:click="levelUp({{ $pigeon->id }})" 
-                                    class="bg-yellow-500 text-black font-industrial font-black text-[10px] px-4 py-2 rounded-xl hover:scale-105 transition shadow-lg shadow-yellow-500/20 uppercase tracking-tighter">
+                                    class="bg-yellow-500 text-black font-industrial font-black text-[9px] md:text-[10px] px-3 md:px-4 py-2 rounded-xl hover:scale-105 transition shadow-lg shadow-yellow-500/20 uppercase tracking-tighter">
                                 Rank Up
                             </button>
                         @endif
                     </div>
 
                     <!-- Grid: Stats & Aesthetics -->
-                    <div class="grid grid-cols-2 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                         <!-- Left: Core Performance -->
                         <div class="space-y-4">
-                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Core Performance</h4>
+                            <h4 class="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Core Performance</h4>
                             @foreach(['speed' => 'RUN', 'endurance' => 'POW', 'navigation' => 'DIR', 'temperament' => 'MND'] as $stat => $label)
                                 <div class="relative">
                                     <div class="flex justify-between items-end mb-1">
-                                        <span class="text-[9px] font-black text-slate-400">{{ $label }}</span>
-                                        <span class="text-xs font-black text-white">{{ $pigeon->$stat }} <span class="text-yellow-500 text-[10px] ml-1">{{ $pigeon->stat_grades[$stat] }}</span></span>
+                                        <span class="text-[8px] md:text-[9px] font-black text-slate-400">{{ $label }}</span>
+                                        <span class="text-[10px] md:text-xs font-black text-white">{{ $pigeon->$stat }} <span class="text-yellow-500 text-[9px] md:text-[10px] ml-1">{{ $pigeon->stat_grades[$stat] }}</span></span>
                                     </div>
                                     <div class="flex gap-1">
                                         <div class="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
@@ -118,13 +120,13 @@
 
                         <!-- Right: Aesthetics -->
                         <div class="space-y-3 bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 text-center">Visual Grade: {{ $pigeon->stat_grades['beauty'] }}</h4>
+                            <h4 class="text-[9px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 text-center">Visual Grade: {{ $pigeon->stat_grades['beauty'] }}</h4>
                             <div class="grid grid-cols-2 gap-x-4 gap-y-2">
                                 @foreach(['eyes' => '👁️', 'beak' => '👃', 'legs' => '🦵', 'feather_quality' => '✨', 'pattern' => '🎨', 'color' => '🌈', 'purity' => '💎'] as $stat => $icon)
                                     <div class="flex flex-col">
                                         <div class="flex justify-between items-center">
-                                            <span class="text-[8px] text-slate-500 uppercase font-black truncate">{{ str_replace('_', ' ', $stat) }}</span>
-                                            <span class="text-[9px] text-white font-bold">{{ number_format($pigeon->$stat, 1) }}</span>
+                                            <span class="text-[7px] md:text-[8px] text-slate-500 uppercase font-black truncate">{{ str_replace('_', ' ', $stat) }}</span>
+                                            <span class="text-[8px] md:text-[9px] text-white font-bold">{{ number_format($pigeon->$stat, 1) }}</span>
                                         </div>
                                     </div>
                                 @endforeach
@@ -134,9 +136,9 @@
                 </div>
 
                 <!-- Footer Info -->
-                <div class="px-6 py-3 bg-black/40 flex justify-between items-center">
-                    <span class="text-[8px] font-black text-slate-600 uppercase tracking-widest italic">Operational Status: {{ strtoupper($pigeon->status) }}</span>
-                    <span class="text-[8px] font-black text-slate-600 uppercase tracking-widest italic">Age: {{ $ageDays }} Days</span>
+                <div class="px-6 py-2 md:py-3 bg-black/40 flex justify-between items-center">
+                    <span class="text-[7px] md:text-[8px] font-black text-slate-600 uppercase tracking-widest italic">Status: {{ strtoupper($pigeon->status) }}</span>
+                    <span class="text-[7px] md:text-[8px] font-black text-slate-600 uppercase tracking-widest italic">Age: {{ $ageDays }} Days</span>
                 </div>
             </div>
         @endforeach

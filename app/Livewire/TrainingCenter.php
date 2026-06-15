@@ -11,7 +11,12 @@ class TrainingCenter extends Component
 {
     public $selectedPigeonIds = [];
     public $statGains = [];
-    public $restCost = 50;
+    public $restCost;
+
+    public function mount()
+    {
+        $this->restCost = config('game.training.rest_cost', 50);
+    }
 
     public function train($type)
     {
@@ -23,79 +28,117 @@ class TrainingCenter extends Component
         $userLoft = Auth::user()->loft;
         $this->statGains = [];
         $points = rand(1, 5);
-        $energyCost = 20;
+        $energyCost = config('game.training.energy_cost', 20);
+        $thresholdMultiplier = config('game.training.stat_threshold_multiplier', 10);
 
         foreach ($this->selectedPigeonIds as $pigeonId) {
             $pigeon = Pigeon::findOrFail($pigeonId);
 
             if ((int)$pigeon->loft_id !== (int)$userLoft->id) continue;
 
-            $intelligenceBonus = $pigeon->intelligence / 20;
-            $maxGain = $points + $intelligenceBonus + ($pigeon->level * 1.5);
+            $intelligenceBonus = $pigeon->intelligence / config('game.training.intelligence_divisor', 20);
+            $maxGain = $points + $intelligenceBonus + ($pigeon->level * config('game.training.level_gain_multiplier', 1.5));
             $minGain = (int)$pigeon->level;
             
-            $cost = 100 + ($pigeon->beauty * 10);
+            $cost = config('game.training.base_coin_cost', 100) + ($pigeon->beauty * config('game.training.beauty_multiplier', 10));
 
             switch ($type) {
                 case 'flight':
                 case 'distance':
                     if ($pigeon->energy < $energyCost) continue 2;
-                    $pigeon->decrement('energy', $energyCost);
 
-                    if ($type === 'flight') {
-                        $statsToTrain = ['endurance', 'temperament', 'loyalty'];
-                        $statToForce = $statsToTrain[array_rand($statsToTrain)];
+                    $statsToTrain = $type === 'flight' 
+                        ? ['endurance', 'temperament', 'loyalty'] 
+                        : ['speed', 'navigation'];
+                    
+                    $anyStatTrained = false;
+                    $statToForce = $statsToTrain[array_rand($statsToTrain)];
 
-                        foreach ($statsToTrain as $stat) {
-                            if ($stat === $statToForce || rand(0, 1)) {
-                                $gain = rand((int)$minGain, (int)ceil($maxGain));
-                                $pigeon->increment($stat, $gain);
-                                $this->statGains[$pigeonId][$stat] = $gain;
-                            }
-                        }
-                    } else {
-                        $statsToTrain = ['speed', 'navigation'];
-                        $statToForce = $statsToTrain[array_rand($statsToTrain)];
+                    foreach ($statsToTrain as $stat) {
+                        $limit = $pigeon->level * $thresholdMultiplier;
+                        if ($pigeon->{$stat} >= $limit) continue;
 
-                        foreach ($statsToTrain as $stat) {
-                            if ($stat === $statToForce || rand(0, 1)) {
-                                $gain = rand((int)$minGain, (int)ceil($maxGain));
-                                $pigeon->increment($stat, $gain);
-                                $this->statGains[$pigeonId][$stat] = $gain;
+                        if ($stat === $statToForce || rand(0, 1)) {
+                            $gain = rand((int)$minGain, (int)ceil($maxGain));
+                            $newVal = min($limit, $pigeon->{$stat} + $gain);
+                            $actualGain = $newVal - $pigeon->{$stat};
+                            
+                            if ($actualGain > 0) {
+                                $pigeon->increment($stat, $actualGain);
+                                $this->statGains[$pigeonId][$stat] = $actualGain;
+                                $anyStatTrained = true;
                             }
                         }
                     }
+
+                    if ($anyStatTrained) {
+                        $pigeon->decrement('energy', $energyCost);
+                    } else {
+                        session()->flash('error', "Some pigeons have reached their Lv.{$pigeon->level} training limit!");
+                    }
                     break;
+
                 case 'grooming':
                 case 'physical_care':
                 case 'gene_therapy':
                     if ($userLoft->coins < $cost) continue 2;
-                    $userLoft->decrement('coins', $cost);
                     
                     if ($type === 'grooming') {
                         $totalPoints = rand((int)$minGain, (int)ceil($maxGain));
                         $attributes = ['feather_quality', 'color', 'pattern'];
+                        $anyAttrTrained = false;
+
                         foreach($attributes as $attr) {
+                            $limit = $pigeon->level * $thresholdMultiplier;
+                            if ($pigeon->{$attr} >= $limit) continue;
+
                             $attrGains = 0;
                             for ($i = 0; $i < $totalPoints; $i++) {
                                 if($attributes[array_rand($attributes)] == $attr) {
                                     $attrGains++;
                                 }
                             }
+
                             if($attrGains > 0) {
-                                $pigeon->increment($attr, $attrGains);
-                                $this->statGains[$pigeonId][$attr] = $attrGains;
+                                $newVal = min($limit, $pigeon->{$attr} + $attrGains);
+                                $actualGain = $newVal - $pigeon->{$attr};
+                                if ($actualGain > 0) {
+                                    $pigeon->increment($attr, $actualGain);
+                                    $this->statGains[$pigeonId][$attr] = $actualGain;
+                                    $anyAttrTrained = true;
+                                }
                             }
                         }
+                        if ($anyAttrTrained) $userLoft->decrement('coins', $cost);
                     } elseif ($type === 'physical_care') {
-                        $attr = ['eyes', 'beak', 'legs'][rand(0,2)];
-                        $gain = rand((int)$minGain, (int)ceil($maxGain));
-                        $pigeon->increment($attr, $gain);
-                        $this->statGains[$pigeonId][$attr] = $gain;
+                        $attrPool = ['eyes', 'beak', 'legs'];
+                        $attr = $attrPool[rand(0,2)];
+                        $limit = $pigeon->level * $thresholdMultiplier;
+                        
+                        if ($pigeon->{$attr} < $limit) {
+                            $gain = rand((int)$minGain, (int)ceil($maxGain));
+                            $newVal = min($limit, $pigeon->{$attr} + $gain);
+                            $actualGain = $newVal - $pigeon->{$attr};
+                            
+                            if ($actualGain > 0) {
+                                $pigeon->increment($attr, $actualGain);
+                                $this->statGains[$pigeonId][$attr] = $actualGain;
+                                $userLoft->decrement('coins', $cost);
+                            }
+                        }
                     } else {
-                        $gain = rand((int)$minGain, (int)ceil($maxGain));
-                        $pigeon->increment('purity', $gain);
-                        $this->statGains[$pigeonId]['purity'] = $gain;
+                        $limit = $pigeon->level * $thresholdMultiplier;
+                        if ($pigeon->purity < $limit) {
+                            $gain = rand((int)$minGain, (int)ceil($maxGain));
+                            $newVal = min($limit, $pigeon->purity + $gain);
+                            $actualGain = $newVal - $pigeon->purity;
+
+                            if ($actualGain > 0) {
+                                $pigeon->increment('purity', $actualGain);
+                                $this->statGains[$pigeonId]['purity'] = $actualGain;
+                                $userLoft->decrement('coins', $cost);
+                            }
+                        }
                     }
                     break;
             }
@@ -104,6 +147,25 @@ class TrainingCenter extends Component
 
         $this->dispatch('loft-updated');
         session()->flash('message', 'Batch training complete!');
+    }
+
+    public function levelUp($pigeonId, PigeonService $pigeonService)
+    {
+        $userLoft = Auth::user()->loft;
+        $pigeon = $userLoft->pigeons()->findOrFail($pigeonId);
+
+        // Constraint: Pigeon level cannot exceed Loft level
+        if ($pigeon->level >= $userLoft->level) {
+            session()->flash('error', "Upgrade your Loft to level up {$pigeon->name} further!");
+            return;
+        }
+
+        if ($pigeonService->levelUpPigeon($pigeon)) {
+            $this->dispatch('loft-updated');
+            session()->flash('message', "{$pigeon->name} leveled up to Lv.{$pigeon->level}!");
+        } else {
+            session()->flash('error', "Not enough training stats to level up.");
+        }
     }
 
     public function restAll(PigeonService $pigeonService)

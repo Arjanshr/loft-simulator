@@ -33,7 +33,7 @@
         <div class="flex h-screen w-full overflow-hidden" x-data="{ sidebarOpen: false }">
             
             <!-- Sidebar -->
-            <aside class="fixed inset-y-0 left-0 z-50 w-20 lg:w-64 bg-slate-950 border-r border-yellow-500/20 transform lg:translate-x-0 transition-transform duration-300"
+            <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-950 border-r border-yellow-500/20 transform lg:translate-x-0 transition-transform duration-300 shadow-2xl"
                    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
                 <livewire:layout.navigation />
             </aside>
@@ -41,11 +41,12 @@
             <!-- Main Content -->
             <div class="flex-1 lg:ml-64 flex flex-col h-screen overflow-hidden">
                 <!-- Top Header Bar -->
-                <header class="h-16 flex items-center justify-between px-6 glass-panel border-b border-yellow-500/20 z-40">
+                <header class="h-16 flex items-center justify-between px-4 md:px-6 glass-panel border-b border-yellow-500/20 z-40">
                     <div class="flex items-center gap-4 lg:hidden">
-                        <button @click="sidebarOpen = !sidebarOpen" class="text-yellow-500 p-2">
+                        <button @click="sidebarOpen = !sidebarOpen" class="text-yellow-500 p-2 hover:bg-white/5 rounded-lg transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
                         </button>
+                        <span class="font-industrial font-black text-yellow-500 tracking-tighter text-sm italic">LOFT MANAGER</span>
                     </div>
                     
                     <div class="hidden lg:block">
@@ -56,17 +57,14 @@
                         @endif
                     </div>
 
-                    <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-3 md:gap-6">
                         @if(Auth::user()->loft)
-                            <!-- This block will now refresh automatically because it's part of the navigation component if moved there, 
-                                 or we can keep it here and use a small Livewire component for the Resource Bar. 
-                                 Let's create a dedicated ResourceBar component for the cleanest implementation. -->
                             <livewire:resource-bar />
                         @endif
                         
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-bold uppercase tracking-tighter text-slate-500">{{ Auth::user()->name }}</span>
-                            <div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center font-black text-black text-xs">
+                        <div class="flex items-center gap-2 md:gap-3">
+                            <span class="hidden sm:block text-[10px] font-black uppercase tracking-tighter text-slate-500">{{ Auth::user()->name }}</span>
+                            <div class="w-8 h-8 rounded-full bg-yellow-500 flex items-center justify-center font-black text-black text-xs shadow-lg shadow-yellow-500/20">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
                         </div>
@@ -74,7 +72,7 @@
                 </header>
 
                 <!-- Scrollable Viewport -->
-                <main class="flex-1 overflow-y-auto custom-scrollbar p-6">
+                <main class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8">
                     {{ $slot }}
                 </main>
             </div>

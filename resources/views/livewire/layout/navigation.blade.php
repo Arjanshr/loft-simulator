@@ -27,14 +27,14 @@ new class extends Component
 
 <div class="flex flex-col h-full" wire:poll.60s="refreshResources">
     <!-- Brand Logo -->
-    <div class="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-yellow-500/10">
+    <div class="h-16 flex items-center px-6 border-b border-yellow-500/10">
         <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3">
             <span class="text-2xl">🕊️</span>
-            <span class="hidden lg:block font-industrial font-black text-yellow-500 tracking-tighter text-lg italic">ELITE LOFT</span>
+            <span class="font-industrial font-black text-yellow-500 tracking-tighter text-lg italic uppercase">LOFT MANAGER</span>
         </a>
     </div>
 
-    <!-- Resource Bar (Mobile/Collapsed View integration) -->
+    <!-- Resource Bar (Mobile View integration) -->
     <div class="lg:hidden px-4 pt-4">
         @if(auth()->user()->loft)
             <div class="flex flex-col items-center bg-black/40 py-2 rounded-xl border border-yellow-500/30">
@@ -45,7 +45,7 @@ new class extends Component
     </div>
 
     <!-- Nav Links -->
-    <nav class="flex-1 px-2 lg:px-4 py-6 space-y-2">
+    <nav class="flex-1 px-4 py-6 space-y-1">
         <x-v2-nav-link :href="route('dashboard')" icon="m19 11-7-7-7 7m14 0v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8m14 0L12 5.41 5 11" :active="request()->routeIs('dashboard')">
             Dashboard
         </x-v2-nav-link>
@@ -93,9 +93,9 @@ new class extends Component
 
     <!-- User Section footer -->
     <div class="p-4 border-t border-yellow-500/10">
-        <button wire:click="logout" class="w-full flex items-center justify-center lg:justify-start gap-4 px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all group">
+        <button wire:click="logout" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-red-500/70 hover:bg-red-500/10 hover:text-red-500 transition-all group">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            <span class="hidden lg:block font-bold text-sm">Logout</span>
+            <span class="font-bold text-sm">Logout</span>
         </button>
     </div>
 </div>
