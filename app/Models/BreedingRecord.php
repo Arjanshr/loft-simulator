@@ -17,4 +17,14 @@ class BreedingRecord extends Model
     {
         return $this->belongsTo(Loft::class);
     }
+
+    public function sire(): BelongsTo
+    {
+        return $this->belongsTo(Pigeon::class, 'sire_id');
+    }
+
+    public function dam(): BelongsTo
+    {
+        return $this->belongsTo(Pigeon::class, 'dam_id');
+    }
 }

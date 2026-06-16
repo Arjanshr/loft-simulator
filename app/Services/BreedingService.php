@@ -60,6 +60,12 @@ class BreedingService
         $dam = $record->dam;
         $loft = $record->loft;
 
+        if (!$sire || !$dam) {
+            \Illuminate\Support\Facades\Log::error("Hatch failed: Sire or Dam missing for BreedingRecord {$record->id}");
+            $record->delete();
+            return;
+        }
+
         // Produce 2 chicks
         for ($i = 0; $i < 2; $i++) {
             $stats = $this->calculateInheritedStats($sire, $dam);
