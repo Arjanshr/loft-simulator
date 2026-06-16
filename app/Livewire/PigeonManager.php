@@ -3,11 +3,14 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use App\Services\PigeonService;
 
 class PigeonManager extends Component
 {
+    use WithPagination;
+
     public $newName = [];
 
     public function updateName($pigeonId)
@@ -52,7 +55,7 @@ class PigeonManager extends Component
     public function render()
     {
         return view('livewire.pigeon-manager', [
-            'pigeons' => Auth::user()->loft?->pigeons()->where('status', '!=', 'lost')->get() ?? collect(),
+            'pigeons' => Auth::user()->loft?->pigeons()->where('status', '!=', 'lost')->paginate(6) ?? collect(),
         ]);
     }
 }

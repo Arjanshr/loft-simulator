@@ -1,50 +1,58 @@
-<div class="p-6 max-w-7xl mx-auto text-slate-200">
-    <div class="bg-yellow-500 text-black p-8 rounded-3xl shadow-2xl mb-8 flex justify-between items-center">
-        <div>
-            <h1 class="text-4xl font-black">{{ $loft->name }}</h1>
-            <p class="text-black/70 font-bold mt-1">Owner: <span class="text-black">{{ $loft->user->name }}</span> | Level: {{ $loft->level }}</p>
-        </div>
-        <div class="text-center">
-            <div class="text-4xl font-black text-black">🕊️</div>
-            <div class="text-xs uppercase tracking-widest text-black/70 font-bold">Loft</div>
+<div class="p-6 md:p-12 max-w-7xl mx-auto font-sans text-slate-300">
+    <!-- Loft Header -->
+    <div class="bg-[#050a0a] p-10 md:p-12 rounded-[3rem] shadow-2xl mb-12 border-2 border-[#b8860b]/20 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-8 opacity-5 text-8xl font-industrial font-black italic select-none pointer-events-none uppercase text-[#b8860b]">Loft</div>
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-6 relative z-10">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-industrial font-black text-white italic uppercase tracking-tighter mb-3">{{ $loft->name }}</h1>
+                <p class="text-[10px] font-black text-[#b8860b] uppercase tracking-[0.4em] italic">Proprietor: <span class="text-white">{{ $loft->user->name }}</span> | Loft Level: {{ $loft->level }}</p>
+            </div>
+            <div class="text-center bg-black/40 px-8 py-4 rounded-2xl border border-white/5">
+                <div class="text-5xl font-black mb-1">🕊️</div>
+                <div class="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Registered Loft</div>
+            </div>
         </div>
     </div>
 
-    <h2 class="text-2xl font-black text-white mb-6">Pigeon Collection</h2>
+    <!-- Collection Header -->
+    <h2 class="text-2xl md:text-3xl font-industrial font-black text-white mb-10 italic uppercase tracking-widest flex items-center gap-4">
+        <span class="w-8 h-1 bg-[#b8860b] rounded-full"></span> Bird Registry
+    </h2>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @foreach($loft->pigeons as $pigeon)
-            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-700 shadow-sm">
-                <div class="flex justify-between items-start mb-4">
+            <div class="bg-[#050a0a] p-8 rounded-[2rem] border-2 border-[#b8860b]/10 shadow-xl hover:border-[#b8860b]/30 transition-all">
+                <div class="flex justify-between items-start mb-6">
                     <div>
-                        <h3 class="font-bold text-lg text-white">{{ $pigeon->name }} <span class="text-xs text-yellow-500 font-bold ml-1">Lv.{{ $pigeon->level }}</span></h3>
-                        <div class="flex gap-2 mt-1">
-                            <span class="text-[10px] bg-slate-700 px-2 py-0.5 rounded uppercase text-slate-300">{{ $pigeon->type }}</span>
-                            <span class="text-[10px] bg-indigo-500 px-2 py-0.5 rounded uppercase text-white">{{ ucfirst($pigeon->gender) }}</span>
-                            <span class="text-[10px] bg-yellow-600/20 text-yellow-500 px-2 py-0.5 rounded uppercase">{{ $pigeon->rarity }}</span>
+                        <h3 class="font-industrial font-black text-xl text-white italic uppercase tracking-tighter">{{ $pigeon->name }}</h3>
+                        <span class="text-[9px] text-[#b8860b] font-black tracking-widest uppercase italic">LV.{{ $pigeon->level }}</span>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <span class="text-[8px] bg-black/40 px-3 py-1 rounded-full uppercase text-slate-400 font-bold tracking-widest">{{ $pigeon->type }} Strain</span>
+                            <span class="text-[8px] bg-indigo-900/20 px-3 py-1 rounded-full uppercase text-indigo-400 font-bold tracking-widest">{{ ucfirst($pigeon->gender) }}</span>
+                            <span class="text-[8px] bg-[#b8860b]/10 px-3 py-1 rounded-full uppercase text-[#b8860b] font-bold tracking-widest">{{ $pigeon->rarity }} Heritage</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 text-[10px] mb-4">
-                    <div class="bg-slate-800 p-1 rounded text-slate-400">🏃 Spd: <span class="text-white">{{ $pigeon->speed }}</span></div>
-                    <div class="bg-slate-800 p-1 rounded text-slate-400">🔋 End: <span class="text-white">{{ $pigeon->endurance }}</span></div>
-                    <div class="bg-slate-800 p-1 rounded text-slate-400">🧭 Nav: <span class="text-white">{{ $pigeon->navigation }}</span></div>
-                    <div class="bg-slate-800 p-1 rounded text-slate-400">🧘 Temp: <span class="text-white">{{ $pigeon->temperament }}</span></div>
+                <div class="grid grid-cols-2 gap-3 text-[9px] mb-6 font-black uppercase tracking-widest text-slate-500 italic bg-black/30 p-4 rounded-xl border border-white/5">
+                    <div>Speed: <span class="text-white">{{ $pigeon->speed }}</span></div>
+                    <div>Endurance: <span class="text-white">{{ $pigeon->endurance }}</span></div>
+                    <div>Navigation: <span class="text-white">{{ $pigeon->navigation }}</span></div>
+                    <div>Temperament: <span class="text-white">{{ $pigeon->temperament }}</span></div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 text-[9px] mb-4 text-slate-300">
+                <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-[8px] mb-6 text-slate-400 italic">
                     <div>👁️ Eyes: {{ $pigeon->eyes }}</div>
                     <div>👃 Beak: {{ $pigeon->beak }}</div>
                     <div>🦵 Legs: {{ $pigeon->legs }}</div>
-                    <div>✨ Qual: {{ $pigeon->feather_quality }}</div>
-                    <div>🎨 Patt: {{ $pigeon->pattern }}</div>
+                    <div>✨ Feathering: {{ $pigeon->feather_quality }}</div>
+                    <div>🎨 Pattern: {{ $pigeon->pattern }}</div>
                     <div>🌈 Color: {{ $pigeon->color }}</div>
-                    <div>💎 Purity: {{ $pigeon->purity }}</div>
+                    <div>💎 Bloodline: {{ $pigeon->purity }}</div>
                 </div>
 
-                <div class="pt-4 border-t border-slate-700 text-xs font-bold text-yellow-500">
-                    Beauty Score: {{ number_format($pigeon->beauty, 2) }}
+                <div class="pt-6 border-t border-white/5 text-[10px] font-black text-[#b8860b] uppercase tracking-[0.2em] italic">
+                    Appearance Score: {{ number_format($pigeon->beauty, 2) }}
                 </div>
             </div>
         @endforeach

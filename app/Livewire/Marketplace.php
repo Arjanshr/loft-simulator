@@ -40,11 +40,10 @@ class Marketplace extends Component
                 });
             })
             ->with(['pigeon', 'loft'])
-            ->latest()
-            ->limit(30);
+            ->latest();
 
         return view('livewire.marketplace', [
-            'listings' => $query->get(),
+            'listings' => $query->limit(30)->get(),
         ])->layout('layouts.app', ['header' => 'Auction House']);
     }
 }
