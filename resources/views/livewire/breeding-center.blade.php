@@ -43,25 +43,48 @@
                     <div class="flex-1 h-[1px] bg-slate-800"></div>
                 </div>
 
-                <form wire:submit="createPair" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-end bg-slate-900 p-6 md:p-8 rounded-[2rem] border border-slate-800 shadow-xl">
-                    <div class="space-y-2">
-                        <label class="block text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 italic">Sire Selection (♂)</label>
-                        <select wire:model="maleId" class="w-full bg-black/50 border-2 border-slate-800 rounded-2xl p-3 md:p-4 text-white font-bold text-xs md:text-base focus:border-yellow-500 transition-all appearance-none cursor-pointer">
-                            <option value="">SELECT MATURE SIRE</option>
-                            @foreach($males as $p) <option value="{{ $p->id }}">{{ strtoupper($p->name) }} [LV.{{ $p->level }}]</option> @endforeach
-                        </select>
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
+                    <form wire:submit="createPair" class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-end bg-slate-900 p-6 md:p-8 rounded-[2rem] border border-slate-800 shadow-xl">
+                        <div class="space-y-2">
+                            <label class="block text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 italic">Sire Selection (♂)</label>
+                            <select wire:model="maleId" class="w-full bg-black/50 border-2 border-slate-800 rounded-2xl p-3 md:p-4 text-white font-bold text-xs md:text-base focus:border-yellow-500 transition-all appearance-none cursor-pointer">
+                                <option value="">SELECT MATURE SIRE</option>
+                                @foreach($males as $p) <option value="{{ $p->id }}">{{ strtoupper($p->name) }} [LV.{{ $p->level }}]</option> @endforeach
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 italic">Dam Selection (♀)</label>
+                            <select wire:model="femaleId" class="w-full bg-black/50 border-2 border-slate-800 rounded-2xl p-3 md:p-4 text-white font-bold text-xs md:text-base focus:border-yellow-500 transition-all appearance-none cursor-pointer">
+                                <option value="">SELECT MATURE DAM</option>
+                                @foreach($females as $p) <option value="{{ $p->id }}">{{ strtoupper($p->name) }} [LV.{{ $p->level }}]</option> @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-industrial font-black text-xs md:text-sm rounded-2xl transition-all shadow-xl shadow-yellow-500/10 uppercase italic tracking-widest">
+                            Initiate Link
+                        </button>
+                    </form>
+
+                    <div class="bg-blue-950/20 border border-blue-500/20 rounded-[2rem] p-6 space-y-4">
+                        <h4 class="text-[10px] font-black text-blue-400 uppercase tracking-widest italic flex items-center gap-2">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Lifecycle Guide
+                        </h4>
+                        <div class="space-y-3">
+                            <div class="flex gap-3">
+                                <span class="text-blue-500 font-bold text-xs">01</span>
+                                <p class="text-[8px] text-slate-400 leading-relaxed font-bold uppercase">Incubation: 24h of parental care required before hatching.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <span class="text-blue-500 font-bold text-xs">02</span>
+                                <p class="text-[8px] text-slate-400 leading-relaxed font-bold uppercase">Hatchling: Move to loft as "Eggs" for 24h maturation.</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <span class="text-blue-500 font-bold text-xs">03</span>
+                                <p class="text-[8px] text-slate-400 leading-relaxed font-bold uppercase">Active: At 48h total age, birds become active units.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="space-y-2">
-                        <label class="block text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 italic">Dam Selection (♀)</label>
-                        <select wire:model="femaleId" class="w-full bg-black/50 border-2 border-slate-800 rounded-2xl p-3 md:p-4 text-white font-bold text-xs md:text-base focus:border-yellow-500 transition-all appearance-none cursor-pointer">
-                            <option value="">SELECT MATURE DAM</option>
-                            @foreach($females as $p) <option value="{{ $p->id }}">{{ strtoupper($p->name) }} [LV.{{ $p->level }}]</option> @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="w-full py-4 bg-yellow-500 hover:bg-yellow-400 text-black font-industrial font-black text-xs md:text-sm rounded-2xl transition-all shadow-xl shadow-yellow-500/10 uppercase italic tracking-widest">
-                        Initiate Link
-                    </button>
-                </form>
+                </div>
             @else
                 <div class="bg-red-950/20 p-6 md:p-8 rounded-[2rem] border-2 border-dashed border-red-500/30 text-center">
                     <p class="font-industrial font-black text-red-500 text-base md:text-lg uppercase italic tracking-widest">Max capacity reached. System upgrade required.</p>
@@ -77,39 +100,50 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                     @foreach($pairs as $pair)
-                        @php
-                            $record = $breedingRecords->where('sire_id', $pair->male_id)->where('dam_id', $pair->female_id)->first();
-                        @endphp
-                        <div class="bg-slate-900 rounded-[2.5rem] border-2 border-slate-800 p-6 md:p-8 hover:border-yellow-500/20 transition-all duration-300 relative overflow-hidden shadow-2xl">
-                            <div class="absolute top-0 left-0 w-full h-1 bg-yellow-500/10"></div>
-                            
-                            <div class="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
-                                <div class="w-full sm:w-auto">
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="w-2 h-2 rounded-full {{ $record ? 'bg-yellow-500 animate-pulse' : 'bg-green-500' }}"></span>
-                                        <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">{{ $record ? 'Incubating' : 'Standby' }}</span>
-                                    </div>
-                                    <h4 class="text-lg md:text-xl font-industrial font-black text-white italic tracking-tighter uppercase truncate max-w-[15rem]">
-                                        {{ $pair->male->name }} <span class="text-yellow-500 text-xs mx-1">&</span> {{ $pair->female->name }}
-                                    </h4>
-                                </div>
-                                @if($record)
-                                    @php
-                                        $hatchTime = $record->eggs_laid_at->addDay();
-                                        $remaining = now()->diffInSeconds($hatchTime, false);
-                                    @endphp
-                                    <div class="text-left sm:text-right bg-black/40 sm:bg-transparent p-3 sm:p-0 rounded-xl border border-slate-800 sm:border-none w-full sm:w-auto" wire:key="timer-{{ $record->id }}">
-                                        <span class="text-[7px] md:text-[8px] font-black text-yellow-500 block uppercase mb-1">Hatch sequence</span>
-                                        <span class="text-lg md:text-xl font-industrial font-black text-white tracking-widest" wire:poll.1s>
-                                            @if($remaining > 0)
-                                                {{ gmdate("H:i:s", $remaining) }}
+                            @php
+                                $record = $breedingRecords->where('sire_id', $pair->male_id)->where('dam_id', $pair->female_id)->first();
+                                $isNursing = $pair->male->status === 'nursing' || $pair->female->status === 'nursing';
+                            @endphp
+                            <div class="bg-slate-900 rounded-[2.5rem] border-2 border-slate-800 p-6 md:p-8 hover:border-yellow-500/20 transition-all duration-300 relative overflow-hidden shadow-2xl">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-yellow-500/10"></div>
+                                
+                                <div class="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
+                                    <div class="w-full sm:w-auto">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            @if($record)
+                                                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                                                <span class="text-[8px] font-black text-yellow-500 uppercase tracking-widest italic">Incubating</span>
+                                            @elseif($isNursing)
+                                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                                <span class="text-[8px] font-black text-blue-500 uppercase tracking-widest italic">Nursing</span>
                                             @else
-                                                READY
+                                                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                                                <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Standby</span>
                                             @endif
-                                        </span>
+                                        </div>
+                                        <h4 class="text-lg md:text-xl font-industrial font-black text-white italic tracking-tighter uppercase truncate max-w-[15rem]">
+                                            {{ $pair->male->name }} <span class="text-yellow-500 text-xs mx-1">&</span> {{ $pair->female->name }}
+                                        </h4>
                                     </div>
-                                @endif
-                            </div>
+                                    @if($record)
+                                        @php
+                                            $hatchTime = $record->eggs_laid_at->addDay();
+                                            $remaining = now()->diffInSeconds($hatchTime, false);
+                                        @endphp
+                                        <div class="text-left sm:text-right bg-black/40 sm:bg-transparent p-3 sm:p-0 rounded-xl border border-slate-800 sm:border-none w-full sm:w-auto" wire:key="timer-{{ $record->id }}">
+                                            @if($remaining > 0)
+                                                <span class="text-[7px] md:text-[8px] font-black text-yellow-500 block uppercase mb-1">Hatch sequence</span>
+                                                <span class="text-lg md:text-xl font-industrial font-black text-white tracking-widest" wire:poll.1s>
+                                                    {{ gmdate("H:i:s", $remaining) }}
+                                                </span>
+                                            @else
+                                                <button wire:click="hatch({{ $record->id }})" class="bg-yellow-500 text-black px-4 py-2 rounded-xl font-industrial font-black text-xs hover:bg-white transition-all animate-bounce">
+                                                    WELCOME CHICKS
+                                                </button>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
 
                             <div class="flex flex-col sm:flex-row gap-2">
                                 @php
@@ -118,7 +152,16 @@
                                 @endphp
 
                                 @if(!$record)
-                                    @if($timeUntilReady > 0)
+                                    @if($isNursing)
+                                        @php
+                                            $nursingEndTime = $pair->male->updated_at->addDay();
+                                            $nursingRemaining = now()->diffInSeconds($nursingEndTime, false);
+                                        @endphp
+                                        <div class="flex-1 bg-blue-950/20 p-3 rounded-xl border border-blue-500/20 text-center">
+                                            <span class="text-[7px] md:text-[8px] font-black text-blue-400 uppercase block mb-1">Nursing Phase</span>
+                                            <span class="text-xs font-industrial font-black text-white tracking-widest">{{ $nursingRemaining > 0 ? gmdate("H:i:s", $nursingRemaining) : 'FINALIZING...' }}</span>
+                                        </div>
+                                    @elseif($timeUntilReady > 0)
                                         <div class="w-full bg-black/40 p-3 rounded-xl border border-slate-800 text-center">
                                             <span class="text-[7px] md:text-[8px] font-black text-slate-500 uppercase block mb-1">Pairing Bond</span>
                                             <span class="text-xs font-industrial font-black text-white tracking-widest">{{ gmdate("H:i:s", $timeUntilReady) }}</span>

@@ -103,6 +103,12 @@
                             <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                                 <div class="h-full bg-yellow-500 transition-all duration-700 shadow-[0_0_10px_rgba(250,204,21,0.5)]" style="width: {{ $progress }}%"></div>
                             </div>
+                            @if($pigeon->status === 'egg')
+                                <div class="mt-2 flex items-center gap-2 bg-yellow-500/10 p-2 rounded-lg border border-yellow-500/20">
+                                    <svg class="w-3 h-3 text-yellow-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="text-[7px] md:text-[8px] font-black text-yellow-500 uppercase tracking-tighter">Maturing: Ready in {{ now()->diffForHumans($pigeon->hatch_at->addDay(), true) }}</span>
+                                </div>
+                            @endif
                         </div>
                         @if($totalStats >= $required && $pigeon->level < 100)
                             <button wire:click="levelUp({{ $pigeon->id }})" 

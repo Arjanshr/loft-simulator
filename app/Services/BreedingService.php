@@ -73,6 +73,7 @@ class BreedingService
                 'sire_id' => $sire->id,
                 'dam_id' => $dam->id,
                 'birth_at' => now(),
+                'hatch_at' => now(),
                 'status' => 'egg',
             ]));
         }

@@ -42,6 +42,20 @@ class BreedingCenter extends Component
         }
     }
 
+    public function hatch($recordId, BreedingService $breedingService)
+    {
+        $record = \App\Models\BreedingRecord::findOrFail($recordId);
+        
+        // Safety check: only hatch if 24h passed
+        if ($record->eggs_laid_at->addDay()->isFuture()) {
+            session()->flash('error', 'Eggs are still incubating.');
+            return;
+        }
+
+        $breedingService->hatchEgg($record);
+        session()->flash('message', 'Congratulations! 2 chicks have hatched and moved to your loft.');
+    }
+
     public function disband($pairId, PairingService $pairingService)
     {
         $loft = Auth::user()->loft;

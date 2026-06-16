@@ -106,14 +106,21 @@
                     
                     <div class="flex items-center gap-4 mb-6 bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
                         <div class="flex-1">
-                            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+                            <div class="flex justify-between text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
                                 <span>Lifecycle: {{ $status }}</span>
                                 <span>{{ $totalStats }} / {{ $required }} EXP</span>
                             </div>
                             <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                                 <div class="h-full bg-yellow-500 transition-all duration-700 shadow-[0_0_10px_rgba(250,204,21,0.5)]" style="width: {{ $progress }}%"></div>
                             </div>
-                        </div>
+                            @if($pigeon->status === 'egg')
+                                <div class="mt-2 flex items-center gap-2 bg-yellow-500/10 p-2 rounded-lg border border-yellow-500/20">
+                                    <svg class="w-3 h-3 text-yellow-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    <span class="text-[7px] md:text-[8px] font-black text-yellow-500 uppercase tracking-tighter">Maturing: Ready in {{ now()->diffForHumans($pigeon->hatch_at->addDay(), true) }}</span>
+                                </div>
+                            @endif
+                            </div>
+
                         @if($totalStats >= $required && $pigeon->level < 100)
                             <button wire:click="levelUp({{ $pigeon->id }})" 
                                     class="bg-yellow-500 text-black font-industrial font-black text-[10px] px-4 py-2 rounded-xl hover:scale-105 transition shadow-lg shadow-yellow-500/20 uppercase tracking-tighter">
