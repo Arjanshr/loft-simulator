@@ -28,7 +28,7 @@ class PigeonMaturationCommand extends Command
     {
         $beautyAttributes = ['eyes', 'beak', 'legs', 'feather_quality', 'pattern', 'color', 'purity'];
 
-        // 1. Process Hatching (BreedingRecord -> New Pigeon 'egg' status)
+        // 1. Process Hatching (BreedingRecord -> New Pigeon 'chick' status)
         \App\Models\BreedingRecord::where('eggs_laid_at', '<=', now()->subDay())->each(function ($record) {
             $breedingService = new \App\Services\BreedingService();
             $breedingService->hatchEgg($record);
@@ -57,16 +57,13 @@ class PigeonMaturationCommand extends Command
 
                 // --- Lifecycle Transitions ---
                 // Hatching at exactly 1 day since laying? 
-                // Wait, hatchEgg already creates the pigeon record with status 'egg'.
+                // Wait, hatchEgg already creates the pigeon record with status 'chick'.
                 // So: 
-                // Status Egg -> Hatchling after 1 day? No, hatchEgg IS the hatching. 
-                // Let's align with user: 
-                // 3. Incubation period is 1 day. (Handled by BreedingRecord check above)
-                // 4. After hatching another 1 day is required to be juvenile.
+                // Status Chick -> Adult after 1 day?
                 
-                if ($pigeon->status === 'egg' && $pigeon->created_at->addDay()->isPast()) {
+                if ($pigeon->status === 'chick' && $pigeon->created_at->addDay()->isPast()) {
                     $pigeon->update(['status' => 'idle']); // Becomes visible/active as unit
-                    (new \App\Services\ActivityService())->log($pigeon->loft, "{$pigeon->name} has fully hatched!");
+                    (new \App\Services\ActivityService())->log($pigeon->loft, "{$pigeon->name} has fully matured and is ready for action!");
                 }
 
                 if ($pigeon->status === 'nursing' && $pigeon->updated_at->addDay()->isPast()) {

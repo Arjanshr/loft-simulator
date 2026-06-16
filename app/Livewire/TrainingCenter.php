@@ -85,6 +85,18 @@ class TrainingCenter extends Component
                                         'lost_at' => now(),
                                         'stray_at_loft_id' => $randomLoft->id
                                     ]);
+
+                                    // Cleanup: Disband any active pairs
+                                    \App\Models\Pair::where('is_active', true)
+                                        ->where(function($q) use ($pigeon) {
+                                            $q->where('male_id', $pigeon->id)->orWhere('female_id', $pigeon->id);
+                                        })->update(['is_active' => false]);
+
+                                    // Cleanup: Cancel any active listings
+                                    \App\Models\Listing::where('pigeon_id', $pigeon->id)
+                                        ->where('is_active', true)
+                                        ->update(['is_active' => false]);
+
                                     (new \App\Services\ActivityService())->log($userLoft, "ALERT: {$pigeon->name} got lost during training and was last seen flying toward another sector!");
                                     $this->selectedPigeonIds = array_diff($this->selectedPigeonIds, [$pigeon->id]);
                                     session()->flash('error', "CRITICAL: {$pigeon->name} has gone missing during the training exercise!");
@@ -204,7 +216,7 @@ class TrainingCenter extends Component
     public function render()
     {
         $userLoft = Auth::user()->loft;
-        $pigeons = $userLoft->pigeons()->where('status', '!=', 'lost')->get();
+        $pigeons = $userLoft->pigeons()->where('status', 'idle')->get();
         $selectedPigeons = $userLoft->pigeons()->whereIn('id', $this->selectedPigeonIds)->get();
         
         $totalCost = $selectedPigeons->sum(fn($p) => 100 + ($p->beauty * 10));

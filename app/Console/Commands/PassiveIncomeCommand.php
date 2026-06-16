@@ -27,7 +27,7 @@ class PassiveIncomeCommand extends Command
      */
     public function handle()
     {
-        \App\Models\Pigeon::where('status', '!=', 'egg')
+        \App\Models\Pigeon::where('status', '!=', 'chick')
             ->with('loft')
             ->chunk(100, function ($pigeons) {
                 foreach ($pigeons as $pigeon) {

@@ -20,7 +20,7 @@ class Loft extends Model
 
     public function getTotalPassiveIncomeAttribute(): float
     {
-        return $this->pigeons()->where('type', 'fancy')->where('status', '!=', 'egg')->get()->sum('income_per_minute');
+        return $this->pigeons()->where('type', 'fancy')->where('status', '!=', 'chick')->get()->sum('income_per_minute');
     }
 
     public function user(): BelongsTo

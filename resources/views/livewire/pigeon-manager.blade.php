@@ -73,8 +73,7 @@
                     @php
                         $ageDays = $pigeon->birth_at ? $pigeon->birth_at->diffInDays(now()) : 0;
                         $status = 'Adult';
-                        if (!$pigeon->hatch_at || $pigeon->hatch_at->isFuture()) $status = 'Egg';
-                        elseif ($pigeon->hatch_at->addDay()->isFuture()) $status = 'Hatchling';
+                        if ($pigeon->status === 'chick') $status = 'Chick';
                         elseif ($pigeon->birth_at->addDays(4)->isFuture()) $status = 'Juvenile';
 
                         $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
@@ -103,10 +102,10 @@
                             <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
                                 <div class="h-full bg-yellow-500 transition-all duration-700 shadow-[0_0_10px_rgba(250,204,21,0.5)]" style="width: {{ $progress }}%"></div>
                             </div>
-                            @if($pigeon->status === 'egg')
+                            @if($pigeon->status === 'chick')
                                 <div class="mt-2 flex items-center gap-2 bg-yellow-500/10 p-2 rounded-lg border border-yellow-500/20">
                                     <svg class="w-3 h-3 text-yellow-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    <span class="text-[7px] md:text-[8px] font-black text-yellow-500 uppercase tracking-tighter">Maturing: Ready in {{ now()->diffForHumans($pigeon->hatch_at->addDay(), true) }}</span>
+                                    <span class="text-[7px] md:text-[8px] font-black text-yellow-500 uppercase tracking-tighter">Maturing: Ready in {{ now()->diffForHumans($pigeon->created_at->addDay(), true) }}</span>
                                 </div>
                             @endif
                         </div>

@@ -70,24 +70,30 @@ class BreedingService
         for ($i = 0; $i < 2; $i++) {
             $stats = $this->calculateInheritedStats($sire, $dam);
             
-            Pigeon::create(array_merge($stats, [
+            // Automatically determine level based on stats (30 points per level)
+            $totalPoints = $stats['speed'] + $stats['endurance'] + $stats['navigation'] + $stats['temperament'];
+            $initialLevel = max(1, (int)floor($totalPoints / 30));
+
+            $chick = Pigeon::create(array_merge($stats, [
                 'loft_id' => $loft->id,
                 'name' => 'Chick ' . fake()->unique()->firstName(),
-                'level' => 1,
-                'type' => $sire->type, // Simplified: inherits type from Sire
+                'level' => $initialLevel,
+                'type' => $sire->type, // Inherits type from Sire
                 'gender' => fake()->randomElement(['male', 'female']),
                 'sire_id' => $sire->id,
                 'dam_id' => $dam->id,
                 'birth_at' => now(),
                 'hatch_at' => now(),
-                'status' => 'egg',
+                'status' => 'chick',
             ]));
+
+            (new ActivityService())->log($loft, "HATCHED: A Level {$chick->level} {$chick->type} chick named {$chick->name} has been born!");
         }
 
         $record->delete();
         $sire->update(['status' => 'nursing']);
         $dam->update(['status' => 'nursing']);
-        (new ActivityService())->log($loft, "Pair {$sire->name} + {$dam->name} successfully hatched 2 chicks. Parents are now nursing.");
+        (new ActivityService())->log($loft, "Pair {$sire->name} + {$dam->name} are now nursing their 2 new chicks.");
     }
 
     private function calculateInheritedStats(Pigeon $sire, Pigeon $dam): array

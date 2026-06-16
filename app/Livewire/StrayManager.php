@@ -34,7 +34,7 @@ class StrayManager extends Component
             (new ActivityService())->log($userLoft, "SUCCESS: You successfully captured a stray pigeon: {$pigeon->name} (Lv.{$pigeon->level})!");
             (new ActivityService())->log($originalLoft, "NOTICE: Your lost pigeon {$pigeon->name} has been captured by another loft and is no longer returning home.");
             
-            session()->flash('message', "Great work! {$pigeon->name} has been added to your loft.");
+            $this->dispatch('notify', message: "Great work! {$pigeon->name} has been added to your loft.", type: 'success');
         } else {
             // Failure - Bird moves to a new random loft
             $newRandomLoft = Loft::where('id', '!=', $pigeon->loft_id)
@@ -46,7 +46,7 @@ class StrayManager extends Component
                 $pigeon->update(['stray_at_loft_id' => $newRandomLoft->id]);
             }
 
-            session()->flash('error', "The bird got spooked and flew away to another area!");
+            $this->dispatch('notify', message: "The bird got spooked and flew away to another area!", type: 'error');
         }
 
         $this->dispatch('loft-updated');

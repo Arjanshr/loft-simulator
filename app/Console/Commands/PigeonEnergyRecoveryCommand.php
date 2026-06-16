@@ -27,7 +27,7 @@ class PigeonEnergyRecoveryCommand extends Command
      */
     public function handle()
     {
-        \App\Models\Pigeon::where('status', '!=', 'egg')
+        \App\Models\Pigeon::where('status', '!=', 'chick')
             ->where('energy', '<', 100)
             ->increment('energy', 1);
 

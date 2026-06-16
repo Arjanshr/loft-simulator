@@ -87,7 +87,7 @@ public function getFixedPriceAttribute(): int
  */
 public function getIncomePerMinuteAttribute(): float
 {
-    if ($this->type !== 'fancy' || $this->status === 'egg') {
+    if ($this->type !== 'fancy' || $this->status === 'chick') {
         return 0;
     }
 
