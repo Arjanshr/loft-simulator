@@ -32,7 +32,7 @@ new class extends Component
             <div class="w-8 h-8 bg-[#b8860b] rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(184,134,11,0.3)] group-hover:scale-110 transition-transform">
                 <span class="text-lg">🕊️</span>
             </div>
-            <span class="font-industrial font-black text-white group-hover:text-[#b8860b] tracking-tighter text-sm italic uppercase transition-colors">Elite Loft</span>
+            <span class="font-industrial font-black text-white group-hover:text-[#b8860b] tracking-tighter text-sm italic uppercase transition-colors">Loft Manager</span>
         </a>
     </div>
 

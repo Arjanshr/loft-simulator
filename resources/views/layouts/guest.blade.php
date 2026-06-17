@@ -45,7 +45,7 @@
                     <div class="w-20 h-20 bg-[#b8860b] rounded-[2rem] flex items-center justify-center shadow-2xl shadow-[#b8860b]/20 mx-auto rotate-3 group-hover:rotate-0 transition-transform duration-500 mb-4">
                         <span class="text-4xl">🕊️</span>
                     </div>
-                    <h1 class="font-industrial font-black text-3xl text-[#b8860b] tracking-tighter italic uppercase">Elite Loft</h1>
+                    <h1 class="font-industrial font-black text-3xl text-[#b8860b] tracking-tighter italic uppercase">Loft Manager</h1>
                     <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.5em] mt-2">Established 2026</p>
                 </a>
             </div>
