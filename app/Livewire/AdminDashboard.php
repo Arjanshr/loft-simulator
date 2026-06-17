@@ -83,6 +83,9 @@ class AdminDashboard extends Component
             $q->where('is_ai', true);
         })->withCount('pigeons')->get();
 
+        $totalAiSpecimens = $aiLofts->sum('pigeons_count');
+        $totalAiCoins = $aiLofts->sum('coins');
+
         $selectedAiLoft = null;
         $aiLoftLogs = collect();
         if ($this->selectedAiLoftId) {
@@ -97,6 +100,8 @@ class AdminDashboard extends Component
             'aiLofts' => $aiLofts,
             'selectedAiLoft' => $selectedAiLoft,
             'aiLoftLogs' => $aiLoftLogs,
+            'totalAiSpecimens' => $totalAiSpecimens,
+            'totalAiCoins' => $totalAiCoins,
         ])->layout('layouts.app', ['header' => 'Policy Desk']);
     }
 }

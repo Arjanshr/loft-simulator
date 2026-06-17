@@ -93,11 +93,24 @@
 
             <!-- New Section: Network Intelligence (AI Lofts) -->
             <div class="mt-16 border-t border-aviary-brass/10 pt-16">
-                <div class="flex items-center gap-6 mb-12">
-                    <div class="w-12 h-1.5 bg-aviary-blue rounded-full shadow-[0_0_15px_#3b82f6]"></div>
-                    <div>
-                        <h2 class="text-2xl md:text-4xl font-industrial font-black text-white uppercase italic tracking-widest leading-none mb-2">Network Intelligence</h2>
-                        <p class="text-aviary-blue text-[10px] md:text-xs font-black uppercase tracking-[0.4em] italic">AI Loft Monitoring & Automated Specimen Analysis</p>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12">
+                    <div class="flex items-center gap-6">
+                        <div class="w-12 h-1.5 bg-aviary-blue rounded-full shadow-[0_0_15px_#3b82f6]"></div>
+                        <div>
+                            <h2 class="text-2xl md:text-4xl font-industrial font-black text-white uppercase italic tracking-widest leading-none mb-2">Network Intelligence</h2>
+                            <p class="text-aviary-blue text-[10px] md:text-xs font-black uppercase tracking-[0.4em] italic">AI Loft Monitoring & Automated Specimen Analysis</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="bg-black/40 px-6 py-3 rounded-2xl border border-aviary-blue/20 text-center">
+                            <span class="block text-[8px] font-black text-aviary-blue uppercase tracking-widest mb-1">Total AI Specimens</span>
+                            <span class="text-xl font-mono font-bold text-white">{{ number_format($totalAiSpecimens) }}</span>
+                        </div>
+                        <div class="bg-black/40 px-6 py-3 rounded-2xl border border-aviary-brass/20 text-center">
+                            <span class="block text-[8px] font-black text-aviary-brass uppercase tracking-widest mb-1">Total AI Wealth</span>
+                            <span class="text-xl font-mono font-bold text-white">{{ number_format($totalAiCoins) }}💰</span>
+                        </div>
                     </div>
                 </div>
 
@@ -111,9 +124,13 @@
                                         class="w-full p-6 rounded-[2rem] border-2 transition-all duration-300 text-left relative overflow-hidden group
                                                {{ $selectedAiLoftId == $loft->id ? 'bg-aviary-blue/10 border-aviary-blue shadow-xl shadow-aviary-blue/5' : 'bg-aviary-oak/40 border-aviary-brass/5 hover:border-aviary-blue/30' }} galvanized-border">
                                     <div class="relative z-10 flex justify-between items-center">
-                                        <div>
+                                        <div class="flex-1">
                                             <p class="font-industrial font-black text-white uppercase tracking-widest italic text-lg leading-none mb-2">{{ $loft->name }}</p>
-                                            <p class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-widest italic">Grade {{ $loft->level }} • {{ $loft->pigeons_count }} Specimens</p>
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-widest italic">Grade {{ $loft->level }}</span>
+                                                <span class="w-1 h-1 rounded-full bg-aviary-brass/20"></span>
+                                                <span class="text-[10px] font-black text-aviary-blue uppercase tracking-widest italic">{{ $loft->pigeons_count }} Birds</span>
+                                            </div>
                                         </div>
                                         <div class="text-right">
                                             <span class="text-[10px] font-mono font-bold text-aviary-brass italic">{{ number_format($loft->coins) }}💰</span>
