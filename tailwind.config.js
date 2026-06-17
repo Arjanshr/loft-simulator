@@ -12,8 +12,21 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                industrial: ['Playfair Display', 'serif'],
+                mono: ['JetBrains Mono', 'monospace'],
             },
+            colors: {
+                aviary: {
+                    oak: '#1a1410',
+                    timber: '#2d241e',
+                    blue: '#3b82f6',
+                    rose: '#fb7185',
+                    brass: '#b8860b',
+                    slate: '#475569',
+                    feather: '#94a3b8',
+                }
+            }
         },
     },
 

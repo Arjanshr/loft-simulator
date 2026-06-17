@@ -1,66 +1,68 @@
-<div class="text-slate-300 font-sans">
+<div class="space-y-12 font-sans text-slate-300">
     @if (session()->has('race_error'))
-        <div class="p-6 bg-red-900/20 border border-red-500/30 rounded-2xl mb-10 animate-pulse text-center">
-            <p class="text-sm text-red-400 font-black uppercase tracking-widest italic">⚠ {{ session('race_error') }}</p>
+        <div class="p-6 bg-red-950/20 border border-red-500/30 rounded-2xl mb-10 animate-pulse text-center galvanized-border">
+            <p class="text-sm text-red-500 font-black uppercase tracking-widest italic">⚠ {{ session('race_error') }}</p>
         </div>
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-        <!-- Left: Bird Selection -->
-        <div class="lg:col-span-1 space-y-8 bg-[#050a0a] p-8 rounded-[2.5rem] border-2 border-white/5 shadow-2xl">
-            <div class="flex items-center gap-3 mb-2">
-                <div class="h-4 w-1 bg-[#b8860b]"></div>
-                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Assign Bird</h3>
+        <!-- Left: Bird Selection - The Tactical Assignment -->
+        <div class="lg:col-span-1 space-y-8 parchment-panel p-8 rounded-[3rem] border-2 border-aviary-brass/10 shadow-2xl galvanized-border">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-1.5 h-6 bg-aviary-brass rounded-full shadow-[0_0_10px_#b8860b]"></div>
+                <h3 class="text-[11px] font-black text-white uppercase tracking-[0.3em] italic">Unit Assignment</h3>
             </div>
             
             <div class="relative group">
                 <select wire:model="selectedPigeonId" 
-                        class="w-full bg-black/40 border-2 border-[#b8860b]/20 rounded-2xl p-5 text-white font-bold focus:border-[#b8860b] transition-all appearance-none cursor-pointer italic uppercase text-sm">
-                    <option value="">SELECT READY BIRD</option>
+                        class="w-full bg-aviary-oak/60 border-2 border-aviary-brass/10 rounded-2xl p-6 text-white font-mono text-sm focus:border-aviary-blue transition-all appearance-none cursor-pointer italic uppercase shadow-inner">
+                    <option value="">SELECT READY SPECIMEN</option>
                     @foreach($readyPigeons as $p)
-                        <option value="{{ $p->id }}">{{ strtoupper($p->name) }} [LV.{{ $p->level }} - {{ strtoupper($p->type) }}]</option>
+                        <option value="{{ $p->id }}">{{ $p->name }} [LV.{{ $p->level }} - {{ strtoupper($p->type) }}]</option>
                     @endforeach
                 </select>
-                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#b8860b]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-aviary-brass">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
                 </div>
             </div>
-            <p class="text-[9px] text-slate-600 font-bold uppercase tracking-widest italic leading-relaxed">Only birds with >50% condition are eligible for competition entry.</p>
+            <div class="bg-black/30 p-5 rounded-2xl border border-aviary-brass/5">
+                <p class="text-[10px] text-aviary-feather/40 font-bold uppercase tracking-widest italic leading-relaxed">Flight Protocol: Only specimens with condition > 50% are authorized for competition registry.</p>
+            </div>
         </div>
 
-        <!-- Right: Tournament List -->
-        <div class="lg:col-span-2 space-y-6">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="h-4 w-1 bg-[#b8860b]"></div>
-                <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] italic">Racing Fields</h3>
+        <!-- Right: Tournament List - The Racing Registry -->
+        <div class="lg:col-span-2 space-y-8">
+            <div class="flex items-center gap-4 mb-6 px-4">
+                <div class="w-1.5 h-6 bg-aviary-blue rounded-full shadow-[0_0_10px_#3b82f6]"></div>
+                <h3 class="text-[11px] font-black text-white uppercase tracking-[0.3em] italic">Tournament Registry</h3>
             </div>
             
-            <div class="grid grid-cols-1 gap-6">
+            <div class="grid grid-cols-1 gap-8">
                 @foreach($races as $race)
-                    <div class="group bg-[#050a0a] border-2 border-white/5 rounded-[2.5rem] p-6 md:p-8 hover:border-[#b8860b]/40 transition-all duration-500 shadow-xl flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-[#b8860b]/10 group-hover:bg-[#b8860b] transition-all"></div>
+                    <div class="group parchment-panel border-2 border-aviary-brass/10 rounded-[3rem] p-6 md:p-10 hover:border-aviary-blue/30 transition-all duration-500 shadow-2xl flex flex-col md:flex-row justify-between items-center gap-10 relative overflow-hidden galvanized-border">
+                        <div class="absolute top-0 left-0 w-1.5 h-full bg-aviary-brass/10 group-hover:bg-aviary-blue transition-all duration-500"></div>
                         
                         <div class="flex-1 relative z-10">
-                            <div class="flex items-center gap-4 mb-3">
-                                <span class="text-[9px] font-black bg-[#b8860b]/20 text-[#b8860b] px-3 py-1 rounded-lg italic uppercase border border-[#b8860b]/20 tracking-tighter">{{ $race->race_type }}</span>
-                                <h4 class="text-2xl md:text-3xl font-industrial font-black text-white italic tracking-tighter uppercase leading-none">{{ $race->title }}</h4>
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+                                <span class="text-[9px] font-black bg-aviary-blue/10 text-aviary-blue px-4 py-1.5 rounded-full italic uppercase border border-aviary-blue/20 tracking-widest font-mono">{{ $race->race_type }}</span>
+                                <h4 class="text-3xl md:text-4xl font-industrial font-black text-white italic tracking-tighter uppercase leading-none">{{ $race->title }}</h4>
                             </div>
-                            <div class="flex flex-wrap gap-6 text-[10px] font-black text-slate-500 uppercase tracking-widest italic">
-                                <span class="flex items-center gap-2">🏁 {{ $race->distance_km }}KM COURSE</span>
-                                <span class="flex items-center gap-2">🎖️ MIN LV.{{ $race->level_requirement }}</span>
-                                <span class="flex items-center gap-2 text-[#b8860b]">💰 ENTRY: {{ number_format($race->entry_fee) }}</span>
+                            <div class="flex flex-wrap gap-8 text-[10px] font-mono font-bold text-aviary-feather/40 uppercase tracking-widest italic">
+                                <span class="flex items-center gap-3"><span class="text-aviary-brass">🏁</span> {{ $race->distance_km }}KM COURSE</span>
+                                <span class="flex items-center gap-3"><span class="text-aviary-brass">🎖️</span> MIN LV.{{ $race->level_requirement }}</span>
+                                <span class="flex items-center gap-3 text-aviary-brass drop-shadow-sm"><span class="text-white">💰</span> ENTRY: {{ number_format($race->entry_fee) }}</span>
                             </div>
                         </div>
 
-                        <div class="flex items-center gap-8 relative z-10 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-white/5 pt-6 md:pt-0">
+                        <div class="flex items-center gap-10 relative z-10 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-aviary-brass/10 pt-8 md:pt-0">
                             <div class="text-right">
-                                <span class="block text-[8px] font-black text-slate-600 uppercase tracking-widest mb-1 italic">Est. Purse</span>
-                                <span class="text-2xl md:text-4xl font-industrial font-black text-[#b8860b] italic drop-shadow-lg">{{ number_format($race->prize_pool) }}💰</span>
+                                <span class="block text-[10px] font-black text-aviary-feather/40 uppercase tracking-widest mb-2 italic">Official Purse</span>
+                                <span class="text-3xl md:text-5xl font-industrial font-black text-aviary-brass italic trophy-gold">{{ number_format($race->prize_pool) }}💰</span>
                             </div>
                             
                             <button wire:click="enterRace({{ $race->id }})" 
-                                    class="bg-white hover:bg-[#b8860b] text-black hover:text-white font-industrial font-black px-10 py-4 rounded-[1.5rem] transition-all shadow-2xl active:scale-95 uppercase italic text-sm tracking-widest">
-                                Enter Bird
+                                    class="bg-white hover:bg-aviary-blue text-black hover:text-white font-industrial font-black px-12 py-5 rounded-[2rem] transition-all shadow-2xl active:scale-95 uppercase italic text-sm tracking-widest border-2 border-black/5 group">
+                                <span class="group-hover:scale-105 transition-transform block">Authorize Flight</span>
                             </button>
                         </div>
                     </div>

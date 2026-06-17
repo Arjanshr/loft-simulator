@@ -43,6 +43,11 @@ class PigeonManager extends Component
     {
         $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
         
+        if ($pigeon->level >= Auth::user()->loft->level) {
+            session()->flash('error', "Your Loft Level (Lv." . Auth::user()->loft->level . ") is too low to rank up {$pigeon->name} further.");
+            return;
+        }
+
         if ($pigeonService->levelUpPigeon($pigeon)) {
             $this->dispatch('pigeon-leveled-up', name: $pigeon->name);
             $this->dispatch('loft-updated');

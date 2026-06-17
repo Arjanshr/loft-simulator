@@ -141,6 +141,11 @@ public function levelUpPigeon(Pigeon $pigeon): bool
         return false;
     }
 
+    // Constraint: Pigeon level cannot exceed Loft level
+    if ($pigeon->level >= $pigeon->loft->level) {
+        return false;
+    }
+
     // Milestone: Total stat points must be at least level * X to advance
     $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
     $multiplier = config('game.pigeons.level_up_stat_multiplier', 30);
