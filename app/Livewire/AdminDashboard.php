@@ -7,9 +7,13 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use App\Services\GameSettingsService;
 
+use App\Models\Loft;
+use App\Models\ActivityLog;
+
 class AdminDashboard extends Component
 {
     public $settings = [];
+    public $selectedAiLoftId = null;
 
     public function mount(GameSettingsService $settingsService)
     {
@@ -22,6 +26,11 @@ class AdminDashboard extends Component
             'training_energy_cost' => $settingsService->get('training_energy_cost', 20),
             'aesthetic_upgrade_base_cost' => $settingsService->get('aesthetic_upgrade_base_cost', 50),
         ];
+    }
+
+    public function selectAiLoft($id)
+    {
+        $this->selectedAiLoftId = $id;
     }
 
     public function updateSettings(GameSettingsService $settingsService)
@@ -70,6 +79,24 @@ class AdminDashboard extends Component
 
     public function render()
     {
-        return view('livewire.admin-dashboard')->layout('layouts.app', ['header' => 'Admin Panel']);
+        $aiLofts = Loft::whereHas('user', function($q) {
+            $q->where('is_ai', true);
+        })->withCount('pigeons')->get();
+
+        $selectedAiLoft = null;
+        $aiLoftLogs = collect();
+        if ($this->selectedAiLoftId) {
+            $selectedAiLoft = Loft::with('pigeons')->find($this->selectedAiLoftId);
+            $aiLoftLogs = ActivityLog::where('loft_id', $this->selectedAiLoftId)
+                ->latest()
+                ->limit(20)
+                ->get();
+        }
+
+        return view('livewire.admin-dashboard', [
+            'aiLofts' => $aiLofts,
+            'selectedAiLoft' => $selectedAiLoft,
+            'aiLoftLogs' => $aiLoftLogs,
+        ])->layout('layouts.app', ['header' => 'Policy Desk']);
     }
 }
