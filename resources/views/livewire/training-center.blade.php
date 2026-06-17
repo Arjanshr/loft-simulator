@@ -51,7 +51,14 @@
                                 </div>
                                 <div class="flex flex-col truncate">
                                     <span class="font-black italic uppercase text-xs truncate">{{ $pigeon->name }}</span>
-                                    <span class="text-[8px] font-bold opacity-50 uppercase tracking-tighter">{{ $pigeon->type }}</span>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="text-[8px] font-bold opacity-50 uppercase tracking-tighter">{{ $pigeon->type }}</span>
+                                        <span class="w-1 h-1 rounded-full bg-aviary-brass/30"></span>
+                                        <span class="text-[8px] font-black text-aviary-brass uppercase italic">LOY: {{ $pigeon->loyalty }}%</span>
+                                    </div>
+                                    <div class="w-16 h-1 bg-black/40 rounded-full mt-1.5 overflow-hidden">
+                                        <div class="h-full bg-aviary-brass" style="width: {{ $pigeon->loyalty }}%"></div>
+                                    </div>
                                 </div>
                             </div>
                             @if(in_array($pigeon->id, $selectedPigeonIds))
