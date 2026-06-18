@@ -37,9 +37,20 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 relative z-10">
             <!-- Pigeon Selection: The Desk Ledger -->
             <div class="lg:col-span-3 space-y-6">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="h-4 w-1 bg-aviary-blue"></div>
-                    <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] italic">Unit Selection</h3>
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <div class="h-4 w-1 bg-aviary-blue"></div>
+                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] italic">Unit Selection</h3>
+                    </div>
+                    @if($pigeons->count() > 0)
+                        @php
+                            $allIds = $pigeons->pluck('id')->map(fn($id) => (string)$id)->toArray();
+                            $allSelected = count($allIds) > 0 && count(array_diff($allIds, $selectedPigeonIds)) === 0;
+                        @endphp
+                        <button type="button" wire:click="toggleSelectAll" class="text-[9px] font-black uppercase tracking-wider text-aviary-brass hover:text-white transition-colors duration-300">
+                            {{ $allSelected ? 'Deselect All' : 'Select All' }}
+                        </button>
+                    @endif
                 </div>
                 <div class="max-h-[40vh] lg:max-h-[65vh] overflow-y-auto space-y-3 pr-2 custom-scrollbar bg-aviary-oak/40 p-4 rounded-3xl border border-aviary-brass/10 shadow-inner">
                     @foreach($pigeons as $pigeon)

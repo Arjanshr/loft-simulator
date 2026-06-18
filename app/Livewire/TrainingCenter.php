@@ -18,6 +18,24 @@ class TrainingCenter extends Component
         $this->restCost = config('game.training.rest_cost', 50);
     }
 
+    public function toggleSelectAll()
+    {
+        $userLoft = Auth::user()->loft;
+        $allIds = $userLoft->pigeons()
+            ->where('status', 'idle')
+            ->pluck('id')
+            ->map(fn($id) => (string)$id)
+            ->toArray();
+
+        $allSelected = count($allIds) > 0 && count(array_diff($allIds, $this->selectedPigeonIds)) === 0;
+
+        if ($allSelected) {
+            $this->selectedPigeonIds = [];
+        } else {
+            $this->selectedPigeonIds = $allIds;
+        }
+    }
+
     public function train($type)
     {
         if (empty($this->selectedPigeonIds)) {
