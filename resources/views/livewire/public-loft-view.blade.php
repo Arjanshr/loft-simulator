@@ -37,6 +37,16 @@
                         <div class="flex flex-wrap gap-2 mt-4">
                             <span class="text-[9px] bg-black/40 px-3 py-1 rounded-full uppercase text-aviary-feather/40 font-mono font-bold tracking-widest border border-white/5">{{ $pigeon->type }}</span>
                             <span class="text-[9px] {{ $pigeon->gender == 'male' ? 'bg-aviary-blue/10 text-aviary-blue border-aviary-blue/10' : 'bg-aviary-rose/10 text-aviary-rose border-aviary-rose/10' }} px-3 py-1 rounded-full uppercase font-mono font-bold tracking-widest border">{{ $pigeon->gender == 'male' ? '♂ COCK' : '♀ HEN' }}</span>
+                            @php
+                                $rarityClass = match($pigeon->rarity) {
+                                    'mythic'     => 'bg-purple-900/40 text-purple-300 border-purple-500/30',
+                                    'legendary'  => 'bg-yellow-900/40 text-yellow-300 border-yellow-500/30',
+                                    'super_rare' => 'bg-blue-900/40 text-blue-300 border-blue-500/30',
+                                    'rare'       => 'bg-green-900/40 text-green-300 border-green-500/30',
+                                    default      => 'bg-black/40 text-aviary-feather/40 border-white/5',
+                                };
+                            @endphp
+                            <span class="text-[9px] {{ $rarityClass }} px-3 py-1 rounded-full uppercase font-mono font-bold tracking-widest border">{{ strtoupper(str_replace('_', ' ', $pigeon->rarity)) }}</span>
                         </div>
                     </div>
                 </div>
@@ -59,9 +69,15 @@
                     <div class="flex justify-between border-b border-white/5 pb-1"><span>CLR</span> <span class="text-white/60">{{ number_format($pigeon->color, 1) }}</span></div>
                 </div>
 
-                <div class="pt-6 border-t border-aviary-brass/10 flex justify-between items-center">
-                    <span class="text-[10px] font-black text-aviary-brass uppercase tracking-[0.2em] italic">Standard Score</span>
-                    <span class="text-2xl font-industrial font-black text-aviary-brass trophy-gold italic">{{ number_format($pigeon->beauty, 2) }}</span>
+                <div class="pt-6 border-t border-aviary-brass/10 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-black text-aviary-brass uppercase tracking-[0.2em] italic">Standard Score</span>
+                        <span class="text-2xl font-industrial font-black text-aviary-brass trophy-gold italic">{{ number_format($pigeon->beauty, 2) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/30 px-4 py-2 rounded-xl border border-aviary-brass/10">
+                        <span class="text-[10px] font-black text-aviary-feather/40 uppercase tracking-widest italic">Est. Value</span>
+                        <span class="font-mono font-bold text-aviary-brass text-sm">{{ number_format($pigeon->fixed_price, 2) }} 💰</span>
+                    </div>
                 </div>
             </div>
         @endforeach
