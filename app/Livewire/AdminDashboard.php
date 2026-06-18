@@ -25,6 +25,7 @@ class AdminDashboard extends Component
             'breeding_cost' => $settingsService->get('breeding_cost', 100),
             'training_energy_cost' => $settingsService->get('training_energy_cost', 20),
             'aesthetic_upgrade_base_cost' => $settingsService->get('aesthetic_upgrade_base_cost', 50),
+            'ai_lost_bird_chance' => $settingsService->get('ai_lost_bird_chance', 20),
         ];
     }
 

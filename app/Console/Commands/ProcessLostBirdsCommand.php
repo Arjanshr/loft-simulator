@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\GameSettingsService;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -10,8 +11,10 @@ use Illuminate\Console\Command;
 #[Description('Process the movement and return of lost pigeons, and trigger new lost bird events.')]
 class ProcessLostBirdsCommand extends Command
 {
-    public function handle()
+    public function handle(GameSettingsService $settingsService)
     {
+        $lostBirdChance = max(0, min(100, (int) $settingsService->get('ai_lost_bird_chance', 20)));
+
         // 1. Trigger new lost birds (AI Lofts)
         $aiLofts = \App\Models\Loft::whereHas('user', fn($q) => $q->where('is_ai', true))->get();
         foreach ($aiLofts as $loft) {
@@ -21,7 +24,7 @@ class ProcessLostBirdsCommand extends Command
                 ->inRandomOrder()
                 ->first();
 
-            if ($pigeon && rand(1, 100) <= 20) { 
+            if ($pigeon && rand(1, 100) <= $lostBirdChance) {
                 $randomLoft = \App\Models\Loft::where('id', '!=', $loft->id)->inRandomOrder()->first();
                 if ($randomLoft) {
                     $pigeon->update([
@@ -29,7 +32,7 @@ class ProcessLostBirdsCommand extends Command
                         'lost_at' => now(),
                         'stray_at_loft_id' => $randomLoft->id
                     ]);
-                    \Illuminate\Support\Facades\Log::info("Process Lost Birds: AI pigeon {$pigeon->name} got lost from {$loft->name}.");
+                    \Illuminate\Support\Facades\Log::info("Process Lost Birds: AI pigeon {$pigeon->name} got lost from {$loft->name} at {$lostBirdChance}% chance.");
                 }
             }
         }
