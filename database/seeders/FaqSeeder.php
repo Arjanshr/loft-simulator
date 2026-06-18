@@ -38,7 +38,7 @@ class FaqSeeder extends Seeder
             [
                 'category' => 'Pigeon Mastery',
                 'question' => 'How does Condition (Energy) work?',
-                'answer' => 'Birds consume energy during training and racing. "Idle" birds recover 5% energy per hour. You can also perform an "Instant Rest" for 50 coins to refill energy to 100%.',
+                'answer' => 'Birds consume energy during training and racing. "Idle" birds recover 5% energy per hour. You can also perform an "Instant Rest" for 50 vitamins to refill energy to 100%.',
             ],
 
             // Breeding & Heredity
@@ -67,7 +67,7 @@ class FaqSeeder extends Seeder
             [
                 'category' => 'Economy & The Exchange',
                 'question' => 'How is passive income calculated?',
-                'answer' => 'Fancy pigeons generate income every minute. Formula: 1 Base Coin + (Beauty Score / 10). A high-grade Fancy bird can provide a significant reserve fund for your loft operations.',
+                'answer' => 'Fancy pigeons generate Coins every minute (1 Base + Beauty/10). Highflyer pigeons generate Vitamins every minute (1 Base + Speed/20). Having both types in your loft ensures a steady supply of all resources.',
             ],
             [
                 'category' => 'Economy & The Exchange',

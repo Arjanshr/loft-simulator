@@ -50,14 +50,14 @@
                             <div class="flex flex-wrap gap-8 text-[10px] font-mono font-bold text-aviary-feather/40 uppercase tracking-widest italic">
                                 <span class="flex items-center gap-3"><span class="text-aviary-brass">🏁</span> {{ $race->distance_km }}KM COURSE</span>
                                 <span class="flex items-center gap-3"><span class="text-aviary-brass">🎖️</span> MIN LV.{{ $race->level_requirement }}</span>
-                                <span class="flex items-center gap-3 text-aviary-brass drop-shadow-sm"><span class="text-white">💰</span> ENTRY: {{ number_format($race->entry_fee) }}</span>
+                                <span class="flex items-center gap-3 text-aviary-brass drop-shadow-sm"><span class="text-white">{{ $race->race_type === 'exhibition' ? '💊' : '💰' }}</span> ENTRY: {{ number_format($race->entry_fee) }}</span>
                             </div>
                         </div>
 
                         <div class="flex items-center gap-10 relative z-10 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-aviary-brass/10 pt-8 md:pt-0">
                             <div class="text-right">
                                 <span class="block text-[10px] font-black text-aviary-feather/40 uppercase tracking-widest mb-2 italic">Official Purse</span>
-                                <span class="text-3xl md:text-5xl font-industrial font-black text-aviary-brass italic trophy-gold">{{ number_format($race->prize_pool) }}💰</span>
+                                <span class="text-3xl md:text-5xl font-industrial font-black text-aviary-brass italic trophy-gold">{{ number_format($race->prize_pool) }}{{ $race->race_type === 'exhibition' ? '💊' : '💰' }}</span>
                             </div>
                             
                             <button wire:click="enterRace({{ $race->id }})" 

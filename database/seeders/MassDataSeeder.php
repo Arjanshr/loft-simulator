@@ -34,6 +34,7 @@ class MassDataSeeder extends Seeder
                     'user_id' => $aiUser->id,
                     'name' => "AI Loft L$level - $i",
                     'coins' => 10000,
+                    'vitamins' => 1000,
                     'level' => $level,
                 ]);
 

@@ -12,15 +12,21 @@ class Loft extends Model
         'user_id',
         'name',
         'coins',
+        'vitamins',
         'level',
         'xp',
     ];
 
-    protected $appends = ['total_passive_income'];
+    protected $appends = ['total_passive_income', 'total_vitamin_income'];
 
     public function getTotalPassiveIncomeAttribute(): float
     {
         return $this->pigeons()->where('type', 'fancy')->where('status', '!=', 'chick')->get()->sum('income_per_minute');
+    }
+
+    public function getTotalVitaminIncomeAttribute(): float
+    {
+        return $this->pigeons()->where('type', 'highflyer')->where('status', '!=', 'chick')->get()->sum('vitamin_income_per_minute');
     }
 
     public function user(): BelongsTo

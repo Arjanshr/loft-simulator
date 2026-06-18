@@ -35,7 +35,7 @@ class PigeonManager extends Component
             $this->dispatch('loft-updated');
             session()->flash('message', "{$pigeon->name} is fully rested!");
         } else {
-            session()->flash('error', "Not enough coins or already rested.");
+            session()->flash('error', "Not enough vitamins or already rested.");
         }
     }
 

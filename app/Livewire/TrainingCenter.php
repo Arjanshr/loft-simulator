@@ -203,10 +203,9 @@ class TrainingCenter extends Component
         $userLoft = Auth::user()->loft;
         foreach ($this->selectedPigeonIds as $pigeonId) {
             $pigeon = $userLoft->pigeons()->findOrFail($pigeonId);
-            if ($userLoft->coins >= $this->restCost) {
-                if ($pigeonService->instantRest($pigeon)) {
-                     $userLoft->decrement('coins', $this->restCost);
-                }
+            // PigeonService::instantRest already handles the vitamin decrement and energy update
+            if ($pigeonService->instantRest($pigeon)) {
+                // Success
             }
         }
         $this->dispatch('loft-updated');

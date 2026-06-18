@@ -13,12 +13,12 @@ class PigeonService
     {
         $cost = config('game.training.rest_cost', 50);
 
-        if ($pigeon->loft->coins < $cost || $pigeon->energy >= 100) {
+        if ($pigeon->loft->vitamins < $cost || $pigeon->energy >= 100) {
             return false;
         }
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon, $cost) {
-            $pigeon->loft->decrement('coins', $cost);
+            $pigeon->loft->decrement('vitamins', $cost);
             $pigeon->update(['energy' => 100]);
         });
 
@@ -156,10 +156,13 @@ public function levelUpPigeon(Pigeon $pigeon): bool
     }
 
     $rewardBase = config('game.pigeons.level_up_reward_base', 100);
-    \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon, $rewardBase) {
+    $xpReward = $pigeon->level * 25; // 25 XP per current level gained
+
+    \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon, $rewardBase, $xpReward) {
         $pigeon->increment('level');
         $pigeon->loft->increment('coins', $rewardBase * $pigeon->level);
-        (new ActivityService())->log($pigeon->loft, "{$pigeon->name} reached Level {$pigeon->level}!");
+        $pigeon->loft->increment('xp', $xpReward);
+        (new ActivityService())->log($pigeon->loft, "{$pigeon->name} reached Level {$pigeon->level}! Earned {$xpReward} XP for the Loft.");
     });
 
     return true;

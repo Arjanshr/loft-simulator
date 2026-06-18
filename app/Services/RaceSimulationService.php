@@ -69,9 +69,13 @@ class RaceSimulationService
                 // Update pigeon status
                 $pigeon->update(['status' => 'idle']);
                 
-                // If payout > 0, update loft coins
+                // If payout > 0, update loft currency
                 if ($payout > 0) {
-                    $pigeon->loft->increment('coins', $payout);
+                    if ($race->race_type === 'exhibition') {
+                        $pigeon->loft->increment('vitamins', $payout);
+                    } else {
+                        $pigeon->loft->increment('coins', $payout);
+                    }
                 }
 
                 return $raceResult;

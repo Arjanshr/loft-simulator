@@ -38,7 +38,14 @@ class PassiveIncomeCommand extends Command
                         $pigeon->loft->increment('coins', (int) $income);
                     }
 
-                    // 2. Passive Loyalty growth for all
+                    // 2. Passive Vitamin generation for Highflyers
+                    if ($pigeon->type === 'highflyer') {
+                        // Formula: 1 base vitamin + (speed / 20)
+                        $vits = 1 + ($pigeon->speed / 20);
+                        $pigeon->loft->increment('vitamins', (int) $vits);
+                    }
+
+                    // 3. Passive Loyalty growth for all
                     if ($pigeon->loyalty < 100) {
                         $pigeon->increment('loyalty');
                     }

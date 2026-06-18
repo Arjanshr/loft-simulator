@@ -103,7 +103,7 @@
                         <span class="text-3xl group-hover:scale-110 transition-transform">🌿</span>
                         <div class="flex flex-col">
                             <span class="text-xs font-industrial font-black text-white uppercase italic">Full Recovery</span>
-                            <span class="text-[9px] font-mono font-bold text-aviary-brass uppercase tracking-widest italic mt-1">{{ $restCost * count($selectedPigeonIds) }} 💰 TOTAL</span>
+                            <span class="text-[9px] font-mono font-bold text-emerald-400 uppercase tracking-widest italic mt-1">{{ $restCost * count($selectedPigeonIds) }} 💊 TOTAL</span>
                         </div>
                     </button>
                 </div>

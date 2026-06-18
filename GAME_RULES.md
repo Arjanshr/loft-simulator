@@ -18,7 +18,7 @@ This document serves as the master record for all game mechanics, processes, and
     *   **Beauty Score:** Calculated as the average of the 7 aesthetic sub-attributes.
 *   **Energy:**
     *   Passive recovery: Pigeons in `status: idle` recover 5% energy per hour (processed hourly).
-    *   Active recovery: Instant 100% refill via "Rest" button (costs 50 coins).
+    *   Active recovery: Instant 100% refill via "Rest" button (costs 50 vitamins).
 *   **Activity Log:** Tracks training, breeding, selling/buying, and leveling activities. View it in the dedicated Activity Log page.
 
 ---
@@ -60,21 +60,24 @@ This document serves as the master record for all game mechanics, processes, and
 
 ---
 
-## 4. Economy & Marketplace V3
+## 4. Economy & Resources
 *   **Coins:** Earned from tournament prizes, leveling up pigeons, and passive generation.
-*   **Passive Income:** 
+*   **Vitamins:** Used for energy recovery. Gained passively from Highflyer pigeons.
+*   **Passive Generation:** 
     *   Each **Fancy** pigeon (that has hatched) generates coins every minute.
-    *   **Formula:** `1 Base Coin + (Beauty Score / 10)` per minute.
+        *   **Formula:** `1 Base Coin + (Beauty Score / 10)` per minute.
+    *   Each **Highflyer** pigeon generates vitamins every minute.
+        *   **Formula:** `1 Base Vitamin + (Speed / 20)` per minute.
 *   **Auction House:**
     *   **Time-Limited:** Every listing has a 24-hour expiry timer. Expired units are returned to their loft.
     *   **Level Constraints:** You can only view and purchase pigeons that are at most `Loft Level + 1`.
     *   **Autonomous AI:** AI lofts actively trade in the market, listing and buying units within their own level range (`±1`).
     *   **Market Cycle:** The economy processes a "Market Tick" every hour to simulate AI activity.
 *   **Spending:**
-    *   Entering tournaments.
-    *   Training (stat boosts).
-    *   Resting (energy refill).
-    *   Aesthetic Upgrades (`feather_quality`, `pattern`, `color`).
+    *   Entering tournaments (Coins).
+    *   Training (stat boosts) (Coins).
+    *   Resting (energy refill) (Vitamins).
+    *   Aesthetic Upgrades (`feather_quality`, `pattern`, `color`) (Coins).
 *   **Aesthetic Upgrades:** Exponential cost (`50 * 1.15^level`), fractional growth (`0.5 - 1.0` points).
 
 ---

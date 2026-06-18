@@ -35,7 +35,7 @@ class UnitManager extends Component
             $this->dispatch('loft-updated');
             session()->flash('message', "{$pigeon->name} fully rested.");
         } else {
-            session()->flash('error', "Resting failed.");
+            session()->flash('error', "Not enough vitamins or already rested.");
         }
     }
 

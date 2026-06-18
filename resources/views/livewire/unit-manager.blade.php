@@ -61,12 +61,16 @@
                             
                             <div class="flex flex-wrap gap-2">
                                 <span class="text-[9px] font-black uppercase tracking-widest border border-aviary-brass/10 text-aviary-feather/40 px-3 py-1 rounded-full bg-black/20">{{ $pigeon->rarity }} Heritage</span>
+                                <!-- Type Label -->
+                                <span class="text-[9px] font-black uppercase tracking-widest bg-white/10 text-white px-3 py-1 rounded-full border border-white/20">
+                                    {{ strtoupper($pigeon->type) }}
+                                </span>
                                 @if($pigeon->income_per_minute > 0)
                                     <span class="text-[9px] font-black uppercase tracking-widest bg-green-900/20 text-green-400 border border-green-500/20 px-3 py-1 rounded-full">+{{ $pigeon->income_per_minute }} 💰/MIN</span>
                                 @endif
-                                <span class="text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-aviary-blue/20 text-aviary-blue border-aviary-blue/20' : 'bg-aviary-rose/20 text-aviary-rose border-aviary-rose/20' }} px-3 py-1 border rounded-full">
-                                    {{ $pigeon->gender == 'male' ? '♂ COCK' : '♀ HEN' }}
-                                </span>
+                                @if($pigeon->vitamin_income_per_minute > 0)
+                                    <span class="text-[9px] font-black uppercase tracking-widest bg-emerald-900/20 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full">+{{ $pigeon->vitamin_income_per_minute }} 💊/MIN</span>
+                                @endif
                             </div>
                         </div>
 
@@ -84,7 +88,7 @@
                             </div>
                             @if($pigeon->energy < 100)
                                 <button wire:click="rest({{ $pigeon->id }})" class="text-[8px] font-black bg-aviary-brass hover:bg-aviary-blue text-white px-3 py-1.5 rounded-lg transition uppercase italic border border-white/10 shadow-md">
-                                    Rest (50💰)
+                                    Rest (50💊)
                                 </button>
                             @endif
                         </div>
