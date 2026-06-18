@@ -118,9 +118,9 @@
                                     <div class="w-10 h-10 rounded-xl bg-aviary-blue/10 flex items-center justify-center font-industrial font-black text-aviary-blue text-xs italic border border-aviary-blue/20">
                                         LV.{{ $p->level }}
                                     </div>
-                                                                        <div class="flex flex-col">
+                                    <div class="flex flex-col">
                                         <span class="font-industrial font-black text-white uppercase text-sm md:text-lg tracking-widest truncate max-w-[150px] md:max-w-none italic">{{ $p->name }}</span>
-                                        <span class="block text-[10px] font-mono text-aviary-brass italic">Price: {{ number_format($p->fixed_price, 2) }}</span>
+                                        <x-pigeon.registry-meta :pigeon="$p" size="sm" class="mt-2" />
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-3">

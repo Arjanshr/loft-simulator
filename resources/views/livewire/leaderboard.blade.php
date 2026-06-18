@@ -73,15 +73,7 @@
                             <span class="block text-[8px] font-black text-aviary-feather/40 uppercase tracking-widest italic mb-0.5">Score</span>
                             <span class="font-mono font-bold text-lg text-slate-300">{{ number_format($topPigeons[1]->total_score, 1) }}</span>
                         </div>
-                        <div class="mt-2">
-                            <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full
-                                {{ $topPigeons[1]->rarity === 'mythic' ? 'bg-purple-900/40 text-purple-300 border border-purple-500/30' :
-                                   ($topPigeons[1]->rarity === 'legendary' ? 'bg-yellow-900/40 text-yellow-300 border border-yellow-500/30' :
-                                   ($topPigeons[1]->rarity === 'super_rare' ? 'bg-blue-900/40 text-blue-300 border border-blue-500/30' :
-                                   'bg-black/30 text-aviary-feather/40 border border-aviary-brass/10')) }}">
-                                {{ strtoupper($topPigeons[1]->rarity) }}
-                            </span>
-                        </div>
+                        <x-pigeon.registry-meta :pigeon="$topPigeons[1]" size="sm" :show-price="false" class="mt-2 justify-center" />
                     </div>
                     <div class="h-6 bg-slate-600/20 border-t border-slate-500/20 flex items-center justify-center">
                         <span class="text-[8px] font-black text-slate-400/60 uppercase tracking-widest italic">Silver</span>
@@ -107,15 +99,7 @@
                             <span class="block text-[8px] font-black text-aviary-feather/40 uppercase tracking-widest italic mb-0.5">Score</span>
                             <span class="font-mono font-bold text-2xl text-aviary-brass">{{ number_format($topPigeons[0]->total_score, 1) }}</span>
                         </div>
-                        <div class="mt-2">
-                            <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full
-                                {{ $topPigeons[0]->rarity === 'mythic' ? 'bg-purple-900/40 text-purple-300 border border-purple-500/30' :
-                                   ($topPigeons[0]->rarity === 'legendary' ? 'bg-yellow-900/40 text-yellow-300 border border-yellow-500/30' :
-                                   ($topPigeons[0]->rarity === 'super_rare' ? 'bg-blue-900/40 text-blue-300 border border-blue-500/30' :
-                                   'bg-black/30 text-aviary-feather/40 border border-aviary-brass/10')) }}">
-                                {{ strtoupper($topPigeons[0]->rarity) }}
-                            </span>
-                        </div>
+                        <x-pigeon.registry-meta :pigeon="$topPigeons[0]" size="sm" :show-price="false" class="mt-2 justify-center" />
                     </div>
                     <div class="h-6 bg-aviary-brass/20 border-t border-aviary-brass/30 flex items-center justify-center">
                         <span class="text-[8px] font-black text-aviary-brass/80 uppercase tracking-widest italic">Gold · Champion</span>
@@ -138,15 +122,7 @@
                             <span class="block text-[8px] font-black text-aviary-feather/40 uppercase tracking-widest italic mb-0.5">Score</span>
                             <span class="font-mono font-bold text-lg text-amber-500">{{ number_format($topPigeons[2]->total_score, 1) }}</span>
                         </div>
-                        <div class="mt-2">
-                            <span class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full
-                                {{ $topPigeons[2]->rarity === 'mythic' ? 'bg-purple-900/40 text-purple-300 border border-purple-500/30' :
-                                   ($topPigeons[2]->rarity === 'legendary' ? 'bg-yellow-900/40 text-yellow-300 border border-yellow-500/30' :
-                                   ($topPigeons[2]->rarity === 'super_rare' ? 'bg-blue-900/40 text-blue-300 border border-blue-500/30' :
-                                   'bg-black/30 text-aviary-feather/40 border border-aviary-brass/10')) }}">
-                                {{ strtoupper($topPigeons[2]->rarity) }}
-                            </span>
-                        </div>
+                        <x-pigeon.registry-meta :pigeon="$topPigeons[2]" size="sm" :show-price="false" class="mt-2 justify-center" />
                     </div>
                     <div class="h-6 bg-amber-800/20 border-t border-amber-700/20 flex items-center justify-center">
                         <span class="text-[8px] font-black text-amber-600/80 uppercase tracking-widest italic">Bronze</span>
@@ -175,13 +151,6 @@
                 @php
                     $isFirst  = $index === 0;
                     $medal    = $index === 0 ? '🥇' : ($index === 1 ? '🥈' : ($index === 2 ? '🥉' : null));
-                    $rarityClass = match($pigeon->rarity) {
-                        'mythic'     => 'text-purple-300 bg-purple-900/30 border-purple-500/30',
-                        'legendary'  => 'text-yellow-300 bg-yellow-900/30 border-yellow-500/30',
-                        'super_rare' => 'text-blue-300 bg-blue-900/30 border-blue-500/30',
-                        'rare'       => 'text-green-300 bg-green-900/30 border-green-500/30',
-                        default      => 'text-aviary-feather/40 bg-black/30 border-aviary-brass/10',
-                    };
                 @endphp
                 <div class="group relative flex justify-between items-center p-5 rounded-[1.8rem] transition-all duration-300 overflow-hidden border-2 shadow-lg
                     {{ $isFirst ? 'bg-aviary-brass/5 border-aviary-brass/40 shadow-aviary-brass/10' : 'bg-aviary-oak/40 border-aviary-brass/5 hover:border-aviary-blue/30 hover:bg-aviary-oak/60' }} galvanized-border">
@@ -205,9 +174,7 @@
                             </div>
                             <div class="flex items-center gap-2 flex-wrap">
                                 <p class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-widest italic">{{ $pigeon->loft->name }}</p>
-                                <span class="text-[8px] font-black uppercase tracking-widest px-2 py-px rounded-full border {{ $rarityClass }}">
-                                    {{ strtoupper($pigeon->rarity) }}
-                                </span>
+                                <x-pigeon.registry-meta :pigeon="$pigeon" size="sm" :show-price="false" />
                             </div>
                         </div>
                     </div>
@@ -294,6 +261,7 @@
                         <div class="flex-1 truncate">
                             <p class="font-industrial font-black text-white uppercase tracking-widest text-base italic truncate">{{ $mostExpensivePigeon->name }}</p>
                             <p class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-widest italic truncate">{{ $mostExpensivePigeon->loft->name }}</p>
+                            <x-pigeon.registry-meta :pigeon="$mostExpensivePigeon" size="sm" :show-price="false" class="mt-2" />
                         </div>
                         <div class="text-right flex-shrink-0">
                             <span class="block text-[8px] font-black text-emerald-400/60 uppercase tracking-widest italic mb-0.5">Value</span>

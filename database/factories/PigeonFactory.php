@@ -18,7 +18,7 @@ class PigeonFactory extends Factory
     public function definition(): array
     {
         $types = ['fancy', 'racer', 'highflyer'];
-        $rarities = ['common', 'rare', 'legendary'];
+        $intelligence = \App\Models\Pigeon::rollCreationIntelligence();
         
         return [
             'name' => fake()->name(),
@@ -32,13 +32,14 @@ class PigeonFactory extends Factory
             'pattern' => rand(1, 100),
             'color' => rand(1, 100),
             'purity' => rand(1, 100),
-            'rarity' => fake()->randomElement($rarities),
+            'rarity' => \App\Models\Pigeon::rarityFromIntelligence($intelligence),
             'speed' => rand(1, 100),
             'endurance' => rand(1, 100),
             'navigation' => rand(1, 100),
             'temperament' => rand(1, 100),
             'energy' => 100,
             'status' => 'idle',
+            'intelligence' => $intelligence,
         ];
     }
 }

@@ -69,6 +69,7 @@ class BreedingService
         // Produce 2 chicks
         for ($i = 0; $i < 2; $i++) {
             $stats = $this->calculateInheritedStats($sire, $dam);
+            $stats['intelligence'] = $this->calculateInheritedIntelligence($sire, $dam);
             
             // Automatically determine level based on stats (30 points per level)
             $totalPoints = $stats['speed'] + $stats['endurance'] + $stats['navigation'] + $stats['temperament'];
@@ -99,7 +100,7 @@ class BreedingService
 
     private function calculateInheritedStats(Pigeon $sire, Pigeon $dam): array
     {
-        $attributes = ['eyes', 'beak', 'legs', 'feather_quality', 'pattern', 'color', 'purity', 'speed', 'endurance', 'navigation', 'temperament', 'intelligence'];
+        $attributes = ['eyes', 'beak', 'legs', 'feather_quality', 'pattern', 'color', 'purity', 'speed', 'endurance', 'navigation', 'temperament'];
         $inherited = [];
 
         foreach ($attributes as $attr) {
@@ -109,25 +110,14 @@ class BreedingService
             $inherited[$attr] = max(1, min(100, (int)($avg + $mutation)));
         }
 
-        $inherited['rarity'] = $this->calculateRarity($sire, $dam);
-
         return $inherited;
     }
 
-    private function calculateRarity(Pigeon $sire, Pigeon $dam): string
+    private function calculateInheritedIntelligence(Pigeon $sire, Pigeon $dam): int
     {
-        $rarities = ['common' => 1, 'rare' => 2, 'legendary' => 3];
-        $avgRarity = ($rarities[$sire->rarity] + $rarities[$dam->rarity]) / 2;
-        
-        // Chance to upgrade
-        if (rand(1, 100) <= 10) {
-            $avgRarity += 0.5;
-        }
+        $min = max(1, min((int) $sire->intelligence, (int) $dam->intelligence) - 2);
+        $max = min(100, max((int) $sire->intelligence, (int) $dam->intelligence) + 2);
 
-        return match (true) {
-            $avgRarity >= 2.5 => 'legendary',
-            $avgRarity >= 1.5 => 'rare',
-            default => 'common',
-        };
+        return random_int($min, $max);
     }
 }

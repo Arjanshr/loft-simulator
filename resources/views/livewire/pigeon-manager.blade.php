@@ -29,11 +29,9 @@
                                        wire:keydown.enter="updateName({{ $pigeon->id }})"
                                        placeholder="{{ $pigeon->name }}" 
                                        class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/20 italic uppercase tracking-tight">
-                                <span class="block text-[10px] font-mono text-aviary-brass italic">Price: {{ number_format($pigeon->fixed_price, 2) }}</span>
                             </div>
-                            
+                            <x-pigeon.registry-meta :pigeon="$pigeon" size="sm" class="mb-3" />
                             <div class="flex flex-wrap gap-2">
-                                <span class="text-[9px] font-black uppercase tracking-widest bg-black/40 text-aviary-feather/60 px-3 py-1 rounded-full border border-aviary-brass/10">{{ $pigeon->rarity }} Heritage</span>
                                 <span class="text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-aviary-blue/20 text-aviary-blue border-aviary-blue/20' : 'bg-aviary-rose/20 text-aviary-rose border-aviary-rose/20' }} px-3 py-1 border rounded-full">
                                     {{ $pigeon->gender == 'male' ? '♂ COCK' : '♀ HEN' }}
                                 </span>

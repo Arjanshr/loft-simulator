@@ -58,10 +58,8 @@
                                        placeholder="{{ $pigeon->name }}" 
                                        class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/10 italic uppercase tracking-tight">
                             </div>
-                            
-                            <span class="block text-[10px] font-mono text-aviary-brass italic">Price: {{ number_format($pigeon->fixed_price, 2) }}</span>
-<div class="flex flex-wrap gap-2">
-                                <span class="text-[9px] font-black uppercase tracking-widest border border-aviary-brass/10 text-aviary-feather/40 px-3 py-1 rounded-full bg-black/20">{{ $pigeon->rarity }} Heritage</span>
+                            <x-pigeon.registry-meta :pigeon="$pigeon" size="sm" class="mb-3" />
+                            <div class="flex flex-wrap gap-2">
                                 <!-- Type Label -->
                                 <span class="text-[9px] font-black uppercase tracking-widest bg-white/10 text-white px-3 py-1 rounded-full border border-white/20">
                                     {{ strtoupper($pigeon->type) }}

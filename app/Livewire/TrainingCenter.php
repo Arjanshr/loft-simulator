@@ -244,6 +244,7 @@ class TrainingCenter extends Component
             'pigeons' => $pigeons,
             'selectedPigeons' => $selectedPigeons,
             'totalCost' => $totalCost,
+            'statGains' => $this->statGains,
         ])->layout('layouts.app', ['header' => 'Training Center']);
     }
 }

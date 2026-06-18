@@ -39,7 +39,7 @@ class MarketEcosystemService
             \Illuminate\Support\Facades\Log::info("AI Market Tick: Checking loft {$loft->name}. Found pigeon: " . ($pigeon ? $pigeon->name : 'none'));
 
             if ($pigeon) { 
-                (new MarketplaceService())->listPigeon($pigeon, $pigeon->fixed_price);
+                (new MarketplaceService())->listPigeon($pigeon);
                 \Illuminate\Support\Facades\Log::info("AI Market Tick: Listed {$pigeon->name} for {$pigeon->fixed_price}.");
             }
         }

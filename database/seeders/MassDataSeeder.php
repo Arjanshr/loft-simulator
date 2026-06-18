@@ -41,22 +41,14 @@ class MassDataSeeder extends Seeder
                 $pigeonsData = [];
                 for ($j = 0; $j < $num_pigeons_per_ai; $j++) {
                     $pigeonLevel = rand(1, $level);
-                    $intelligence = rand(1, 100);
-
-                    $rarity = match (true) {
-                        $intelligence >= 95 => 'mythic',
-                        $intelligence >= 80 => 'legendary',
-                        $intelligence >= 60 => 'super_rare',
-                        $intelligence >= 40 => 'rare',
-                        default => 'common',
-                    };
+                    $intelligence = Pigeon::rollCreationIntelligence();
 
                     $pigeonsData[] = [
                         'loft_id' => $aiLoft->id,
                         'name' => "AI Bird " . fake()->word() . rand(1, 9999),
                         'level' => $pigeonLevel,
                         'intelligence' => $intelligence,
-                        'rarity' => $rarity,
+                        'rarity' => Pigeon::rarityFromIntelligence($intelligence),
                         'type' => fake()->randomElement(['fancy', 'racer', 'highflyer']),
                         'gender' => fake()->randomElement(['male', 'female']),
                         'birth_at' => now()->subDays(10),
@@ -85,11 +77,10 @@ class MassDataSeeder extends Seeder
 
                 // List some pigeons
                 $aiLoft->pigeons()->inRandomOrder()->limit(2)->each(function ($p) {
-                    $price = rand($p->level * 900, $p->level * 1100);
                     Listing::create([
                         'loft_id' => $p->loft_id,
                         'pigeon_id' => $p->id,
-                        'price' => $price,
+                        'price' => $p->fixed_price,
                         'expires_at' => now()->addDay(),
                         'is_active' => true,
                     ]);

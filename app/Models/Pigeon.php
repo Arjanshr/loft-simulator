@@ -10,17 +10,42 @@ class Pigeon extends Model
 {
     use HasFactory;
 
+    public const RARITY_WEIGHTS = [
+        'mythic' => 2,       // 0.02% on creation rolls
+        'legendary' => 200,  // 2%
+        'super_rare' => 1000, // 10%
+        'rare' => 2500,      // 25%
+    ];
+
     protected static function booted()
     {
         static::saving(function ($pigeon) {
-            $pigeon->rarity = match (true) {
-                $pigeon->intelligence >= 95 => 'mythic',
-                $pigeon->intelligence >= 80 => 'legendary',
-                $pigeon->intelligence >= 60 => 'super_rare',
-                $pigeon->intelligence >= 40 => 'rare',
-                default => 'common',
-            };
+            $pigeon->rarity = static::rarityFromIntelligence((int) $pigeon->intelligence);
         });
+    }
+
+    public static function rarityFromIntelligence(int $intelligence): string
+    {
+        return match (true) {
+            $intelligence >= 95 => 'mythic',
+            $intelligence >= 80 => 'legendary',
+            $intelligence >= 65 => 'super_rare',
+            $intelligence >= 50 => 'rare',
+            default => 'common',
+        };
+    }
+
+    public static function rollCreationIntelligence(): int
+    {
+        $roll = random_int(1, 10000);
+
+        return match (true) {
+            $roll <= self::RARITY_WEIGHTS['mythic'] => random_int(95, 100),
+            $roll <= self::RARITY_WEIGHTS['mythic'] + self::RARITY_WEIGHTS['legendary'] => random_int(80, 94),
+            $roll <= self::RARITY_WEIGHTS['mythic'] + self::RARITY_WEIGHTS['legendary'] + self::RARITY_WEIGHTS['super_rare'] => random_int(65, 79),
+            $roll <= self::RARITY_WEIGHTS['mythic'] + self::RARITY_WEIGHTS['legendary'] + self::RARITY_WEIGHTS['super_rare'] + self::RARITY_WEIGHTS['rare'] => random_int(50, 64),
+            default => random_int(1, 49),
+        };
     }
 
     protected $fillable = [

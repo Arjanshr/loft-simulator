@@ -12,18 +12,18 @@
             @foreach($strays as $stray)
                 <div class="parchment-panel border-2 border-aviary-blue/20 rounded-[3rem] p-6 md:p-10 flex flex-col sm:flex-row justify-between items-center relative overflow-hidden group shadow-2xl galvanized-border">
                     <div class="absolute top-0 right-0 p-6 opacity-[0.03] text-6xl font-industrial font-black italic select-none pointer-events-none uppercase text-aviary-blue">Stray</div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-aviary-blue/5 to-transparent pointer-events-none"></div>
-                    
-                    <div class="relative z-10 text-center sm:text-left mb-6 sm:mb-0">
-                        <div class="flex items-center justify-center sm:justify-start gap-4 mb-4">
-                            <span class="bg-aviary-blue text-white font-industrial font-black text-xs px-3 py-1 rounded-xl italic shadow-lg">LV.{{ $stray->level }}</span>
-                            <h4 class="font-industrial font-black text-xl md:text-2xl text-white uppercase tracking-widest italic">{{ $stray->name }}</h4>
+                        <div class="absolute inset-0 bg-gradient-to-br from-aviary-blue/5 to-transparent pointer-events-none"></div>
+                        
+                        <div class="relative z-10 text-center sm:text-left mb-6 sm:mb-0">
+                            <div class="flex items-center justify-center sm:justify-start gap-4 mb-4">
+                                <span class="bg-aviary-blue text-white font-industrial font-black text-xs px-3 py-1 rounded-xl italic shadow-lg">LV.{{ $stray->level }}</span>
+                                <h4 class="font-industrial font-black text-xl md:text-2xl text-white uppercase tracking-widest italic">{{ $stray->name }}</h4>
+                            </div>
+                            <div class="flex flex-wrap justify-center sm:justify-start gap-3">
+                                <span class="text-[9px] font-black {{ $stray->gender == 'male' ? 'text-aviary-blue border-aviary-blue/20 bg-aviary-blue/5' : 'text-aviary-rose border-aviary-rose/20 bg-aviary-rose/5' }} uppercase tracking-widest border px-4 py-1.5 rounded-full italic font-mono">{{ $stray->gender == 'male' ? '♂ COCK' : '♀ HEN' }}</span>
+                            </div>
+                            <x-pigeon.registry-meta :pigeon="$stray" size="sm" class="mt-3 justify-center sm:justify-start" />
                         </div>
-                        <div class="flex flex-wrap justify-center sm:justify-start gap-3">
-                            <span class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-widest border border-aviary-brass/10 px-4 py-1.5 rounded-full bg-black/20 italic font-mono">{{ $stray->rarity }}</span>
-                            <span class="text-[9px] font-black {{ $stray->gender == 'male' ? 'text-aviary-blue border-aviary-blue/20 bg-aviary-blue/5' : 'text-aviary-rose border-aviary-rose/20 bg-aviary-rose/5' }} uppercase tracking-widest border px-4 py-1.5 rounded-full italic font-mono">{{ $stray->gender == 'male' ? '♂ COCK' : '♀ HEN' }}</span>
-                        </div>
-                    </div>
 
                     <div class="relative z-10 text-center sm:text-right bg-black/40 p-6 rounded-[2rem] border border-aviary-blue/10 min-w-[160px] shadow-inner">
                         @php

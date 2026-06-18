@@ -1,164 +1,237 @@
 <div class="space-y-8 font-sans text-slate-300">
+    @php
+        $summaryStats = [
+            'speed' => 'SPD',
+            'endurance' => 'END',
+            'navigation' => 'NAV',
+            'temperament' => 'TMP',
+            'loyalty' => 'LOY',
+            'intelligence' => 'INT',
+        ];
+
+        $summaryTotals = [];
+        foreach ($statGains as $birdGains) {
+            foreach ($birdGains as $stat => $gain) {
+                $summaryTotals[$stat] = ($summaryTotals[$stat] ?? 0) + $gain;
+            }
+        }
+        $totalGainCount = array_sum(array_map('count', $statGains));
+    @endphp
+
     <!-- Notifications -->
     <div class="fixed top-20 right-4 z-50 flex flex-col gap-2">
         @if (session()->has('message'))
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
-                 class="bg-aviary-blue text-white px-6 py-3 rounded-xl shadow-2xl font-industrial italic border-2 border-white/20 animate-bounce">
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                 class="rounded-xl border-2 border-white/20 bg-aviary-blue px-6 py-3 font-industrial italic text-white shadow-2xl animate-bounce">
                 {{ session('message') }}
             </div>
         @endif
         @if (session()->has('error'))
-            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
-                 class="bg-red-800 text-white px-6 py-3 rounded-xl shadow-2xl font-industrial border-2 border-white/20 italic">
+            <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                 class="rounded-xl border-2 border-white/20 bg-red-800 px-6 py-3 font-industrial italic text-white shadow-2xl">
                 {{ session('error') }}
             </div>
         @endif
     </div>
 
-    <div class="parchment-panel p-6 md:p-10 rounded-[3rem] border-2 border-aviary-brass/10 shadow-2xl relative overflow-hidden galvanized-border">
-        <div class="absolute top-0 right-0 p-4 md:p-8 opacity-[0.03] text-4xl md:text-8xl font-industrial font-black italic select-none pointer-events-none uppercase tracking-tighter text-aviary-brass">Exercise</div>
-        
-        <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-aviary-brass/10 pb-8 mb-10">
+    <div class="parchment-panel relative overflow-hidden rounded-[3rem] border-2 border-aviary-brass/10 p-6 shadow-2xl galvanized-border md:p-10">
+        <div class="pointer-events-none absolute top-0 right-0 p-4 text-4xl font-industrial font-black uppercase italic text-aviary-brass opacity-[0.03] md:p-8 md:text-8xl">
+            Exercise
+        </div>
+
+        <div class="relative z-10 border-b border-aviary-brass/10 pb-8 mb-10 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
-                <h2 class="text-2xl md:text-5xl font-industrial font-black text-white uppercase italic tracking-widest leading-none mb-2">The Exercise Yard</h2>
-                <p class="text-aviary-brass/60 text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] italic">Loft Readiness & Physical Excellence Regimen</p>
+                <h2 class="mb-2 text-2xl font-industrial font-black uppercase italic leading-none tracking-widest text-white md:text-5xl">The Exercise Yard</h2>
+                <p class="text-[9px] font-black uppercase italic tracking-[0.4em] text-aviary-brass/60 md:text-[11px]">Loft Readiness & Physical Excellence Regimen</p>
             </div>
-            <div class="flex items-center gap-4 bg-aviary-oak/60 p-3 pr-8 rounded-2xl border border-aviary-brass/10 shadow-inner">
-                <div class="w-12 h-12 bg-aviary-brass rounded-xl flex items-center justify-center text-white shadow-[0_0_15px_rgba(184,134,11,0.3)]">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <div class="flex items-center gap-4 rounded-2xl border border-aviary-brass/10 bg-aviary-oak/60 p-3 pr-8 shadow-inner">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-aviary-brass text-white shadow-[0_0_15px_rgba(184,134,11,0.3)]">
+                    <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-[8px] font-black text-aviary-feather/40 uppercase tracking-widest italic">Yard Status</span>
-                    <span class="text-white font-industrial font-black italic uppercase">Grade {{ Auth::user()->loft->level }} Access</span>
+                    <span class="text-[8px] font-black uppercase italic tracking-widest text-aviary-feather/40">Yard Status</span>
+                    <span class="font-industrial font-black uppercase italic text-white">Grade {{ Auth::user()->loft->level }} Access</span>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 relative z-10">
-            <!-- Pigeon Selection: The Desk Ledger -->
-            <div class="lg:col-span-3 space-y-6">
-                <div class="flex items-center justify-between mb-2">
+        <div class="relative z-10 grid grid-cols-1 gap-8 lg:grid-cols-12 md:gap-12">
+            <!-- Pigeon Selection -->
+            <div class="space-y-6 lg:col-span-3">
+                <div class="mb-2 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="h-4 w-1 bg-aviary-blue"></div>
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] italic">Unit Selection</h3>
+                        <h3 class="text-[10px] font-black uppercase italic tracking-[0.2em] text-white">Unit Selection</h3>
                     </div>
                     @if($pigeons->count() > 0)
                         @php
-                            $allIds = $pigeons->pluck('id')->map(fn($id) => (string)$id)->toArray();
+                            $allIds = $pigeons->pluck('id')->map(fn($id) => (string) $id)->toArray();
                             $allSelected = count($allIds) > 0 && count(array_diff($allIds, $selectedPigeonIds)) === 0;
                         @endphp
-                        <button type="button" wire:click="toggleSelectAll" class="text-[9px] font-black uppercase tracking-wider text-aviary-brass hover:text-white transition-colors duration-300">
+                        <button type="button" wire:click="toggleSelectAll" class="text-[9px] font-black uppercase tracking-wider text-aviary-brass transition-colors duration-300 hover:text-white">
                             {{ $allSelected ? 'Deselect All' : 'Select All' }}
                         </button>
                     @endif
                 </div>
-                <div class="max-h-[40vh] lg:max-h-[65vh] overflow-y-auto space-y-3 pr-2 custom-scrollbar bg-aviary-oak/40 p-4 rounded-3xl border border-aviary-brass/10 shadow-inner">
+
+                <div class="max-h-[40vh] space-y-3 overflow-y-auto rounded-3xl border border-aviary-brass/10 bg-aviary-oak/40 p-4 pr-2 shadow-inner custom-scrollbar lg:max-h-[65vh]">
                     @foreach($pigeons as $pigeon)
-                        <label class="group flex items-center justify-between gap-4 p-4 rounded-2xl cursor-pointer transition-all duration-300 border-2 {{ in_array($pigeon->id, $selectedPigeonIds) ? 'bg-aviary-blue border-aviary-blue text-white shadow-lg' : 'bg-aviary-oak/60 border-transparent text-white hover:border-aviary-brass/30' }}">
-                            <div class="flex items-center gap-4 truncate">
+                        <label class="group flex cursor-pointer items-center justify-between gap-4 rounded-2xl border-2 p-4 transition-all duration-300 {{ in_array($pigeon->id, $selectedPigeonIds) ? 'border-aviary-blue bg-aviary-blue text-white shadow-lg' : 'border-transparent bg-aviary-oak/60 text-white hover:border-aviary-brass/30' }}">
+                            <div class="flex min-w-0 items-center gap-4 truncate">
                                 <input type="checkbox" wire:model.live="selectedPigeonIds" value="{{ $pigeon->id }}" class="hidden">
-                                <div class="w-10 h-10 rounded-xl bg-black/40 flex items-center justify-center font-industrial font-black italic text-xs shrink-0 border border-white/5">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/5 bg-black/40 font-industrial text-xs font-black italic">
                                     {{ $pigeon->level }}
                                 </div>
-                                <div class="flex flex-col truncate">
-                                    <span class="font-black italic uppercase text-xs truncate">{{ $pigeon->name }}</span>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <span class="text-[8px] font-bold opacity-50 uppercase tracking-tighter">{{ $pigeon->type }}</span>
-                                        <span class="w-1 h-1 rounded-full bg-aviary-brass/30"></span>
-                                        <span class="text-[8px] font-black text-aviary-brass uppercase italic">LOY: {{ $pigeon->loyalty }}%</span>
-                                    </div>
-                                    <div class="w-16 h-1 bg-black/40 rounded-full mt-1.5 overflow-hidden">
-                                        <div class="h-full bg-aviary-brass" style="width: {{ $pigeon->loyalty }}%"></div>
+                                <div class="flex min-w-0 flex-col truncate">
+                                    <span class="truncate text-xs font-black uppercase italic">{{ $pigeon->name }}</span>
+                                    <x-pigeon.registry-meta :pigeon="$pigeon" size="sm" :show-price="false" class="mt-1" />
+                                    <div class="mt-1 flex flex-wrap items-center gap-2">
+                                        <span class="text-[8px] font-black uppercase italic text-aviary-brass">LOY: {{ $pigeon->loyalty }}%</span>
+                                        <span class="h-1 w-1 rounded-full bg-aviary-brass/30"></span>
+                                        <span class="text-[8px] font-bold uppercase tracking-tighter opacity-50">{{ $pigeon->type }}</span>
                                     </div>
                                 </div>
                             </div>
-                            @if(in_array($pigeon->id, $selectedPigeonIds))
-                                <div class="shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                </div>
-                            @endif
+
+                            <div class="shrink-0">
+                                @if(in_array($pigeon->id, $selectedPigeonIds))
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                @endif
+                            </div>
                         </label>
                     @endforeach
                 </div>
             </div>
 
-            <!-- Training Commands: The Tactical Board -->
-            <div class="lg:col-span-9 space-y-8 md:space-y-12">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- Main Workbench -->
+            <div class="space-y-8 md:space-y-12 lg:col-span-9">
+                <div class="sticky top-6 z-20 rounded-[2.5rem] border border-aviary-brass/20 bg-black/45 p-5 shadow-[0_20px_70px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-6">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <p class="text-[9px] font-black uppercase italic tracking-[0.35em] text-aviary-blue">Training results</p>
+                            <h3 class="mt-1 text-2xl font-industrial font-black uppercase italic tracking-tight text-white">Impact ledger</h3>
+                            <p class="mt-2 text-[10px] font-black uppercase italic tracking-[0.25em] text-aviary-feather/40">
+                                {{ $totalGainCount > 0 ? $totalGainCount . ' attribute gains recorded across ' . count($statGains) . ' birds.' : 'No training gains recorded yet.' }}
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-6">
+                            @foreach($summaryStats as $stat => $abbr)
+                                <div class="rounded-2xl border border-white/10 bg-white/5 px-3 py-3 text-center">
+                                    <span class="block text-[8px] font-black uppercase italic tracking-[0.25em] text-aviary-feather/35">{{ $abbr }}</span>
+                                    <span class="mt-1 block font-mono text-lg font-bold {{ ($summaryTotals[$stat] ?? 0) > 0 ? 'text-green-400' : 'text-white/35' }}">+{{ $summaryTotals[$stat] ?? 0 }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    @if(!empty($statGains))
+                        <div class="mt-5 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($selectedPigeons as $pigeon)
+                                    @if(isset($statGains[$pigeon->id]))
+                                        <a href="#trained-{{ $pigeon->id }}" class="rounded-full border border-aviary-blue/20 bg-aviary-blue/10 px-4 py-2 text-[9px] font-black uppercase tracking-[0.2em] text-white transition hover:bg-aviary-blue/20">
+                                            {{ $pigeon->name }}
+                                            @foreach($statGains[$pigeon->id] as $stat => $gain)
+                                                <span class="ml-2 text-green-400">+{{ $gain }} {{ $summaryStats[$stat] ?? strtoupper($stat) }}</span>
+                                            @endforeach
+                                        </a>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
                     @foreach([
                         ['type' => 'flight', 'label' => 'Flight Exercise', 'desc' => 'Endurance & Loyalty', 'cost' => '20 Energy'],
                         ['type' => 'distance', 'label' => 'Homing Drill', 'desc' => 'Speed & Navigation', 'cost' => '20 Energy'],
-                        ['type' => 'grooming', 'label' => 'Feather Care', 'desc' => 'Appearance & Quality', 'cost' => number_format($totalCost) . ' 💰'],
-                        ['type' => 'physical_care', 'label' => 'Health Care', 'desc' => 'Structure & Vitality', 'cost' => number_format($totalCost) . ' 💰'],
-                        ['type' => 'gene_therapy', 'label' => 'Bloodline Care', 'desc' => 'Purity Enhancement', 'cost' => number_format($totalCost) . ' 💰'],
+                        ['type' => 'grooming', 'label' => 'Feather Care', 'desc' => 'Appearance & Quality', 'cost' => number_format($totalCost) . ' COINS'],
+                        ['type' => 'physical_care', 'label' => 'Health Care', 'desc' => 'Structure & Vitality', 'cost' => number_format($totalCost) . ' COINS'],
+                        ['type' => 'gene_therapy', 'label' => 'Bloodline Care', 'desc' => 'Purity Enhancement', 'cost' => number_format($totalCost) . ' COINS'],
                     ] as $cmd)
-                        <button wire:click="train('{{ $cmd['type'] }}')" 
-                                class="group relative p-6 bg-aviary-oak/60 hover:bg-aviary-blue rounded-[2rem] border border-aviary-brass/10 transition-all duration-500 text-left overflow-hidden active:scale-95 shadow-xl galvanized-border">
-                            <div class="absolute top-0 right-0 w-24 h-24 bg-white/5 -mr-12 -mt-12 rounded-full blur-2xl group-hover:bg-black/10 transition-colors"></div>
-                            <div class="relative z-10 flex flex-col h-full justify-between">
+                        <button wire:click="train('{{ $cmd['type'] }}')"
+                                class="group relative overflow-hidden rounded-[2rem] border border-aviary-brass/10 bg-aviary-oak/60 p-6 text-left shadow-xl transition-all duration-500 active:scale-95 hover:bg-aviary-blue galvanized-border">
+                            <div class="absolute right-0 top-0 -mr-12 -mt-12 h-24 w-24 rounded-full bg-white/5 blur-2xl transition-colors group-hover:bg-black/10"></div>
+                            <div class="relative z-10 flex h-full flex-col justify-between">
                                 <div>
-                                    <span class="block text-[8px] font-black text-aviary-feather/40 group-hover:text-white uppercase tracking-widest mb-2 italic">{{ $cmd['desc'] }}</span>
-                                    <h4 class="text-sm md:text-base font-industrial font-black text-white group-hover:text-white uppercase italic tracking-tighter">{{ $cmd['label'] }}</h4>
+                                    <span class="mb-2 block text-[8px] font-black uppercase italic tracking-widest text-aviary-feather/40 group-hover:text-white">{{ $cmd['desc'] }}</span>
+                                    <h4 class="text-sm font-industrial font-black uppercase italic tracking-tighter text-white md:text-base">{{ $cmd['label'] }}</h4>
                                 </div>
-                                <div class="mt-8 flex justify-between items-end border-t border-aviary-brass/10 group-hover:border-white/20 pt-4">
-                                    <span class="text-[10px] font-mono font-bold text-aviary-brass group-hover:text-white uppercase italic">{{ $cmd['cost'] }}</span>
-                                    <svg class="w-4 h-4 text-aviary-feather/40 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                <div class="mt-8 flex items-end justify-between border-t border-aviary-brass/10 pt-4 group-hover:border-white/20">
+                                    <span class="text-[10px] font-mono font-bold uppercase italic text-aviary-brass group-hover:text-white">{{ $cmd['cost'] }}</span>
+                                    <svg class="h-4 w-4 text-aviary-feather/40 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                    </svg>
                                 </div>
                             </div>
                         </button>
                     @endforeach
 
-                    <!-- Restore Action -->
-                    <button wire:click="restAll" 
-                            class="p-6 bg-aviary-oak/40 border-2 border-dashed border-aviary-brass/20 hover:border-aviary-blue/40 hover:bg-aviary-blue/5 rounded-[2rem] transition-all duration-500 text-center flex flex-col items-center justify-center gap-3 group shadow-inner">
-                        <span class="text-3xl group-hover:scale-110 transition-transform">🌿</span>
+                    <button wire:click="restAll"
+                            class="flex flex-col items-center justify-center gap-3 rounded-[2rem] border-2 border-dashed border-aviary-brass/20 bg-aviary-oak/40 p-6 text-center shadow-inner transition-all duration-500 hover:border-aviary-blue/40 hover:bg-aviary-blue/5">
+                        <svg class="h-10 w-10 text-emerald-400 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3c3.9 0 7 3.1 7 7 0 2.3-1.1 4.4-2.8 5.7L12 21l-4.2-5.3C6.1 14.4 5 12.3 5 10c0-3.9 3.1-7 7-7z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9.5 10.5h5" />
+                        </svg>
                         <div class="flex flex-col">
-                            <span class="text-xs font-industrial font-black text-white uppercase italic">Full Recovery</span>
-                            <span class="text-[9px] font-mono font-bold text-emerald-400 uppercase tracking-widest italic mt-1">{{ $restCost * count($selectedPigeonIds) }} 💊 TOTAL</span>
+                            <span class="font-industrial text-xs font-black uppercase italic text-white">Full Recovery</span>
+                            <span class="mt-1 text-[9px] font-mono font-bold uppercase italic tracking-widest text-emerald-400">{{ $restCost * count($selectedPigeonIds) }} VITAMINS TOTAL</span>
                         </div>
                     </button>
                 </div>
-                
-                <!-- Bird Analytics: Physical Registry -->
+
                 <div class="space-y-6">
                     <div class="flex items-center gap-3">
                         <div class="h-4 w-1 bg-aviary-brass"></div>
-                        <h3 class="text-[10px] font-black text-white uppercase tracking-[0.2em] italic">Physical Analytics</h3>
+                        <h3 class="text-[10px] font-black uppercase italic tracking-[0.2em] text-white">Physical Analytics</h3>
                     </div>
 
                     <div class="grid grid-cols-1 gap-8">
                         @forelse($selectedPigeons as $pigeon)
-                            <div class="group relative bg-aviary-oak/60 rounded-[3rem] border-2 border-aviary-brass/10 transition-all duration-500 overflow-hidden shadow-2xl hover:border-aviary-blue/30 galvanized-border">
-                                <div class="bg-gradient-to-r from-aviary-timber to-aviary-oak p-6 border-b border-aviary-brass/10 relative">
-                                    <div class="absolute top-0 right-0 p-4 opacity-[0.03] text-4xl font-industrial font-black italic select-none pointer-events-none text-aviary-brass uppercase">{{ $pigeon->type }}</div>
-                                    
-                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative z-10">
+                            <div id="trained-{{ $pigeon->id }}" class="group relative scroll-mt-32 overflow-hidden rounded-[3rem] border-2 border-aviary-brass/10 bg-aviary-oak/60 shadow-2xl transition-all duration-500 hover:border-aviary-blue/30 galvanized-border">
+                                <div class="relative border-b border-aviary-brass/10 bg-gradient-to-r from-aviary-timber to-aviary-oak p-6">
+                                    <div class="pointer-events-none absolute top-0 right-0 p-4 text-4xl font-industrial font-black uppercase italic text-aviary-brass opacity-[0.03]">{{ $pigeon->type }}</div>
+
+                                    <div class="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                                         <div class="flex items-center gap-6">
-                                            <div class="relative w-16 h-16 shrink-0">
-                                                <div class="absolute inset-0 bg-aviary-blue/10 rounded-2xl animate-pulse"></div>
-                                                <div class="relative w-full h-full bg-aviary-timber rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-aviary-brass/20">
-                                                    🕊️
+                                            <div class="relative shrink-0">
+                                                <div class="absolute inset-0 animate-pulse rounded-2xl bg-aviary-blue/10"></div>
+                                                <div class="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-aviary-brass/20 bg-aviary-timber text-3xl shadow-inner">
+                                                    🕊
                                                 </div>
-                                                <div class="absolute -top-2 -left-2 bg-aviary-blue text-white font-industrial font-black text-[10px] px-2 py-0.5 rounded shadow-lg italic">
+                                                <div class="absolute -left-2 -top-2 rounded shadow-lg bg-aviary-blue px-2 py-0.5 text-[10px] font-industrial font-black italic text-white">
                                                     LV.{{ $pigeon->level }}
                                                 </div>
                                             </div>
+
                                             <div>
-                                                <h4 class="text-xl md:text-3xl font-industrial font-black text-white uppercase italic tracking-tighter leading-none mb-2">{{ $pigeon->name }}</h4>
+                                                <h4 class="mb-2 text-xl font-industrial font-black uppercase italic leading-none tracking-tighter text-white md:text-3xl">{{ $pigeon->name }}</h4>
+                                                <x-pigeon.registry-meta :pigeon="$pigeon" size="sm" class="mb-3" />
                                                 <div class="flex flex-wrap gap-2">
-                                                    <span class="text-[9px] font-black uppercase tracking-widest border border-aviary-brass/10 px-3 py-1 rounded-full bg-black/40 text-aviary-feather/60">{{ $pigeon->rarity }} Heritage</span>
-                                                    <span class="text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-aviary-blue/20 text-aviary-blue border-aviary-blue/20' : 'bg-aviary-rose/20 text-aviary-rose border-aviary-rose/20' }} px-3 py-1 border rounded-full">
+                                                    <span class="rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-widest {{ $pigeon->gender == 'male' ? 'bg-aviary-blue/20 text-aviary-blue border-aviary-blue/20' : 'bg-aviary-rose/20 text-aviary-rose border-aviary-rose/20' }}">
                                                         {{ $pigeon->gender == 'male' ? '♂ COCK' : '♀ HEN' }}
                                                     </span>
+                                                    @if(isset($statGains[$pigeon->id]))
+                                                        <span class="rounded-full border border-green-500/20 bg-green-500/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-green-300">
+                                                            Updated
+                                                        </span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="text-left sm:text-right bg-black/40 p-4 rounded-2xl border border-aviary-brass/10 min-w-[140px] shadow-inner">
-                                            <span class="text-[10px] font-black text-aviary-feather/40 uppercase tracking-widest block mb-2 italic">Condition Ring</span>
-                                            <div class="flex items-center sm:justify-end gap-4">
+
+                                        <div class="min-w-[140px] rounded-2xl border border-aviary-brass/10 bg-black/40 p-4 shadow-inner text-left sm:text-right">
+                                            <span class="mb-2 block text-[10px] font-black uppercase italic tracking-widest text-aviary-feather/40">Condition Ring</span>
+                                            <div class="flex items-center gap-4 sm:justify-end">
                                                 <span class="text-2xl font-mono font-bold text-white">{{ $pigeon->energy }}%</span>
-                                                <div class="relative w-8 h-8">
-                                                    <svg class="w-8 h-8 transform -rotate-90">
+                                                <div class="relative h-8 w-8">
+                                                    <svg class="h-8 w-8 -rotate-90 transform">
                                                         <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="3" fill="transparent" class="text-aviary-oak" />
                                                         <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="3" fill="transparent"
                                                                 stroke-dasharray="88"
@@ -169,111 +242,123 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    @if(isset($statGains[$pigeon->id]))
+                                        <div class="relative z-10 mt-5 flex flex-wrap gap-2">
+                                            @foreach($statGains[$pigeon->id] as $stat => $gain)
+                                                <span class="rounded-full border border-green-500/20 bg-green-500/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-green-300">
+                                                    +{{ $gain }} {{ $summaryStats[$stat] ?? strtoupper($stat) }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
 
-                                <div class="p-6 md:p-8 space-y-10">
-                                    <!-- Progress Ledger -->
+                                <div class="space-y-10 p-6 md:p-8">
                                     @php
                                         $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
                                         $required = $pigeon->required_stats;
                                         $progress = min(100, ($totalStats / ($required ?: 1)) * 100);
                                         $loftLevel = Auth::user()->loft->level;
                                     @endphp
-                                    <div class="bg-black/30 p-6 rounded-[2rem] border border-aviary-brass/10 shadow-inner">
-                                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-6">
+
+                                    <div class="rounded-[2rem] border border-aviary-brass/10 bg-black/30 p-6 shadow-inner">
+                                        <div class="mb-6 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                                             <div class="flex flex-col">
-                                                <span class="text-[11px] font-black uppercase tracking-widest text-aviary-feather/40 mb-1 italic">Promotion Registry</span>
-                                                <span class="text-[10px] font-mono font-bold text-aviary-brass/60 uppercase italic">{{ $totalStats }} / {{ $required }} Accumulated XP</span>
+                                                <span class="mb-1 text-[11px] font-black uppercase italic tracking-widest text-aviary-feather/40">Promotion Registry</span>
+                                                <span class="text-[10px] font-mono font-bold uppercase italic text-aviary-brass/60">{{ $totalStats }} / {{ $required }} Accumulated XP</span>
                                             </div>
                                             @if($pigeon->level < $loftLevel)
                                                 <button wire:click="levelUp({{ $pigeon->id }})"
-                                                    @if($totalStats < $required) disabled @endif
-                                                    class="w-full sm:w-auto px-10 py-3 rounded-2xl font-black font-industrial italic uppercase text-xs transition-all shadow-xl
-                                                        {{ $totalStats >= $required 
-                                                            ? 'bg-aviary-brass text-white hover:bg-aviary-blue border border-white/10' 
-                                                            : 'bg-aviary-timber/50 text-aviary-feather/20 cursor-not-allowed border border-white/5' }}">
+                                                        @if($totalStats < $required) disabled @endif
+                                                        class="w-full rounded-2xl border border-white/10 px-10 py-3 font-industrial text-xs font-black uppercase italic shadow-xl transition-all sm:w-auto
+                                                        {{ $totalStats >= $required ? 'bg-aviary-brass text-white hover:bg-aviary-blue' : 'cursor-not-allowed border-white/5 bg-aviary-timber/50 text-aviary-feather/20' }}">
                                                     Authorize Rank Up
                                                 </button>
                                             @else
-                                                <div class="px-6 py-3 bg-red-950/20 border border-red-500/20 rounded-2xl flex items-center gap-3">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
-                                                    <span class="text-[9px] font-black text-red-500 uppercase italic tracking-widest">Loft Level Limit Reached</span>
+                                                <div class="flex items-center gap-3 rounded-2xl border border-red-500/20 bg-red-950/20 px-6 py-3">
+                                                    <span class="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse"></span>
+                                                    <span class="text-[9px] font-black uppercase italic tracking-widest text-red-500">Loft Level Limit Reached</span>
                                                 </div>
                                             @endif
                                         </div>
-                                        <div class="w-full h-2.5 bg-aviary-oak rounded-full overflow-hidden p-[1px] border border-white/5 shadow-inner">
-                                            <div class="h-full bg-gradient-to-r from-aviary-brass to-white transition-all duration-1000 shadow-[0_0_15px_rgba(184,134,11,0.4)] rounded-full" style="width: {{ $progress }}%"></div>
+
+                                        <div class="h-2.5 w-full overflow-hidden rounded-full border border-white/5 bg-aviary-oak p-[1px] shadow-inner">
+                                            <div class="h-full rounded-full bg-gradient-to-r from-aviary-brass to-white shadow-[0_0_15px_rgba(184,134,11,0.4)] transition-all duration-1000" style="width: {{ $progress }}%"></div>
                                         </div>
                                     </div>
 
-                                    <!-- Technical Matrix -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 font-mono">
+                                    <div class="grid grid-cols-1 gap-10 font-mono md:grid-cols-2 md:gap-16">
                                         <div class="space-y-6">
-                                            <h4 class="text-[11px] font-black text-aviary-feather/40 uppercase tracking-[0.3em] mb-6 flex items-center gap-3 italic">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-aviary-brass"></span> Performance Matrix
+                                            <h4 class="mb-6 flex items-center gap-3 text-[11px] font-black uppercase italic tracking-[0.3em] text-aviary-feather/40">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-aviary-brass"></span> Performance Matrix
                                             </h4>
                                             @foreach(['speed' => 'SPD', 'endurance' => 'END', 'navigation' => 'NAV', 'temperament' => 'TMP', 'loyalty' => 'LOY', 'intelligence' => 'INT'] as $stat => $abbr)
                                                 <div class="relative">
-                                                    <div class="flex justify-between items-end mb-2">
-                                                        <span class="text-[10px] font-bold text-aviary-feather/60 uppercase italic tracking-widest">{{ $abbr }}</span>
+                                                    <div class="mb-2 flex items-end justify-between">
+                                                        <span class="text-[10px] font-bold uppercase italic tracking-widest text-aviary-feather/60">{{ $abbr }}</span>
                                                         <div class="flex items-center gap-3">
                                                             @if(isset($statGains[$pigeon->id][$stat]))
-                                                                <span class="text-[10px] font-bold text-green-500 animate-pulse">+{{ $statGains[$pigeon->id][$stat] }}</span>
+                                                                <span class="animate-pulse text-[10px] font-bold text-green-500">+{{ $statGains[$pigeon->id][$stat] }}</span>
                                                             @endif
                                                             <span class="text-xs font-bold {{ isset($statGains[$pigeon->id][$stat]) ? 'text-green-500' : 'text-white' }}">{{ $pigeon->$stat }}</span>
                                                         </div>
                                                     </div>
-                                                    <div class="flex-1 h-1 bg-aviary-oak rounded-full overflow-hidden shadow-inner">
-                                                        <div class="h-full {{ isset($statGains[$pigeon->id][$stat]) ? 'bg-green-600 shadow-[0_0_10px_#16a34a]' : ($stat === 'intelligence' ? 'bg-aviary-blue' : 'bg-aviary-brass/80') }} transition-all duration-1000" style="width: {{ min(100, ($pigeon->$stat / (in_array($stat, ['loyalty', 'intelligence']) ? 100 : ($pigeon->level * 10 ?: 10))) * 100) }}%"></div>
+                                                    <div class="h-1 overflow-hidden rounded-full bg-aviary-oak shadow-inner">
+                                                        <div class="h-full transition-all duration-1000 {{ isset($statGains[$pigeon->id][$stat]) ? 'bg-green-600 shadow-[0_0_10px_#16a34a]' : ($stat === 'intelligence' ? 'bg-aviary-blue' : 'bg-aviary-brass/80') }}"
+                                                             style="width: {{ min(100, ($pigeon->$stat / (in_array($stat, ['loyalty', 'intelligence']) ? 100 : ($pigeon->level * 10 ?: 10))) * 100) }}%"></div>
                                                     </div>
                                                 </div>
                                             @endforeach
                                         </div>
-                                        <div class="space-y-6 bg-aviary-timber/30 p-8 rounded-[2.5rem] border border-aviary-brass/10 h-fit backdrop-blur-sm shadow-inner">
-                                            <h4 class="text-[11px] font-black text-aviary-feather/40 uppercase tracking-[0.3em] text-center mb-8 italic">Appearance Grade</h4>
+
+                                        <div class="h-fit space-y-6 rounded-[2.5rem] border border-aviary-brass/10 bg-aviary-timber/30 p-8 shadow-inner backdrop-blur-sm">
+                                            <h4 class="text-center text-[11px] font-black uppercase italic tracking-[0.3em] text-aviary-feather/40">Appearance Grade</h4>
                                             <div class="grid grid-cols-2 gap-x-8 gap-y-5">
                                                 @foreach(['eyes' => 'EYE', 'beak' => 'BEK', 'legs' => 'LEG', 'feather_quality' => 'FTH', 'pattern' => 'PAT', 'color' => 'CLR', 'purity' => 'BLO'] as $stat => $abbr)
                                                     <div class="flex flex-col border-b border-white/5 pb-2">
-                                                        <div class="flex justify-between items-center">
-                                                            <span class="text-[9px] text-aviary-feather/40 uppercase font-bold italic tracking-widest">{{ $abbr }}</span>
+                                                        <div class="flex items-center justify-between">
+                                                            <span class="text-[9px] font-bold uppercase italic tracking-widest text-aviary-feather/40">{{ $abbr }}</span>
                                                             <div class="flex items-center gap-2">
                                                                 @if(isset($statGains[$pigeon->id][$stat]))
                                                                     <span class="text-[9px] font-bold text-green-500">+{{ $statGains[$pigeon->id][$stat] }}</span>
                                                                 @endif
-                                                                <span class="text-xs {{ isset($statGains[$pigeon->id][$stat]) ? 'text-green-500' : 'text-white' }} font-bold">{{ number_format($pigeon->$stat, 1) }}</span>
+                                                                <span class="text-xs font-bold {{ isset($statGains[$pigeon->id][$stat]) ? 'text-green-500' : 'text-white' }}">{{ number_format($pigeon->$stat, 1) }}</span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 @endforeach
                                             </div>
-                                            <div class="mt-8 pt-6 border-t border-aviary-brass/10 text-center">
-                                                <span class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-[0.2em] block mb-2 italic">Official Score</span>
-                                                <span class="text-5xl font-industrial font-black text-aviary-brass trophy-gold italic">{{ $pigeon->stat_grades['beauty'] }}</span>
+
+                                            <div class="mt-8 border-t border-aviary-brass/10 pt-6 text-center">
+                                                <span class="mb-2 block text-[9px] font-black uppercase italic tracking-[0.2em] text-aviary-feather/40">Official Score</span>
+                                                <span class="text-5xl font-industrial font-black italic text-aviary-brass trophy-gold">{{ $pigeon->stat_grades['beauty'] }}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Registry Footer -->
-                                <div class="px-8 py-5 bg-aviary-timber/60 flex justify-between items-center border-t border-aviary-brass/10 relative overflow-hidden">
+                                <div class="relative overflow-hidden border-t border-aviary-brass/10 bg-aviary-timber/60 px-8 py-5">
                                     <div class="absolute inset-0 bg-gradient-to-r from-aviary-blue/5 to-transparent"></div>
-                                    <div class="flex gap-8 relative z-10">
-                                        <span class="text-[10px] font-bold text-aviary-feather/40 uppercase tracking-widest italic flex items-center gap-3">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-aviary-blue/40"></span> 
-                                            Duty: {{ $pigeon->status }}
-                                        </span>
-                                        <span class="text-[10px] font-bold text-aviary-feather/40 uppercase tracking-widest italic flex items-center gap-3">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-aviary-brass/40"></span> 
-                                            Age: {{ $pigeon->birth_at ? $pigeon->birth_at->diffInDays(now()) : 0 }} Days
-                                        </span>
+                                    <div class="relative z-10 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                        <div class="flex flex-wrap gap-8">
+                                            <span class="flex items-center gap-3 text-[10px] font-bold uppercase italic tracking-widest text-aviary-feather/40">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-aviary-blue/40"></span>
+                                                Duty: {{ $pigeon->status }}
+                                            </span>
+                                            <span class="flex items-center gap-3 text-[10px] font-bold uppercase italic tracking-widest text-aviary-feather/40">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-aviary-brass/40"></span>
+                                                Age: {{ $pigeon->birth_at ? $pigeon->birth_at->diffInDays(now()) : 0 }} Days
+                                            </span>
+                                        </div>
+                                        <span class="text-[8px] font-black uppercase italic tracking-[0.4em] text-aviary-feather/20">Registry Verified | Yard Ready</span>
                                     </div>
-                                    <span class="text-[8px] font-black text-aviary-feather/20 uppercase tracking-[0.4em] italic relative z-10">Registry Verified • Yard Ready</span>
                                 </div>
                             </div>
                         @empty
-                            <div class="py-32 border-2 border-dashed border-aviary-brass/10 rounded-[4rem] text-center bg-aviary-oak/10">
-                                <div class="text-6xl mb-8 opacity-10">🕊️</div>
-                                <p class="font-industrial font-black text-aviary-feather/20 text-xl md:text-3xl uppercase italic tracking-[0.3em]">No Units Selected for Analysis</p>
+                            <div class="rounded-[4rem] border-2 border-dashed border-aviary-brass/10 bg-aviary-oak/10 py-32 text-center">
+                                <div class="mb-8 text-6xl opacity-10">🕊</div>
+                                <p class="font-industrial text-xl font-black uppercase italic tracking-[0.3em] text-aviary-feather/20 md:text-3xl">No Units Selected for Analysis</p>
                             </div>
                         @endforelse
                     </div>

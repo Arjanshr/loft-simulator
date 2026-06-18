@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class MarketplaceService
 {
-    public function listPigeon(Pigeon $pigeon, int $price): bool
+    public function listPigeon(Pigeon $pigeon): bool
     {
         if ($pigeon->status !== 'idle' || ($pigeon->sire_id !== null && $pigeon->birth_at->addDays(4)->isFuture())) {
             return false;
         }
+
+        $price = $pigeon->fixed_price;
 
         Listing::create([
             'loft_id' => $pigeon->loft_id,

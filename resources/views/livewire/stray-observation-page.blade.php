@@ -22,9 +22,9 @@
                                 <h4 class="font-industrial font-black text-white uppercase tracking-widest text-lg italic truncate">{{ $stray->name }}</h4>
                             </div>
                             <div class="flex gap-2">
-                                <span class="text-[8px] font-black text-indigo-300 uppercase tracking-widest border border-indigo-500/20 px-3 py-1 rounded-full bg-indigo-500/5 italic">{{ $stray->rarity }} Heritage</span>
                                 <span class="text-[8px] font-black text-indigo-300 uppercase tracking-widest border border-indigo-500/20 px-3 py-1 rounded-full bg-indigo-500/5 italic">{{ $stray->type }} Strain</span>
                             </div>
+                            <x-pigeon.registry-meta :pigeon="$stray" size="sm" class="mt-3" />
                         </div>
 
                         <div class="flex justify-between items-center border-t border-white/5 pt-6 relative z-10">

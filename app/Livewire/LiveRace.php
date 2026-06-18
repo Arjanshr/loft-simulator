@@ -41,6 +41,15 @@ class LiveRace extends Component
         $this->isSimulating = false;
     }
 
+    public function redoRace()
+    {
+        $race = Race::findOrFail($this->raceId);
+
+        return redirect()->route('tournaments', [
+            'type' => $race->race_type,
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.live-race')

@@ -21,6 +21,15 @@ class Marketplace extends Component
         'gender' => ['except' => ''],
     ];
 
+    public function clearFilters(): void
+    {
+        $this->search = '';
+        $this->type = '';
+        $this->gender = '';
+        $this->minPrice = '';
+        $this->maxPrice = '';
+    }
+
     public function buy($listingId, MarketplaceService $marketplaceService)
     {
         $listing = Listing::findOrFail($listingId);

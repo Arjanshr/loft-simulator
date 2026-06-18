@@ -16,7 +16,7 @@ class MyListings extends Component
     {
         $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
         
-        if ($marketplaceService->listPigeon($pigeon, $pigeon->fixed_price)) {
+        if ($marketplaceService->listPigeon($pigeon)) {
             session()->flash('message', "Pigeon listed for {$pigeon->fixed_price} 💰!");
         } else {
             session()->flash('error', 'Could not list pigeon.');

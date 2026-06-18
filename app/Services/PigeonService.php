@@ -65,6 +65,8 @@ class PigeonService
 
     public function createAdult(Loft $loft, string $name, string $gender): Pigeon
     {
+        $intelligence = Pigeon::rollCreationIntelligence();
+
         return Pigeon::create([
             'loft_id' => $loft->id,
             'name' => $name,
@@ -74,16 +76,17 @@ class PigeonService
             'birth_at' => now()->subDays(10), // Adult
             'hatch_at' => now()->subDays(6),
             'eyes' => 1, 'beak' => 1, 'legs' => 1, 'feather_quality' => 1, 'pattern' => 1, 'color' => 1, 'purity' => 1,
-            'rarity' => 'common',
             'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
             'energy' => 100, 'status' => 'idle',
             'loyalty' => 100,
-            'intelligence' => rand(10, 50),
+            'intelligence' => $intelligence,
         ]);
     }
 
     public function createJuvenile(Loft $loft, string $name): Pigeon
     {
+        $intelligence = Pigeon::rollCreationIntelligence();
+
         return Pigeon::create([
             'loft_id' => $loft->id,
             'name' => $name,
@@ -93,11 +96,10 @@ class PigeonService
             'birth_at' => now()->subDays(2), // Juvenile
             'hatch_at' => now()->subDays(1),
             'eyes' => 1, 'beak' => 1, 'legs' => 1, 'feather_quality' => 1, 'pattern' => 1, 'color' => 1, 'purity' => 1,
-            'rarity' => 'common',
             'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
             'energy' => 100, 'status' => 'idle',
             'loyalty' => 100,
-            'intelligence' => rand(10, 50),
+            'intelligence' => $intelligence,
         ]);
     }
 
@@ -173,6 +175,8 @@ public function levelUpPigeon(Pigeon $pigeon): bool
 
 public function createStarter(Loft $loft, string $name): Pigeon
 {
+    $intelligence = Pigeon::rollCreationIntelligence();
+
     return Pigeon::create([
         'loft_id' => $loft->id,
         'name' => $name,
@@ -185,7 +189,6 @@ public function createStarter(Loft $loft, string $name): Pigeon
         'pattern' => rand(1, 5),
         'color' => rand(1, 5),
         'purity' => rand(1, 5),
-        'rarity' => 'common',
         'speed' => rand(1, 5),
         'endurance' => rand(1, 5),
         'navigation' => rand(1, 5),
@@ -193,7 +196,7 @@ public function createStarter(Loft $loft, string $name): Pigeon
         'energy' => 100,
         'status' => 'idle',
         'loyalty' => 100,
-        'intelligence' => rand(10, 50),
+        'intelligence' => $intelligence,
     ]);
 }
 }
