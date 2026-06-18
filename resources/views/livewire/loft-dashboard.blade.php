@@ -40,10 +40,6 @@
                 <div class="flex flex-col sm:flex-row items-center gap-8 md:gap-12 w-full lg:w-auto">
                     <div class="flex flex-col gap-4">
                         <div class="text-center bg-black/40 p-6 md:p-8 rounded-3xl border border-aviary-brass/20 min-w-[180px] shadow-inner">
-                            <div class="text-4xl md:text-6xl font-industrial font-black text-aviary-brass italic">{{ number_format($loft->coins) }}</div>
-                            <div class="text-[9px] md:text-[11px] font-black text-aviary-feather/40 uppercase tracking-[0.3em] mt-3 italic">Reserve Funds (💰)</div>
-                        </div>
-                        <div class="text-center bg-black/40 p-6 md:p-8 rounded-3xl border border-aviary-brass/20 min-w-[180px] shadow-inner">
                             <div class="text-4xl md:text-6xl font-industrial font-black text-aviary-brass italic">{{ number_format($totalValue) }}</div>
                             <div class="text-[9px] md:text-[11px] font-black text-aviary-feather/40 uppercase tracking-[0.3em] mt-3 italic">Loft Value (💎)</div>
                         </div>
