@@ -16,9 +16,9 @@
                 'description' => 'Base coins for appearance upgrades.',
                 'dot' => 'bg-emerald-400 shadow-[0_0_12px_rgba(74,222,128,0.55)]',
             ],
-            'ai_lost_bird_chance' => [
-                'title' => 'AI Lost Bird Chance',
-                'description' => 'Hourly chance for eligible AI birds to go missing.',
+            'ai_lost_birds_per_human_per_hour' => [
+                'title' => 'AI Loss Rate',
+                'description' => 'Average birds lost per human player each hour.',
                 'dot' => 'bg-purple-400 shadow-[0_0_12px_rgba(192,132,252,0.55)]',
             ],
         ];
@@ -117,6 +117,8 @@
                                     <input
                                         wire:model="settings.{{ $key }}"
                                         type="number"
+                                        step="{{ $key === 'ai_lost_birds_per_human_per_hour' ? '0.1' : '1' }}"
+                                        min="0"
                                         class="w-full rounded-2xl border border-white/10 bg-aviary-oak/70 p-4 font-mono text-sm text-white shadow-inner outline-none transition focus:border-aviary-blue focus:ring-0"
                                     >
                                 </div>

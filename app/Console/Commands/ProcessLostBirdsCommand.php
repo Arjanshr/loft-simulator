@@ -13,28 +13,54 @@ class ProcessLostBirdsCommand extends Command
 {
     public function handle(GameSettingsService $settingsService)
     {
-        $lostBirdChance = max(0, min(100, (int) $settingsService->get('ai_lost_bird_chance', 20)));
+        $birdsPerHumanPerHour = $settingsService->get('ai_lost_birds_per_human_per_hour', null);
 
-        // 1. Trigger new lost birds (AI Lofts)
-        $aiLofts = \App\Models\Loft::whereHas('user', fn($q) => $q->where('is_ai', true))->get();
-        foreach ($aiLofts as $loft) {
-            $pigeon = $loft->pigeons()
+        if ($birdsPerHumanPerHour === null) {
+            $legacyChance = (float) $settingsService->get('ai_lost_bird_chance', 20);
+            $birdsPerHumanPerHour = $legacyChance > 1 ? $legacyChance / 100 : $legacyChance;
+        }
+
+        $birdsPerHumanPerHour = (float) $birdsPerHumanPerHour;
+        $birdsPerHumanPerHour = max(0, $birdsPerHumanPerHour);
+        $humanPlayerCount = \App\Models\User::where('is_ai', false)->count();
+        $expectedLosses = $humanPlayerCount * $birdsPerHumanPerHour;
+        $lossCount = (int) floor($expectedLosses);
+
+        if ((mt_rand() / mt_getrandmax()) < ($expectedLosses - $lossCount)) {
+            $lossCount++;
+        }
+
+        if ($humanPlayerCount > 0 && $lossCount > 0) {
+            // 1. Trigger new lost birds (AI Lofts)
+            $eligiblePigeons = \App\Models\Pigeon::query()
                 ->where('status', 'idle')
                 ->where('loyalty', '<', 30)
+                ->whereHas('loft', fn($q) => $q->whereHas('user', fn($userQuery) => $userQuery->where('is_ai', true)))
+                ->with('loft')
                 ->inRandomOrder()
-                ->first();
+                ->limit($lossCount)
+                ->get();
 
-            if ($pigeon && rand(1, 100) <= $lostBirdChance) {
-                $randomLoft = \App\Models\Loft::where('id', '!=', $loft->id)->inRandomOrder()->first();
-                if ($randomLoft) {
-                    $pigeon->update([
-                        'status' => 'lost',
-                        'lost_at' => now(),
-                        'stray_at_loft_id' => $randomLoft->id
-                    ]);
-                    \Illuminate\Support\Facades\Log::info("Process Lost Birds: AI pigeon {$pigeon->name} got lost from {$loft->name} at {$lostBirdChance}% chance.");
+            foreach ($eligiblePigeons as $pigeon) {
+                $originLoft = $pigeon->loft;
+                $randomLoft = \App\Models\Loft::where('id', '!=', $originLoft->id)->inRandomOrder()->first();
+
+                if (! $randomLoft) {
+                    continue;
                 }
+
+                $pigeon->update([
+                    'status' => 'lost',
+                    'lost_at' => now(),
+                    'stray_at_loft_id' => $randomLoft->id,
+                ]);
+
+                \Illuminate\Support\Facades\Log::info(
+                    "Process Lost Birds: AI pigeon {$pigeon->name} got lost from {$originLoft->name} at {$birdsPerHumanPerHour} birds/human/hour with {$humanPlayerCount} human players."
+                );
             }
+        } else {
+            $this->info('No AI losses scheduled for this tick.');
         }
 
         // 2. Process movement/return of all lost birds
