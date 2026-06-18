@@ -28,7 +28,7 @@ class FaqSeeder extends Seeder
             [
                 'category' => 'Pigeon Mastery',
                 'question' => 'How do I rank up my pigeons?',
-                'answer' => 'To promote a pigeon to the next level, it must reach a Training Milestone. Total stat points (Speed + Endurance + Navigation + Temperament) must be at least (Current Level * 30). Note: A pigeon cannot rank up higher than your current Loft Level.',
+                'answer' => 'To promote a pigeon to the next level, it must reach a Training Milestone. Total stat points must reach a specific threshold which starts at 70% of maximum stats at lower levels and scales up to 95% at higher levels. Note: A pigeon cannot rank up higher than your current Loft Level.',
             ],
             [
                 'category' => 'Pigeon Mastery',

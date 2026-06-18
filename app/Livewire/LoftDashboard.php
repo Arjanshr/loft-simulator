@@ -48,10 +48,15 @@ class LoftDashboard extends Component
         return redirect()->route('dashboard');
     }
 
+    public $totalValue = 0;
+
     public function render()
     {
+        $loft = Auth::user()->loft;
+        $this->totalValue = $loft ? $loft->pigeons->sum('fixed_price') : 0;
         return view('livewire.loft-dashboard', [
-            'loft' => Auth::user()->loft,
+            'loft' => $loft,
+            'totalValue' => $this->totalValue,
         ]);
     }
 }

@@ -8,7 +8,7 @@ This document serves as the master record for all game mechanics, processes, and
 *   **Lofts:** Every user has a loft. XP is gained from race participation and podium finishes.
     *   **Leveling:** `XP required = Level^2 * 100`. Leveling up costs `Level * 500` coins.
 *   **Pigeons:** Each pigeon has stats, a level (max 100), and aesthetic attributes.
-    *   **Leveling:** Training milestone: Total stats must reach `level * 30` to advance. Leveling up rewards: `100 * level` coins.
+    *   **Leveling:** Training milestone: Total stats must reach a threshold that starts at 70% of maximum stats at lower levels and scales non-linearly up to 95% at higher levels. Leveling up rewards: `100 * level` coins.
     *   **Renaming:** You can rename your pigeons from the Pigeon Manager.
     *   **Intelligence:** A critical stat that influences racing performance and training efficiency.
     *   **Loyalty (Future Mechanic):** Represents a pigeon's bond to its current loft.

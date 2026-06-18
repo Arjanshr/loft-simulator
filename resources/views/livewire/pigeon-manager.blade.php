@@ -21,7 +21,6 @@
                 <!-- Registry Header -->
                 <div class="bg-gradient-to-r from-aviary-timber to-aviary-oak p-6 border-b border-aviary-brass/10 relative">
                     <div class="absolute top-0 right-0 p-4 opacity-[0.05] text-4xl font-industrial font-black italic select-none pointer-events-none text-aviary-brass uppercase">{{ $pigeon->type }}</div>
-                    
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
                         <div class="flex-1 w-full">
                             <div class="flex items-center gap-3 mb-4">
@@ -30,6 +29,7 @@
                                        wire:keydown.enter="updateName({{ $pigeon->id }})"
                                        placeholder="{{ $pigeon->name }}" 
                                        class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/20 italic uppercase tracking-tight">
+                                <span class="block text-[10px] font-mono text-aviary-brass italic">Price: {{ number_format($pigeon->fixed_price, 2) }}</span>
                             </div>
                             
                             <div class="flex flex-wrap gap-2">
@@ -101,7 +101,7 @@
                     <!-- Training Ledger -->
                     @php
                         $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
-                        $required = $pigeon->level * 30;
+                        $required = $pigeon->required_stats;
                         $progress = min(100, ($totalStats / ($required ?: 1)) * 100);
                         $loftLevel = Auth::user()->loft->level;
                         $canRankUp = $totalStats >= $required && $pigeon->level < 100 && $pigeon->level < $loftLevel;
@@ -143,7 +143,7 @@
                                             <span class="text-xs font-bold text-white">{{ $pigeon->$stat }} <span class="text-aviary-brass text-[10px] ml-1">[{{ $pigeon->stat_grades[$stat] }}]</span></span>
                                         </div>
                                         <div class="h-1 bg-aviary-oak rounded-full overflow-hidden">
-                                            <div class="h-full bg-aviary-brass transition-all duration-1000" style="width: {{ ($pigeon->$stat / ($pigeon->level * 10 ?: 10)) * 100 }}%"></div>
+                                            <div class="h-full bg-aviary-brass transition-all duration-1000" style="width: {{ ($pigeon->$stat / ($pigeon->level * $pigeon->stat_limit_multiplier ?: 10)) * 100 }}%"></div>
                                         </div>
                                     </div>
                                 @endforeach

@@ -175,7 +175,7 @@
                                     <!-- Progress Ledger -->
                                     @php
                                         $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
-                                        $required = $pigeon->level * 30;
+                                        $required = $pigeon->required_stats;
                                         $progress = min(100, ($totalStats / ($required ?: 1)) * 100);
                                         $loftLevel = Auth::user()->loft->level;
                                     @endphp
@@ -224,7 +224,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-1 h-1 bg-aviary-oak rounded-full overflow-hidden shadow-inner">
-                                                        <div class="h-full {{ isset($statGains[$pigeon->id][$stat]) ? 'bg-green-600 shadow-[0_0_10px_#16a34a]' : ($stat === 'intelligence' ? 'bg-aviary-blue' : 'bg-aviary-brass/80') }} transition-all duration-1000" style="width: {{ min(100, ($pigeon->$stat / ($pigeon->level * 10 ?: 10)) * 100) }}%"></div>
+                                                        <div class="h-full {{ isset($statGains[$pigeon->id][$stat]) ? 'bg-green-600 shadow-[0_0_10px_#16a34a]' : ($stat === 'intelligence' ? 'bg-aviary-blue' : 'bg-aviary-brass/80') }} transition-all duration-1000" style="width: {{ min(100, ($pigeon->$stat / (in_array($stat, ['loyalty', 'intelligence']) ? 100 : ($pigeon->level * 10 ?: 10))) * 100) }}%"></div>
                                                     </div>
                                                 </div>
                                             @endforeach

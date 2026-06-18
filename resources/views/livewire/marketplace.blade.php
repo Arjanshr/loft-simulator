@@ -109,7 +109,7 @@
                                         <div class="flex items-center gap-4">
                                             <span class="text-[10px] text-aviary-feather/40 w-8">{{ $abbr }}</span>
                                             <div class="flex-1 h-1.5 bg-black/60 rounded-full overflow-hidden">
-                                                <div class="h-full {{ $stat === 'intelligence' ? 'bg-aviary-blue' : 'bg-aviary-brass' }} transition-all duration-1000" style="width: {{ ($listing->pigeon->$stat / ($listing->pigeon->level * 10 ?: 10)) * 100 }}%"></div>
+                                                <div class="h-full {{ $stat === 'intelligence' ? 'bg-aviary-blue' : 'bg-aviary-brass' }} transition-all duration-1000" style="width: {{ ($listing->pigeon->$stat / ($stat === 'intelligence' ? 100 : ($listing->pigeon->level * $listing->pigeon->stat_limit_multiplier ?: 10))) * 100 }}%"></div>
                                             </div>
                                             <span class="text-xs text-white font-bold w-6 text-right">{{ $listing->pigeon->$stat }}</span>
                                         </div>

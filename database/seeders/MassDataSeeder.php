@@ -43,12 +43,13 @@ class MassDataSeeder extends Seeder
                     $pigeonLevel = rand(1, $level);
                     $intelligence = rand(1, 100);
 
-                    $rarity = 'common';
-                    if ($intelligence > 99) {
-                        $rarity = 'legendary';
-                    } elseif ($intelligence > 80) {
-                        $rarity = 'rare';
-                    }
+                    $rarity = match (true) {
+                        $intelligence >= 95 => 'mythic',
+                        $intelligence >= 80 => 'legendary',
+                        $intelligence >= 60 => 'super_rare',
+                        $intelligence >= 40 => 'rare',
+                        default => 'common',
+                    };
 
                     $pigeonsData[] = [
                         'loft_id' => $aiLoft->id,

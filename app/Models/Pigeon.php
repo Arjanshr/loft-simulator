@@ -10,6 +10,19 @@ class Pigeon extends Model
 {
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saving(function ($pigeon) {
+            $pigeon->rarity = match (true) {
+                $pigeon->intelligence >= 95 => 'mythic',
+                $pigeon->intelligence >= 80 => 'legendary',
+                $pigeon->intelligence >= 60 => 'super_rare',
+                $pigeon->intelligence >= 40 => 'rare',
+                default => 'common',
+            };
+        });
+    }
+
     protected $fillable = [
         'loft_id',
         'name',
@@ -58,6 +71,15 @@ class Pigeon extends Model
     }
 
     /**
+     * Get required stats to level up.
+     */
+    public function getRequiredStatsAttribute(): int
+    {
+        $requiredMultiplier = min(38.0, 28.0 + $this->level * 0.2);
+        return (int) ($this->level * $requiredMultiplier);
+    }
+
+    /**
      * Get the pigeon's total score based on stats.
      */
     public function getTotalScoreAttribute(): float
@@ -65,7 +87,22 @@ class Pigeon extends Model
         // Score = (Stats) + (Beauty * Multiplier)
         return $this->speed + $this->endurance + $this->navigation + $this->temperament + ($this->beauty * 2);
     }
-protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute', 'vitamin_income_per_minute', 'fixed_price'];
+
+    /**
+     * Get the stat limit multiplier based on the pigeon's rarity.
+     */
+    public function getStatLimitMultiplierAttribute(): int
+    {
+        return match($this->rarity) {
+            'mythic' => 16,
+            'legendary' => 14,
+            'super_rare' => 12,
+            'rare' => 11,
+            default => 10,
+        };
+    }
+
+protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute', 'vitamin_income_per_minute', 'fixed_price', 'required_stats', 'stat_limit_multiplier'];
 
 /**
  * Get the fixed market price for this pigeon.
@@ -73,8 +110,10 @@ protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute
 public function getFixedPriceAttribute(): int
 {
     $rarityMultiplier = match(strtolower($this->rarity)) {
-        'legendary' => 5.0,
-        'rare' => 2.0,
+        'mythic' => 15.0,
+        'legendary' => 7.0,
+        'super_rare' => 3.5,
+        'rare' => 1.8,
         default => 1.0,
     };
     

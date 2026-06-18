@@ -55,8 +55,10 @@ class TrainingCenter extends Component
             if ((int)$pigeon->loft_id !== (int)$userLoft->id) continue;
 
             $intelligenceBonus = $pigeon->intelligence / config('game.training.intelligence_divisor', 20);
-            $maxGain = $points + $intelligenceBonus + ($pigeon->level * config('game.training.level_gain_multiplier', 1.5));
-            $minGain = (int)$pigeon->level;
+            // Logarithmic level scaling for training gains
+            $levelFactor = log($pigeon->level + 1) * config('game.training.level_gain_multiplier', 1.5);
+            $maxGain = $points + $intelligenceBonus + $levelFactor;
+            $minGain = 1;
             
             $cost = config('game.training.base_coin_cost', 100) + ($pigeon->beauty * config('game.training.beauty_multiplier', 10));
 
@@ -73,7 +75,7 @@ class TrainingCenter extends Component
                     $statToForce = $statsToTrain[array_rand($statsToTrain)];
 
                     foreach ($statsToTrain as $stat) {
-                        $limit = $pigeon->level * $thresholdMultiplier;
+                        $limit = in_array($stat, ['loyalty', 'intelligence']) ? 100 : $pigeon->level * $pigeon->stat_limit_multiplier;
                         if ($pigeon->{$stat} >= $limit) continue;
 
                         if ($stat === $statToForce || rand(0, 1)) {
@@ -137,7 +139,7 @@ class TrainingCenter extends Component
                         $anyAttrTrained = false;
 
                         foreach($attributes as $attr) {
-                            $limit = $pigeon->level * $thresholdMultiplier;
+                            $limit = $pigeon->level * $pigeon->stat_limit_multiplier;
                             if ($pigeon->{$attr} >= $limit) continue;
 
                             $attrGains = 0;
@@ -161,7 +163,7 @@ class TrainingCenter extends Component
                     } elseif ($type === 'physical_care') {
                         $attrPool = ['eyes', 'beak', 'legs'];
                         $attr = $attrPool[rand(0,2)];
-                        $limit = $pigeon->level * $thresholdMultiplier;
+                        $limit = $pigeon->level * $pigeon->stat_limit_multiplier;
                         
                         if ($pigeon->{$attr} < $limit) {
                             $gain = rand((int)$minGain, (int)ceil($maxGain));
@@ -175,7 +177,7 @@ class TrainingCenter extends Component
                             }
                         }
                     } else {
-                        $limit = $pigeon->level * $thresholdMultiplier;
+                        $limit = $pigeon->level * $pigeon->stat_limit_multiplier;
                         if ($pigeon->purity < $limit) {
                             $gain = rand((int)$minGain, (int)ceil($maxGain));
                             $newVal = min($limit, $pigeon->purity + $gain);

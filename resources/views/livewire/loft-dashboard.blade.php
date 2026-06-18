@@ -38,9 +38,15 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row items-center gap-8 md:gap-12 w-full lg:w-auto">
-                    <div class="text-center bg-black/40 p-6 md:p-8 rounded-3xl border border-aviary-brass/20 min-w-[180px] shadow-inner">
-                        <div class="text-4xl md:text-6xl font-industrial font-black text-aviary-brass italic">{{ number_format($loft->coins) }}</div>
-                        <div class="text-[9px] md:text-[11px] font-black text-aviary-feather/40 uppercase tracking-[0.3em] mt-3 italic">Reserve Funds (💰)</div>
+                    <div class="flex flex-col gap-4">
+                        <div class="text-center bg-black/40 p-6 md:p-8 rounded-3xl border border-aviary-brass/20 min-w-[180px] shadow-inner">
+                            <div class="text-4xl md:text-6xl font-industrial font-black text-aviary-brass italic">{{ number_format($loft->coins) }}</div>
+                            <div class="text-[9px] md:text-[11px] font-black text-aviary-feather/40 uppercase tracking-[0.3em] mt-3 italic">Reserve Funds (💰)</div>
+                        </div>
+                        <div class="text-center bg-black/40 p-6 md:p-8 rounded-3xl border border-aviary-brass/20 min-w-[180px] shadow-inner">
+                            <div class="text-4xl md:text-6xl font-industrial font-black text-aviary-brass italic">{{ number_format($totalValue) }}</div>
+                            <div class="text-[9px] md:text-[11px] font-black text-aviary-feather/40 uppercase tracking-[0.3em] mt-3 italic">Loft Value (💎)</div>
+                        </div>
                     </div>
                     
                     @if($loft->xp >= $xpRequired)
@@ -91,7 +97,10 @@
                                     <div class="w-10 h-10 rounded-xl bg-aviary-blue/10 flex items-center justify-center font-industrial font-black text-aviary-blue text-xs italic border border-aviary-blue/20">
                                         LV.{{ $p->level }}
                                     </div>
-                                    <span class="font-industrial font-black text-white uppercase text-sm md:text-lg tracking-widest truncate max-w-[150px] md:max-w-none italic">{{ $p->name }}</span>
+                                                                        <div class="flex flex-col">
+                                        <span class="font-industrial font-black text-white uppercase text-sm md:text-lg tracking-widest truncate max-w-[150px] md:max-w-none italic">{{ $p->name }}</span>
+                                        <span class="block text-[10px] font-mono text-aviary-brass italic">Price: {{ number_format($p->fixed_price, 2) }}</span>
+                                    </div>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <span class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-widest italic mr-2">Score</span>

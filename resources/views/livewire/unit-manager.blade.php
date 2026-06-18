@@ -27,7 +27,7 @@
         
         <div class="flex flex-wrap gap-4 justify-center">
             @foreach(['typeFilter' => ['all' => 'ALL STRAINS', 'racer' => 'RACER', 'fancy' => 'FANCY', 'highflyer' => 'HIGHFLYER'],
-                      'rarityFilter' => ['all' => 'ALL HERITAGES', 'common' => 'COMMON', 'rare' => 'RARE', 'legendary' => 'LEGENDARY'],
+                      'rarityFilter' => ['all' => 'ALL HERITAGES', 'common' => 'COMMON', 'rare' => 'RARE', 'super_rare' => 'SUPER RARE', 'legendary' => 'LEGENDARY', 'mythic' => 'MYTHIC'],
                       'sortBy' => ['level' => 'SORT: RANK', 'energy' => 'SORT: CONDITION', 'speed' => 'SORT: SPEED', 'beauty' => 'SORT: APPEARANCE']] as $wire => $opts)
                 <div class="relative group">
                     <select wire:model.live="{{ $wire }}" class="bg-aviary-oak/80 border-2 border-aviary-brass/10 rounded-xl pl-6 pr-10 py-3 text-[10px] font-black text-aviary-brass uppercase tracking-widest focus:border-aviary-blue transition-all cursor-pointer appearance-none shadow-md italic">
@@ -59,7 +59,8 @@
                                        class="bg-transparent border-none p-0 text-2xl font-industrial font-black text-white focus:ring-0 w-full placeholder-white/10 italic uppercase tracking-tight">
                             </div>
                             
-                            <div class="flex flex-wrap gap-2">
+                            <span class="block text-[10px] font-mono text-aviary-brass italic">Price: {{ number_format($pigeon->fixed_price, 2) }}</span>
+<div class="flex flex-wrap gap-2">
                                 <span class="text-[9px] font-black uppercase tracking-widest border border-aviary-brass/10 text-aviary-feather/40 px-3 py-1 rounded-full bg-black/20">{{ $pigeon->rarity }} Heritage</span>
                                 <!-- Type Label -->
                                 <span class="text-[9px] font-black uppercase tracking-widest bg-white/10 text-white px-3 py-1 rounded-full border border-white/20">
@@ -99,7 +100,7 @@
                     <!-- Performance Matrix -->
                     @php
                         $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
-                        $required = $pigeon->level * 30;
+                        $required = $pigeon->required_stats;
                         $progress = min(100, ($totalStats / ($required ?: 1)) * 100);
                         $loftLevel = Auth::user()->loft->level;
                     @endphp
@@ -163,7 +164,7 @@
                                             <span class="text-xs font-bold text-white italic">{{ $pigeon->$stat }} <span class="text-aviary-brass text-[9px] ml-1">[{{ $pigeon->stat_grades[$stat] }}]</span></span>
                                         </div>
                                         <div class="h-1 bg-aviary-oak rounded-full overflow-hidden shadow-inner">
-                                            <div class="h-full bg-aviary-brass/80 transition-all duration-1000 shadow-[0_0_5px_rgba(184,134,11,0.3)]" style="width: {{ min(100, ($pigeon->$stat / ($pigeon->level * 10 ?: 10)) * 100) }}%"></div>
+                                            <div class="h-full bg-aviary-brass/80 transition-all duration-1000 shadow-[0_0_5px_rgba(184,134,11,0.3)]" style="width: {{ min(100, ($pigeon->$stat / ($pigeon->level * $pigeon->stat_limit_multiplier ?: 10)) * 100) }}%"></div>
                                         </div>
                                     </div>
                                 @endforeach

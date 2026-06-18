@@ -53,6 +53,26 @@
                             @endif
                         </div>
                     @endforeach
+
+                <!-- Most Expensive Pigeon -->
+                @if($mostExpensivePigeon)
+                <div class="mt-8 p-6 rounded-[2rem] bg-aviary-oak/30 border-2 border-aviary-brass/20 galvanized-border">
+                    <h3 class="text-xl font-black text-aviary-brass uppercase tracking-widest mb-4 italic">Most Expensive Pigeon</h3>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-aviary-brass text-white flex items-center justify-center font-industrial font-black text-2xl">
+                            1
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="font-industrial font-black text-white uppercase">{{ $mostExpensivePigeon->name }}</span>
+                            <span class="text-aviary-feather/40 text-xs">{{ $mostExpensivePigeon->loft->name }}</span>
+                        </div>
+                        <div class="ml-auto text-right">
+                            <span class="block text-aviary-feather/40 text-xs uppercase">Price</span>
+                            <span class="font-mono font-bold text-lg text-aviary-brass">{{ number_format($mostExpensivePigeon->fixed_price, 2) }}</span>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 </div>
             </div>
 
@@ -90,6 +110,25 @@
                             @endif
                         </div>
                     @endforeach
+
+                <!-- Most Valuable Lofts -->
+                <div class="mt-8 space-y-4">
+                    <h3 class="text-xl font-black text-aviary-brass uppercase tracking-widest italic mb-4">Most Valuable Lofts</h3>
+                    @foreach($topValuableLofts as $index => $vLoft)
+                    <div class="group relative flex justify-between items-center p-4 rounded-[1.5rem] bg-aviary-oak/20 border border-aviary-brass/10 galvanized-border">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-aviary-brass text-white flex items-center justify-center font-black">{{ $index + 1 }}</div>
+                            <a href="{{ route('loft.view', ['loftId' => \App\Models\Loft::where('name', $vLoft['name'])->first()->id]) }}" class="font-industrial font-black text-white uppercase tracking-widest hover:text-aviary-blue transition-colors">
+                                {{ $vLoft['name'] }}
+                            </a>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-aviary-feather/40 text-xs uppercase">Value</span>
+                            <span class="font-mono font-bold text-lg text-aviary-brass">{{ number_format($vLoft['value'], 2) }}</span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
                 </div>
             </div>
         </div>

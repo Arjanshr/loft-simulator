@@ -85,6 +85,7 @@ class BreedingService
                 'birth_at' => now(),
                 'hatch_at' => now(),
                 'status' => 'chick',
+                'loyalty' => 100,
             ]));
 
             (new ActivityService())->log($loft, "HATCHED: A Level {$chick->level} {$chick->type} chick named {$chick->name} has been born!");
@@ -98,7 +99,7 @@ class BreedingService
 
     private function calculateInheritedStats(Pigeon $sire, Pigeon $dam): array
     {
-        $attributes = ['eyes', 'beak', 'legs', 'feather_quality', 'pattern', 'color', 'purity', 'speed', 'endurance', 'navigation', 'temperament'];
+        $attributes = ['eyes', 'beak', 'legs', 'feather_quality', 'pattern', 'color', 'purity', 'speed', 'endurance', 'navigation', 'temperament', 'intelligence'];
         $inherited = [];
 
         foreach ($attributes as $attr) {

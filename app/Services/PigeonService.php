@@ -77,6 +77,8 @@ class PigeonService
             'rarity' => 'common',
             'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
             'energy' => 100, 'status' => 'idle',
+            'loyalty' => 100,
+            'intelligence' => rand(10, 50),
         ]);
     }
 
@@ -94,6 +96,8 @@ class PigeonService
             'rarity' => 'common',
             'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
             'energy' => 100, 'status' => 'idle',
+            'loyalty' => 100,
+            'intelligence' => rand(10, 50),
         ]);
     }
 
@@ -107,7 +111,7 @@ class PigeonService
 
         // Logic constraint: Pigeon level can't exceed Loft level
         // Pigeon can only have max X points per level
-        $multiplier = config('game.training.stat_threshold_multiplier', 10);
+        $multiplier = $pigeon->stat_limit_multiplier;
         if ($pigeon->{$stat} >= ($pigeon->level * $multiplier)) {
             return false;
         }
@@ -146,17 +150,16 @@ public function levelUpPigeon(Pigeon $pigeon): bool
         return false;
     }
 
-    // Milestone: Total stat points must be at least level * X to advance
+    // Milestone: Total stat points must be at least required stats to advance
     $totalStats = $pigeon->speed + $pigeon->endurance + $pigeon->navigation + $pigeon->temperament;
-    $multiplier = config('game.pigeons.level_up_stat_multiplier', 30);
-    $requiredStats = $pigeon->level * $multiplier;
+    $requiredStats = $pigeon->required_stats;
 
     if ($totalStats < $requiredStats) {
         return false;
     }
 
     $rewardBase = config('game.pigeons.level_up_reward_base', 100);
-    $xpReward = $pigeon->level * 25; // 25 XP per current level gained
+    $xpReward = $pigeon->level * 10; // Reduced to 10 XP per level to balance Loft progression
 
     \Illuminate\Support\Facades\DB::transaction(function () use ($pigeon, $rewardBase, $xpReward) {
         $pigeon->increment('level');
@@ -189,6 +192,8 @@ public function createStarter(Loft $loft, string $name): Pigeon
         'temperament' => rand(1, 5),
         'energy' => 100,
         'status' => 'idle',
+        'loyalty' => 100,
+        'intelligence' => rand(10, 50),
     ]);
 }
 }
