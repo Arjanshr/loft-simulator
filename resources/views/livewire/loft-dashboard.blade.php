@@ -49,11 +49,36 @@
                         </div>
                     </div>
                     
+                    @php
+                        $upgradeCost = ($loft->level + 1) * 500;
+                        $canAfford   = $loft->coins >= $upgradeCost;
+                    @endphp
                     @if($loft->xp >= $xpRequired)
-                        <button wire:click="upgrade" 
-                                class="w-full sm:w-auto bg-aviary-brass text-white font-industrial font-black px-10 py-5 rounded-[2rem] hover:bg-aviary-blue transition shadow-2xl active:scale-95 uppercase italic tracking-widest text-sm md:text-base self-center border-2 border-white/10">
-                            Upgrade Loft
-                        </button>
+                        <div class="flex flex-col items-center gap-3 self-center">
+                            <button wire:click="upgrade"
+                                    class="w-full sm:w-auto font-industrial font-black px-10 py-5 rounded-[2rem] transition shadow-2xl active:scale-95 uppercase italic tracking-widest text-sm md:text-base border-2
+                                        {{ $canAfford ? 'bg-aviary-brass text-white hover:bg-aviary-blue border-white/10' : 'bg-red-900/40 text-red-300 border-red-500/30 cursor-not-allowed opacity-70' }}">
+                                Upgrade Loft
+                            </button>
+                            <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest italic
+                                        {{ $canAfford ? 'text-emerald-400' : 'text-red-400' }}">
+                                <span>{{ $canAfford ? '✔' : '✘' }}</span>
+                                <span>Cost: {{ number_format($upgradeCost) }} 💰</span>
+                                @if(!$canAfford)
+                                    <span class="text-aviary-feather/40">· Need {{ number_format($upgradeCost - $loft->coins) }} more</span>
+                                @endif
+                            </div>
+                        </div>
+                    @else
+                        {{-- Not enough XP yet: still show the cost so user knows what's coming --}}
+                        <div class="self-center text-center bg-black/30 px-6 py-4 rounded-2xl border border-aviary-brass/10">
+                            <p class="text-[9px] font-black text-aviary-feather/40 uppercase tracking-widest italic mb-1">Next Upgrade Cost</p>
+                            <p class="font-mono font-bold text-aviary-brass text-lg">{{ number_format($upgradeCost) }} 💰</p>
+                            <p class="text-[8px] font-black uppercase tracking-widest italic mt-1
+                                      {{ $canAfford ? 'text-emerald-400' : 'text-red-400' }}">
+                                {{ $canAfford ? '✔ Funds Ready' : '✘ Need ' . number_format($upgradeCost - $loft->coins) . ' more' }}
+                            </p>
+                        </div>
                     @endif
                 </div>
             </div>
