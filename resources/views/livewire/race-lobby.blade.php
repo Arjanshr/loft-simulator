@@ -26,19 +26,32 @@
             </div>
 
             <div class="relative group">
-                <select wire:model="selectedPigeonId"
-                        class="w-full bg-aviary-oak/60 border-2 border-aviary-brass/10 rounded-2xl p-6 text-white font-mono text-sm focus:border-aviary-blue transition-all appearance-none cursor-pointer italic uppercase shadow-inner">
-                    <option value="">SELECT READY SPECIMEN</option>
-                    @foreach($readyPigeons as $p)
-                        <option value="{{ $p->id }}">{{ $p->name }} [LV.{{ $p->level }} - {{ strtoupper($p->type) }}]</option>
-                    @endforeach
-                </select>
-                <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-aviary-brass">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+                <div class="max-h-48 overflow-y-auto bg-aviary-oak/60 border-2 border-aviary-brass/10 rounded-2xl p-4 text-white font-mono text-sm shadow-inner space-y-2">
+                    @forelse($readyPigeons as $p)
+                        <label class="flex items-center gap-3 cursor-pointer hover:bg-white/5 p-2 rounded-lg transition">
+                            <input type="checkbox" wire:model="selectedPigeonIds" value="{{ $p->id }}" class="form-checkbox bg-black/50 border-aviary-brass/50 text-aviary-blue rounded focus:ring-aviary-blue">
+                            <span>{{ $p->name }} <span class="text-aviary-feather/50">[LV.{{ $p->level }} - {{ strtoupper($p->type) }}]</span></span>
+                        </label>
+                    @empty
+                        <div class="text-aviary-feather/50 italic p-2 text-center">No ready specimens (Condition > 40%)</div>
+                    @endforelse
                 </div>
             </div>
+
+            <div class="mt-6">
+                <h3 class="text-[11px] font-black text-white uppercase tracking-[0.3em] italic mb-3">Reward Multiplier</h3>
+                <div class="flex flex-wrap gap-2">
+                    @foreach([1, 2, 5, 10] as $mul)
+                        <button wire:click="$set('rewardMultiplier', {{ $mul }})" type="button" class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all {{ $rewardMultiplier === $mul ? 'bg-aviary-blue border-aviary-blue text-white shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-black/30 border-white/10 text-white/60 hover:border-white/30' }}">
+                            {{ $mul }}X
+                        </button>
+                    @endforeach
+                </div>
+                <p class="text-[9px] text-aviary-feather/40 uppercase tracking-widest italic mt-3">Multiplies entry fee and potential rewards per bird.</p>
+            </div>
+
             <div class="bg-black/30 p-5 rounded-2xl border border-aviary-brass/5">
-                <p class="text-[10px] text-aviary-feather/40 font-bold uppercase tracking-widest italic leading-relaxed">Flight Protocol: Only specimens with condition > 50% are authorized for competition registry.</p>
+                <p class="text-[10px] text-aviary-feather/40 font-bold uppercase tracking-widest italic leading-relaxed">Flight Protocol: Only specimens with condition >= 40% are authorized for competition registry.</p>
             </div>
         </div>
 

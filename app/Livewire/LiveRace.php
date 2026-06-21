@@ -11,32 +11,40 @@ use Illuminate\Support\Facades\Auth;
 class LiveRace extends Component
 {
     public $raceId;
-    public $pigeonId;
+    public $pigeonIds = [];
+    public $multiplier = 1;
     public $race;
     public $results = null;
     public $isSimulating = true;
 
-    public function mount($raceId, $pigeonId)
+    public function mount($raceId)
     {
         $this->raceId = $raceId;
-        $this->pigeonId = $pigeonId;
+        $this->pigeonIds = explode(',', request()->query('pigeons', ''));
+        $this->multiplier = (int) request()->query('multiplier', 1);
         $this->race = Race::findOrFail($raceId);
     }
 
     public function startSimulation(RaceSimulationService $simulationService, \App\Services\MatchmakingService $matchmakingService)
     {
         $race = Race::findOrFail($this->raceId);
-        $playerPigeon = Pigeon::findOrFail($this->pigeonId);
+        $playerPigeons = Pigeon::whereIn('id', $this->pigeonIds)->get();
         
+        if ($playerPigeons->isEmpty()) {
+            return redirect()->route('tournaments');
+        }
+
         // Use MatchmakingService to find appropriately leveled opponents
-        $opponents = $matchmakingService->getOpponents($playerPigeon->loft, 7);
+        $opponents = $matchmakingService->getOpponents($playerPigeons->first()->loft, max(1, 8 - $playerPigeons->count()));
             
-        $competitors = $opponents->push($playerPigeon);
+        $competitors = $opponents->merge($playerPigeons);
         
-        $this->results = $simulationService->simulate($race, $competitors);
+        $this->results = $simulationService->simulate($race, $competitors, $this->pigeonIds, $this->multiplier);
         
         // Reduce energy further (total 30 from entry + simulation)
-        $playerPigeon->decrement('energy', 10);
+        foreach ($playerPigeons as $pigeon) {
+            $pigeon->decrement('energy', 10);
+        }
         
         $this->isSimulating = false;
     }

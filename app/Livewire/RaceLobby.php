@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class RaceLobby extends Component
 {
-    public $selectedPigeonId = null;
+    public $selectedPigeonIds = [];
+    public $rewardMultiplier = 1;
 
     public function enterRace($raceId)
     {
@@ -17,12 +18,12 @@ class RaceLobby extends Component
         $loft = Auth::user()->loft;
         $user = Auth::user();
         
-        if (!$this->selectedPigeonId) {
-            session()->flash('race_error', "Please select a pigeon first.");
+        if (empty($this->selectedPigeonIds)) {
+            session()->flash('race_error', "Please select at least one pigeon.");
             return;
         }
 
-        $pigeon = $loft->pigeons()->findOrFail($this->selectedPigeonId);
+        $pigeons = $loft->pigeons()->whereIn('id', $this->selectedPigeonIds)->get();
 
         // --- NEW CONSTRAINTS ---
         // 1. Level check
@@ -31,38 +32,44 @@ class RaceLobby extends Component
             return;
         }
 
-        // 2. Type check
-        if ($race->race_type === 'exhibition' && $pigeon->type !== 'fancy') {
-            session()->flash('race_error', "Only fancy pigeons can enter exhibitions.");
-            return;
-        }
-        if ($race->race_type === 'highflyer' && $pigeon->type !== 'highflyer') {
-            session()->flash('race_error', "Only highflyers can enter highflyer tournaments.");
-            return;
-        }
-        if ($race->race_type === 'racing' && $pigeon->type !== 'racer') {
-            session()->flash('race_error', "Only racers can enter racing tournaments.");
-            return;
+        foreach ($pigeons as $pigeon) {
+            // 2. Type check
+            if ($race->race_type === 'exhibition' && $pigeon->type !== 'fancy') {
+                session()->flash('race_error', "Only fancy pigeons can enter exhibitions. ({$pigeon->name} is {$pigeon->type})");
+                return;
+            }
+            if ($race->race_type === 'highflyer' && $pigeon->type !== 'highflyer') {
+                session()->flash('race_error', "Only highflyers can enter highflyer tournaments. ({$pigeon->name} is {$pigeon->type})");
+                return;
+            }
+            if ($race->race_type === 'racing' && $pigeon->type !== 'racer') {
+                session()->flash('race_error', "Only racers can enter racing tournaments. ({$pigeon->name} is {$pigeon->type})");
+                return;
+            }
+
+            if ($pigeon->status !== 'idle' || $pigeon->energy < 40) {
+                session()->flash('race_error', "Pigeon {$pigeon->name} is not ready (needs 40% condition).");
+                return;
+            }
         }
         // -----------------------
 
-        if ($loft->coins < $race->entry_fee) {
-            session()->flash('race_error', "Not enough coins.");
-            return;
-        }
+        $totalEntryFee = $race->entry_fee * $this->rewardMultiplier * $pigeons->count();
 
-        if ($pigeon->status !== 'idle' || $pigeon->energy < 50) {
-            session()->flash('race_error', "Pigeon is not ready (needs 50% energy).");
+        if ($loft->coins < $totalEntryFee) {
+            session()->flash('race_error', "Not enough coins for entry fee.");
             return;
         }
 
         // Deduct fee
-        $loft->decrement('coins', $race->entry_fee);
+        $loft->decrement('coins', $totalEntryFee);
         
         // Mark pigeon as racing
-        $pigeon->update(['status' => 'racing']);
+        foreach ($pigeons as $pigeon) {
+            $pigeon->update(['status' => 'racing']);
+        }
 
-        return redirect()->route('race.live', ['raceId' => $race->id, 'pigeonId' => $pigeon->id]);
+        return redirect()->route('race.live', ['raceId' => $race->id, 'pigeons' => implode(',', $this->selectedPigeonIds), 'multiplier' => $this->rewardMultiplier]);
     }
 
     public function render()
@@ -84,7 +91,7 @@ class RaceLobby extends Component
 
         return view('livewire.race-lobby', [
             'races' => $query->latest()->get(),
-            'readyPigeons' => $loft->pigeons()->where('status', 'idle')->where('energy', '>=', 50)->get() ?? collect(),
+            'readyPigeons' => $loft->pigeons()->where('status', 'idle')->where('energy', '>=', 40)->get() ?? collect(),
             'activeRaceType' => in_array($selectedType, $allowedTypes, true) ? $selectedType : null,
         ]);
     }

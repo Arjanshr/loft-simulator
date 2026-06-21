@@ -12,7 +12,7 @@
     };
 
     $raceRewardUnit = $race->race_type === 'exhibition' ? 'vitamins' : 'coins';
-    $playerResult = $results ? $results->firstWhere('pigeon_id', $pigeonId) : null;
+    $playerResults = $results ? $results->whereIn('pigeon_id', $pigeonIds) : collect();
 @endphp
 
 <div
@@ -63,45 +63,70 @@
                     <div class="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(14,165,233,0.16),rgba(15,23,42,0.95)_34%,rgba(20,83,45,0.9)_100%)] min-h-[32rem] shadow-2xl">
                         <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.16),transparent_24%),radial-gradient(circle_at_80%_25%,rgba(255,255,255,0.08),transparent_20%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_28%)]"></div>
 
-                        <div class="absolute left-6 top-6 z-20">
-                            <p class="text-[10px] font-black uppercase tracking-[0.35em] text-slate-200/70 mb-2">Field Status</p>
-                            <h3 class="text-2xl md:text-3xl font-black italic text-white uppercase leading-none">Calculating flight lines</h3>
-                        </div>
-
-                        <div class="absolute inset-x-6 top-24 bottom-28 rounded-[2rem] border border-white/10 bg-black/20 backdrop-blur-sm overflow-hidden">
-                            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),transparent_20%),linear-gradient(90deg,transparent_0_14%,rgba(255,255,255,0.05)_14%_15%,transparent_15%_29%,rgba(255,255,255,0.05)_29%_30%,transparent_30%_44%,rgba(255,255,255,0.05)_44%_45%,transparent_45%_59%,rgba(255,255,255,0.05)_59%_60%,transparent_60%_74%,rgba(255,255,255,0.05)_74%_75%,transparent_75%_100%)] opacity-60"></div>
-
-                            <div class="absolute inset-x-6 top-6 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.35em] text-slate-300/50">
-                                <span>Start Gate</span>
-                                <span>Finish Line</span>
+                        @if($race->race_type !== 'exhibition')
+                            <div class="absolute left-6 top-6 z-20">
+                                <p class="text-[10px] font-black uppercase tracking-[0.35em] text-slate-200/70 mb-2">Field Status</p>
+                                <h3 class="text-2xl md:text-3xl font-black italic text-white uppercase leading-none">Calculating flight lines</h3>
                             </div>
 
-                            <div class="absolute inset-x-8 top-[23%] border-t border-dashed border-white/15"></div>
-                            <div class="absolute inset-x-8 top-[46%] border-t border-dashed border-white/15"></div>
-                            <div class="absolute inset-x-8 top-[69%] border-t border-dashed border-white/15"></div>
+                            <div class="absolute inset-x-6 top-24 bottom-28 rounded-[2rem] border border-white/10 bg-black/20 backdrop-blur-sm overflow-hidden">
+                                <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),transparent_20%),linear-gradient(90deg,transparent_0_14%,rgba(255,255,255,0.05)_14%_15%,transparent_15%_29%,rgba(255,255,255,0.05)_29%_30%,transparent_30%_44%,rgba(255,255,255,0.05)_44%_45%,transparent_45%_59%,rgba(255,255,255,0.05)_59%_60%,transparent_60%_74%,rgba(255,255,255,0.05)_74%_75%,transparent_75%_100%)] opacity-60"></div>
 
-                            <div class="absolute left-8 right-8 bottom-6 h-16 rounded-full bg-gradient-to-r from-emerald-900/70 via-emerald-800/55 to-emerald-900/70 border border-emerald-400/10"></div>
-                            <div class="absolute left-8 right-8 bottom-14 h-1 rounded-full bg-gradient-to-r from-transparent via-aviary-brass/60 to-transparent animate-race-glow"></div>
+                                <div class="absolute inset-x-6 top-6 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.35em] text-slate-300/50">
+                                    <span>Start Gate</span>
+                                    <span>Finish Line</span>
+                                </div>
 
-                            <div class="absolute inset-0 overflow-hidden">
-                                @foreach([12, 34, 56, 78] as $laneIndex => $laneTop)
-                                    <div
-                                        class="race-bird absolute left-6 text-white/90"
-                                        style="top: {{ $laneTop }}%; animation-delay: {{ $laneIndex * 0.65 }}s;"
-                                    >
-                                        <div class="flex items-center gap-3">
-                                            <div class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-[10px] font-black uppercase tracking-[0.25em] text-white/70 shadow-lg">
-                                                {{ str_pad((string)($laneIndex + 1), 2, '0', STR_PAD_LEFT) }}
+                                <div class="absolute inset-x-8 top-[23%] border-t border-dashed border-white/15"></div>
+                                <div class="absolute inset-x-8 top-[46%] border-t border-dashed border-white/15"></div>
+                                <div class="absolute inset-x-8 top-[69%] border-t border-dashed border-white/15"></div>
+
+                                <div class="absolute left-8 right-8 bottom-6 h-16 rounded-full bg-gradient-to-r from-emerald-900/70 via-emerald-800/55 to-emerald-900/70 border border-emerald-400/10"></div>
+                                <div class="absolute left-8 right-8 bottom-14 h-1 rounded-full bg-gradient-to-r from-transparent via-aviary-brass/60 to-transparent animate-race-glow"></div>
+
+                                <div class="absolute inset-0 overflow-hidden">
+                                    @foreach([12, 34, 56, 78] as $laneIndex => $laneTop)
+                                        <div
+                                            class="race-bird absolute left-6 text-white/90"
+                                            style="top: {{ $laneTop }}%; animation-delay: {{ $laneIndex * 0.65 }}s;"
+                                        >
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-[10px] font-black uppercase tracking-[0.25em] text-white/70 shadow-lg">
+                                                    {{ str_pad((string)($laneIndex + 1), 2, '0', STR_PAD_LEFT) }}
+                                                </div>
+                                                <svg class="h-14 w-14 drop-shadow-[0_0_20px_rgba(255,255,255,0.35)]" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                                                    <path d="M9 38c7-12 17-19 30-21l7-8 9 8c4 0 7 1 10 3-3 2-6 4-8 7 4 0 8 1 11 4-5 1-10 3-13 6-4 3-6 7-6 12-4-3-8-7-11-12-5 8-12 13-22 15 1-5 1-10 0-15-3 1-7 1-11 1 1-4 2-7 4-10Z" fill="currentColor" opacity="0.96" />
+                                                    <path d="M32 18c2 4 2 8 1 12" stroke="rgba(255,255,255,0.55)" stroke-width="2.5" stroke-linecap="round" />
+                                                </svg>
                                             </div>
-                                            <svg class="h-14 w-14 drop-shadow-[0_0_20px_rgba(255,255,255,0.35)]" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-                                                <path d="M9 38c7-12 17-19 30-21l7-8 9 8c4 0 7 1 10 3-3 2-6 4-8 7 4 0 8 1 11 4-5 1-10 3-13 6-4 3-6 7-6 12-4-3-8-7-11-12-5 8-12 13-22 15 1-5 1-10 0-15-3 1-7 1-11 1 1-4 2-7 4-10Z" fill="currentColor" opacity="0.96" />
-                                                <path d="M32 18c2 4 2 8 1 12" stroke="rgba(255,255,255,0.55)" stroke-width="2.5" stroke-linecap="round" />
-                                            </svg>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="absolute left-6 top-6 z-20">
+                                <p class="text-[10px] font-black uppercase tracking-[0.35em] text-slate-200/70 mb-2">Exhibition Status</p>
+                                <h3 class="text-2xl md:text-3xl font-black italic text-white uppercase leading-none">Judges are scoring</h3>
+                            </div>
+
+                            <div class="absolute inset-x-6 top-24 bottom-28 rounded-[2rem] border border-white/10 bg-black/20 backdrop-blur-sm overflow-hidden flex flex-col items-center justify-center">
+                                <div class="text-center w-full px-8 space-y-6">
+                                    <div class="grid grid-cols-2 gap-6">
+                                        @foreach(['Feathering', 'Stance', 'Eye Clarity', 'Color Pattern'] as $criteria)
+                                            <div class="px-6 py-4 rounded-2xl bg-white/5 border border-white/10">
+                                                <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-3">{{ $criteria }}</p>
+                                                <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+                                                    <div class="h-full bg-gradient-to-r from-aviary-brass to-amber-200 animate-pulse w-full"></div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="mt-8">
+                                        <p class="text-lg text-white/80 font-black italic uppercase tracking-widest animate-pulse">Evaluating Specimens...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="absolute inset-x-6 bottom-6 grid gap-3 md:grid-cols-3">
                             <div class="rounded-[1.5rem] border border-white/10 bg-white/6 px-5 py-4 backdrop-blur-sm">
@@ -122,10 +147,17 @@
                     <div class="space-y-6">
                         <div class="rounded-[2.25rem] border border-white/10 bg-white/6 p-6 md:p-7 backdrop-blur-sm shadow-2xl">
                             <p class="text-[10px] uppercase tracking-[0.35em] text-slate-400 font-black mb-3">Race Feed</p>
-                            <h3 class="text-2xl font-black italic uppercase text-white leading-none mb-4">Pigeon movement locked to the field</h3>
-                            <p class="text-sm text-slate-300/80 leading-relaxed mb-6">
-                                Each lane is being resolved against the same race rules you already use. The animation is just the presentation layer, so the result ledger still comes from the normal simulation engine.
-                            </p>
+                            @if($race->race_type !== 'exhibition')
+                                <h3 class="text-2xl font-black italic uppercase text-white leading-none mb-4">Pigeon movement locked to the field</h3>
+                                <p class="text-sm text-slate-300/80 leading-relaxed mb-6">
+                                    Each lane is being resolved against the same race rules you already use. The animation is just the presentation layer, so the result ledger still comes from the normal simulation engine.
+                                </p>
+                            @else
+                                <h3 class="text-2xl font-black italic uppercase text-white leading-none mb-4">Judges are analyzing</h3>
+                                <p class="text-sm text-slate-300/80 leading-relaxed mb-6">
+                                    The panel is evaluating beauty, pedigree, and form. Final scores will determine the ranking.
+                                </p>
+                            @endif
                             <div class="space-y-3">
                                 <div class="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                                     <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-1">Field Rules</p>
@@ -166,7 +198,7 @@
                                 </div>
                             </div>
 
-                            @if($playerResult)
+                            @foreach($playerResults as $playerResult)
                                 <div class="rounded-[2rem] border border-aviary-blue/30 bg-aviary-blue/10 p-5 md:p-6 mb-6 shadow-lg">
                                     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                                         <div>
@@ -178,7 +210,7 @@
                                                 Place #{{ $playerResult->position }}
                                             </span>
                                             <span class="px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 font-black uppercase tracking-[0.2em]">
-                                                {{ gmdate('H:i:s', (int) $playerResult->finish_time_seconds) }}
+                                                {{ $race->race_type === 'exhibition' ? number_format($playerResult->pigeon->beauty, 2) . ' PTS' : gmdate('H:i:s', (int) $playerResult->finish_time_seconds) }}
                                             </span>
                                             <span class="px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 font-black uppercase tracking-[0.2em]">
                                                 +{{ number_format($playerResult->payout) }} {{ $raceRewardUnit }}
@@ -186,11 +218,11 @@
                                         </div>
                                     </div>
                                 </div>
-                            @endif
+                            @endforeach
 
                             <div class="grid gap-4 md:grid-cols-3 mb-6">
                                 @foreach($results->take(3) as $podiumResult)
-                                    <div class="rounded-[2rem] border {{ $podiumResult->pigeon_id == $pigeonId ? 'border-aviary-blue/40 bg-aviary-blue/10' : 'border-white/10 bg-black/20' }} p-5 shadow-xl">
+                                    <div class="rounded-[2rem] border {{ in_array($podiumResult->pigeon_id, $pigeonIds) ? 'border-aviary-blue/40 bg-aviary-blue/10' : 'border-white/10 bg-black/20' }} p-5 shadow-xl">
                                         <div class="flex items-center justify-between mb-4">
                                             <div class="text-3xl font-black italic uppercase {{ $podiumResult->position === 1 ? 'text-aviary-brass' : 'text-white' }}">
                                                 #{{ $podiumResult->position }}
@@ -202,7 +234,7 @@
                                         <div class="space-y-2">
                                             <p class="text-lg font-black italic uppercase text-white leading-none">{{ $podiumResult->pigeon->name ?? 'Unregistered pigeon' }}</p>
                                             <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black">
-                                                {{ gmdate('H:i:s', (int) $podiumResult->finish_time_seconds) }}
+                                                {{ $race->race_type === 'exhibition' ? number_format($podiumResult->pigeon->beauty, 2) . ' PTS' : gmdate('H:i:s', (int) $podiumResult->finish_time_seconds) }}
                                             </p>
                                             <p class="text-sm font-black text-aviary-brass">
                                                 +{{ number_format($podiumResult->payout) }} {{ $raceRewardUnit }}
@@ -214,7 +246,7 @@
 
                             <div class="space-y-3">
                                 @foreach($results as $result)
-                                    <div class="flex flex-col gap-4 rounded-[1.75rem] border px-5 py-4 md:flex-row md:items-center md:justify-between {{ $result->pigeon_id == $pigeonId ? 'border-aviary-blue/35 bg-aviary-blue/10' : 'border-white/10 bg-white/5' }}">
+                                    <div class="flex flex-col gap-4 rounded-[1.75rem] border px-5 py-4 md:flex-row md:items-center md:justify-between {{ in_array($result->pigeon_id, $pigeonIds) ? 'border-aviary-blue/35 bg-aviary-blue/10' : 'border-white/10 bg-white/5' }}">
                                         <div class="flex items-center gap-4">
                                             <div class="flex h-12 w-12 items-center justify-center rounded-2xl {{ $result->position === 1 ? 'bg-aviary-brass text-white' : 'bg-black/30 text-white/80' }} font-black text-lg">
                                                 {{ $result->position }}
@@ -230,7 +262,7 @@
                                         </div>
 
                                         <div class="flex flex-wrap items-center gap-3 text-sm">
-                                            @if($result->pigeon_id == $pigeonId)
+                                            @if(in_array($result->pigeon_id, $pigeonIds))
                                                 <span class="px-4 py-2 rounded-full bg-aviary-blue text-white font-black uppercase tracking-[0.25em] text-[10px]">
                                                     Your bird
                                                 </span>
@@ -308,30 +340,57 @@
 
                             <div class="space-y-5">
                                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                    <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
-                                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Speed Matrix</p>
-                                        <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-                                            <div class="h-full w-4/5 bg-gradient-to-r from-aviary-blue to-white animate-pulse"></div>
+                                    @if($race->race_type !== 'exhibition')
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Speed Matrix</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-4/5 bg-gradient-to-r from-aviary-blue to-white animate-pulse"></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
-                                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Fatigue Curve</p>
-                                        <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-                                            <div class="h-full w-2/3 bg-gradient-to-r from-aviary-brass to-white animate-pulse"></div>
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Fatigue Curve</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-2/3 bg-gradient-to-r from-aviary-brass to-white animate-pulse"></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
-                                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Navigation Drift</p>
-                                        <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-                                            <div class="h-full w-1/2 bg-gradient-to-r from-emerald-400 to-white animate-pulse"></div>
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Navigation Drift</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-1/2 bg-gradient-to-r from-emerald-400 to-white animate-pulse"></div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
-                                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Payout Queue</p>
-                                        <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-                                            <div class="h-full w-3/4 bg-gradient-to-r from-aviary-rose to-white animate-pulse"></div>
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Payout Queue</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-3/4 bg-gradient-to-r from-aviary-rose to-white animate-pulse"></div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @else
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Aesthetic Check</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-4/5 bg-gradient-to-r from-aviary-blue to-white animate-pulse"></div>
+                                            </div>
+                                        </div>
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Form Evaluation</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-2/3 bg-gradient-to-r from-aviary-brass to-white animate-pulse"></div>
+                                            </div>
+                                        </div>
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Poise Scoring</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-1/2 bg-gradient-to-r from-emerald-400 to-white animate-pulse"></div>
+                                            </div>
+                                        </div>
+                                        <div class="rounded-2xl border border-white/10 bg-black/25 p-4">
+                                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-2">Payout Queue</p>
+                                            <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                                                <div class="h-full w-3/4 bg-gradient-to-r from-aviary-rose to-white animate-pulse"></div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <div class="rounded-[1.75rem] border border-white/10 bg-black/25 p-4">

@@ -16,7 +16,7 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::get('/race/{raceId}/{pigeonId}', \App\Livewire\LiveRace::class)
+Route::get('/race/{raceId}', \App\Livewire\LiveRace::class)
     ->middleware(['auth', 'verified'])
     ->name('race.live');
 

@@ -18,7 +18,7 @@ class RaceSimulationService
      * @param Collection<Pigeon> $pigeons
      * @return Collection
      */
-    public function simulate(Race $race, Collection $pigeons): Collection
+    public function simulate(Race $race, Collection $pigeons, array $playerPigeonIds = [], int $multiplier = 1): Collection
     {
         $segments = 10;
         $segmentDistance = $race->distance_km / $segments;
@@ -38,11 +38,15 @@ class RaceSimulationService
 
         $sortedResults = $results->sortBy('total_time')->values();
 
-        return DB::transaction(function () use ($race, $sortedResults) {
-            return $sortedResults->map(function ($result, $index) use ($race) {
+        return DB::transaction(function () use ($race, $sortedResults, $playerPigeonIds, $multiplier) {
+            return $sortedResults->map(function ($result, $index) use ($race, $playerPigeonIds, $multiplier) {
                 $pigeon = $result['pigeon'];
                 $position = $index + 1;
                 $payout = $this->calculatePayout($race, $position);
+                
+                if (in_array($pigeon->id, $playerPigeonIds)) {
+                    $payout *= $multiplier;
+                }
                 
                 $raceResult = RaceResult::create([
                     'race_id' => $race->id,
