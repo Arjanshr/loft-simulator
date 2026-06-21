@@ -41,9 +41,10 @@ class LiveRace extends Component
         
         $this->results = $simulationService->simulate($race, $competitors, $this->pigeonIds, $this->multiplier);
         
-        // Reduce energy further (total 30 from entry + simulation)
+        // Reduce energy based on multiplier (10 energy per 1x multiplier)
+        $energyCost = 10 * $this->multiplier;
         foreach ($playerPigeons as $pigeon) {
-            $pigeon->decrement('energy', 10);
+            $pigeon->decrement('energy', $energyCost);
         }
         
         $this->isSimulating = false;

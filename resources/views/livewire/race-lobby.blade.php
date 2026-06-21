@@ -33,7 +33,7 @@
                             <span>{{ $p->name }} <span class="text-aviary-feather/50">[LV.{{ $p->level }} - {{ strtoupper($p->type) }}]</span></span>
                         </label>
                     @empty
-                        <div class="text-aviary-feather/50 italic p-2 text-center">No ready specimens (Condition > 40%)</div>
+                        <div class="text-aviary-feather/50 italic p-2 text-center">No ready specimens (Condition >= 10%)</div>
                     @endforelse
                 </div>
             </div>
@@ -51,7 +51,7 @@
             </div>
 
             <div class="bg-black/30 p-5 rounded-2xl border border-aviary-brass/5">
-                <p class="text-[10px] text-aviary-feather/40 font-bold uppercase tracking-widest italic leading-relaxed">Flight Protocol: Only specimens with condition >= 40% are authorized for competition registry.</p>
+                <p class="text-[10px] text-aviary-feather/40 font-bold uppercase tracking-widest italic leading-relaxed">Flight Protocol: Specimens must have enough condition for the selected multiplier (10 condition per 1x multiplier). Only specimens with >= 10% are listed.</p>
             </div>
         </div>
 

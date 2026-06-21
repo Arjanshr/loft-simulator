@@ -47,8 +47,9 @@ class RaceLobby extends Component
                 return;
             }
 
-            if ($pigeon->status !== 'idle' || $pigeon->energy < 40) {
-                session()->flash('race_error', "Pigeon {$pigeon->name} is not ready (needs 40% condition).");
+            $requiredEnergy = 10 * $this->rewardMultiplier;
+            if ($pigeon->status !== 'idle' || $pigeon->energy < $requiredEnergy) {
+                session()->flash('race_error', "Pigeon {$pigeon->name} is not ready (needs {$requiredEnergy}% condition for {$this->rewardMultiplier}x multiplier).");
                 return;
             }
         }
@@ -91,7 +92,7 @@ class RaceLobby extends Component
 
         return view('livewire.race-lobby', [
             'races' => $query->latest()->get(),
-            'readyPigeons' => $loft->pigeons()->where('status', 'idle')->where('energy', '>=', 40)->get() ?? collect(),
+            'readyPigeons' => $loft->pigeons()->where('status', 'idle')->where('energy', '>=', 10)->get() ?? collect(),
             'activeRaceType' => in_array($selectedType, $allowedTypes, true) ? $selectedType : null,
         ]);
     }
