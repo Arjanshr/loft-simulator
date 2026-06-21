@@ -179,13 +179,13 @@
 
                                 <div class="relative z-10 grid gap-0 lg:grid-cols-[minmax(0,1.45fr)_22rem]">
                                     <div class="p-7 md:p-10">
-                                        <div class="flex items-start justify-between gap-4">
-                                            <div class="flex min-w-0 items-start gap-4">
-                                                <span class="mt-1 rounded-full border border-aviary-brass/20 bg-aviary-brass/10 px-3 py-1 text-[9px] font-black uppercase tracking-[0.3em] text-aviary-brass italic">
+                                        <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                                            <div class="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start">
+                                                <span class="w-fit mt-1 rounded-full border border-aviary-brass/20 bg-aviary-brass/10 px-3 py-1 text-[9px] font-black uppercase tracking-[0.3em] text-aviary-brass italic">
                                                     Featured
                                                 </span>
                                                 <div class="min-w-0">
-                                                    <div class="flex items-center gap-3">
+                                                    <div class="flex flex-wrap items-center gap-3">
                                                         <span class="rounded-xl bg-aviary-blue px-3 py-1 text-[9px] font-black uppercase italic text-white shadow-lg">
                                                             LV.{{ $featuredListing->pigeon->level }}
                                                         </span>
@@ -199,7 +199,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-right">
+                                            <div class="w-full sm:w-auto rounded-2xl border border-white/10 bg-black/30 px-4 py-3 sm:text-right">
                                                 <span class="block text-[8px] font-black uppercase tracking-[0.3em] text-aviary-feather/35 italic">Fixed price</span>
                                                 <span class="mt-1 block font-industrial text-3xl font-black italic text-aviary-brass md:text-4xl">
                                                     {{ number_format($featuredListing->price) }}
@@ -251,12 +251,12 @@
                                             </div>
 
                                             <div class="rounded-[2rem] border border-aviary-brass/20 bg-gradient-to-br from-aviary-brass/15 to-black/30 p-5">
-                                                <div class="flex items-center justify-between">
+                                                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                                     <div>
                                                         <span class="block text-[8px] font-black uppercase tracking-[0.3em] text-aviary-feather/40 italic">Auction timer</span>
                                                         <span class="mt-1 block font-mono text-xl font-bold text-white">{{ $isExpired ? '00:00:00' : gmdate('H:i:s', $remainingSecs) }}</span>
                                                     </div>
-                                                    <span class="rounded-full border border-aviary-brass/20 bg-black/30 px-3 py-2 text-[9px] font-black uppercase tracking-[0.25em] text-aviary-brass italic">
+                                                    <span class="w-fit rounded-full border border-aviary-brass/20 bg-black/30 px-3 py-2 text-[9px] font-black uppercase tracking-[0.25em] text-aviary-brass italic">
                                                         {{ $isExpired ? 'Expired' : 'Live' }}
                                                     </span>
                                                 </div>
@@ -294,9 +294,9 @@
                                         <div class="absolute -right-16 top-4 h-32 w-32 rounded-full bg-aviary-brass/10 blur-3xl transition-opacity group-hover:opacity-70"></div>
 
                                         <div class="relative flex h-full flex-col p-6 md:p-7">
-                                            <div class="flex items-start justify-between gap-4">
+                                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                                                 <div class="min-w-0">
-                                                    <div class="flex items-center gap-2">
+                                                    <div class="flex flex-wrap items-center gap-2">
                                                         <span class="rounded-xl bg-aviary-blue px-2.5 py-1 text-[9px] font-black italic uppercase text-white">
                                                             LV.{{ $listing->pigeon->level }}
                                                         </span>
@@ -309,7 +309,7 @@
                                                     </h3>
                                                 </div>
 
-                                                <div class="rounded-2xl border border-aviary-brass/20 bg-aviary-brass/10 px-4 py-3 text-right">
+                                                <div class="w-full sm:w-auto rounded-2xl border border-aviary-brass/20 bg-aviary-brass/10 px-4 py-3 sm:text-right">
                                                     <span class="block text-[8px] font-black uppercase tracking-[0.3em] text-aviary-feather/35 italic">Fixed</span>
                                                     <span class="mt-1 block font-mono text-lg font-bold text-aviary-brass">{{ number_format($listing->price) }}</span>
                                                 </div>
@@ -347,7 +347,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="mt-6 flex items-center justify-between border-t border-white/10 pt-5">
+                                            <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-t border-white/10 pt-5">
                                                 @php
                                                     $remainingSecs = now()->diffInSeconds($listing->expires_at, false);
                                                     $isExpired = $remainingSecs <= 0;
@@ -358,7 +358,7 @@
                                                 </div>
                                                 <button wire:click="buy({{ $listing->id }})"
                                                         @if($isExpired) disabled @endif
-                                                        class="rounded-2xl px-4 py-3 text-[9px] font-black uppercase tracking-[0.22em] transition
+                                                        class="w-full sm:w-auto rounded-2xl px-4 py-3 text-[9px] font-black uppercase tracking-[0.22em] transition
                                                         {{ $isExpired ? 'cursor-not-allowed border border-white/10 bg-white/5 text-white/25' : 'border border-white/10 bg-aviary-brass text-white hover:bg-aviary-blue' }}">
                                                     Buy
                                                 </button>
