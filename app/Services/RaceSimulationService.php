@@ -68,6 +68,11 @@ class RaceSimulationService
                 // Award XP to loft
                 // Formula: Tier * (40 / Position)
                 $xpAwarded = (int) ($race->difficulty_tier * (40 / $position));
+                
+                if (in_array($pigeon->id, $playerPigeonIds)) {
+                    $xpAwarded *= $multiplier;
+                }
+                
                 $pigeon->loft->increment('xp', $xpAwarded);
 
                 // Update pigeon status
