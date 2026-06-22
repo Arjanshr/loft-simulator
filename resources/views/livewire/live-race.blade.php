@@ -12,8 +12,8 @@
     };
 
     $raceRewardUnit = match($race->race_type) {
-        'exhibition' => 'vitamins',
-        'highflyer'  => 'tokens',
+        'exhibition' => 'tokens',
+        'highflyer'  => 'vitamins',
         default      => 'coins',
     };
 
@@ -95,7 +95,7 @@
                                     @foreach([12, 34, 56, 78] as $laneIndex => $laneTop)
                                         <div
                                             class="race-bird absolute left-6 text-white/90"
-                                            style="top: {{ $laneTop }}%; animation-delay: {{ $laneIndex * 0.65 }}s;"
+                                            :style="`top: {{ $laneTop }}%; animation-delay: {{ $laneIndex * 0.65 }}s;`"
                                         >
                                             <div class="flex items-center gap-3">
                                                 <div class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/10 text-[10px] font-black uppercase tracking-[0.25em] text-white/70 shadow-lg">
@@ -217,7 +217,7 @@
                                                 Place #{{ $playerResult->position }}
                                             </span>
                                             <span class="px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 font-black uppercase tracking-[0.2em]">
-                                                {{ $race->race_type === 'exhibition' ? number_format($playerResult->pigeon->beauty, 2) . ' PTS' : gmdate('H:i:s', (int) $playerResult->finish_time_seconds) }}
+                                                {{ $race->race_type === 'exhibition' ? number_format($playerResult->pigeon->beauty, 2) . ' PTS' : ($race->race_type === 'highflyer' ? gmdate('H:i:s', (int) $playerResult->finish_time_seconds) . ' flight' : gmdate('H:i:s', (int) $playerResult->finish_time_seconds)) }}
                                             </span>
                                             <span class="px-4 py-2 rounded-full bg-black/30 border border-white/10 text-white/80 font-black uppercase tracking-[0.2em]">
                                                 +{{ number_format($playerResult->payout) }} {{ $raceRewardUnit }}
@@ -241,7 +241,7 @@
                                         <div class="space-y-2">
                                             <p class="text-lg font-black italic uppercase text-white leading-none">{{ $podiumResult->pigeon->name ?? 'Unregistered pigeon' }}</p>
                                             <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black">
-                                                {{ $race->race_type === 'exhibition' ? number_format($podiumResult->pigeon->beauty, 2) . ' PTS' : gmdate('H:i:s', (int) $podiumResult->finish_time_seconds) }}
+                                                {{ $race->race_type === 'exhibition' ? number_format($podiumResult->pigeon->beauty, 2) . ' PTS' : ($race->race_type === 'highflyer' ? gmdate('H:i:s', (int) $podiumResult->finish_time_seconds) . ' flight' : gmdate('H:i:s', (int) $podiumResult->finish_time_seconds)) }}
                                             </p>
                                             <p class="text-sm font-black text-aviary-brass">
                                                 +{{ number_format($podiumResult->payout) }} {{ $raceRewardUnit }}
@@ -263,7 +263,7 @@
                                                     {{ $result->pigeon->name ?? 'Unregistered pigeon' }}
                                                 </p>
                                                 <p class="mt-1 text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black">
-                                                    {{ $race->race_type === 'exhibition' ? 'Beauty score ' . number_format($result->pigeon->beauty, 2) : 'Finish time ' . gmdate('H:i:s', (int) $result->finish_time_seconds) }}
+                                                    {{ $race->race_type === 'exhibition' ? 'Beauty score ' . number_format($result->pigeon->beauty, 2) : ($race->race_type === 'highflyer' ? 'Flight duration ' . gmdate('H:i:s', (int) $result->finish_time_seconds) : 'Finish time ' . gmdate('H:i:s', (int) $result->finish_time_seconds)) }}
                                                 </p>
                                             </div>
                                         </div>

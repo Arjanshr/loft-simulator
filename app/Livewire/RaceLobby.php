@@ -83,17 +83,13 @@ class RaceLobby extends Component
         $selectedType = request()->query('type');
         $allowedTypes = ['exhibition', 'highflyer', 'racing'];
         
-        $query = Race::query();
+        $query = Race::query()
+            ->where('level_requirement', '<=', $loft->level);
 
         if (in_array($selectedType, $allowedTypes, true)) {
             $query->where('race_type', $selectedType);
         }
         
-        // Only show exhibition races to players with loft level < 5
-        if ($loft->level < 5) {
-            $query->where('race_type', 'exhibition');
-        }
-
         return view('livewire.race-lobby', [
             'races' => $query->latest()->get(),
             'readyPigeons' => $loft->pigeons()->where('status', 'idle')->get() ?? collect(),

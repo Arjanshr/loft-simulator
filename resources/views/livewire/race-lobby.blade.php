@@ -82,7 +82,7 @@
                         <div class="flex items-center gap-10 relative z-10 w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-aviary-brass/10 pt-8 md:pt-0">
                             <div class="text-right">
                                 <span class="block text-[10px] font-black text-aviary-feather/40 uppercase tracking-widest mb-2 italic">Official Purse</span>
-                                <span class="text-3xl md:text-5xl font-industrial font-black text-aviary-brass italic trophy-gold">{{ number_format($race->prize_pool) }}{{ $race->race_type === 'exhibition' ? '💊' : ($race->race_type === 'highflyer' ? '🎟️' : '💰') }}</span>
+                                <span class="text-3xl md:text-5xl font-industrial font-black text-aviary-brass italic trophy-gold">{{ number_format($race->prize_pool) }}{{ $race->race_type === 'exhibition' ? '🎟️' : ($race->race_type === 'highflyer' ? '💊' : '💰') }}</span>
                             </div>
 
                             <button wire:click="enterRace({{ $race->id }})"
