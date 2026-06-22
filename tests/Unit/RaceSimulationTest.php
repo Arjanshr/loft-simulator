@@ -36,6 +36,7 @@ class RaceSimulationTest extends TestCase
             'title' => 'Test Race',
             'distance_km' => 100,
             'prize_pool' => 1000,
+            'race_type' => 'racing',
         ]);
 
         // 2. Execute

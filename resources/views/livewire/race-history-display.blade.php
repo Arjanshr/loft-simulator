@@ -8,7 +8,14 @@
                     <p class="text-xs text-slate-400">{{ $history->pigeon_name }} • Finished #{{ $history->position }}</p>
                 </div>
                 <div class="text-yellow-500 font-black">
-                    +{{ number_format($history->payout) }} 💰
+                    +{{ number_format($history->payout) }}
+                    @if($history->race_type === 'exhibition')
+                        💊
+                    @elseif($history->race_type === 'highflyer')
+                        🎟️
+                    @else
+                        💰
+                    @endif
                 </div>
             </div>
         @empty

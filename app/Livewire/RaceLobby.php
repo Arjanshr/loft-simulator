@@ -47,9 +47,9 @@ class RaceLobby extends Component
                 return;
             }
 
-            $requiredEnergy = 10 * $this->rewardMultiplier;
-            if ($pigeon->status !== 'idle' || $pigeon->energy < $requiredEnergy) {
-                session()->flash('race_error', "Pigeon {$pigeon->name} is not ready (needs {$requiredEnergy}% condition for {$this->rewardMultiplier}x multiplier).");
+            // All races use tokens — only require idle status, no stamina check
+            if ($pigeon->status !== 'idle') {
+                session()->flash('race_error', "Pigeon {$pigeon->name} is not idle.");
                 return;
             }
         }
@@ -57,13 +57,17 @@ class RaceLobby extends Component
 
         $totalEntryFee = $race->entry_fee * $this->rewardMultiplier * $pigeons->count();
 
-        if ($loft->coins < $totalEntryFee) {
-            session()->flash('race_error', "Not enough coins for entry fee.");
+        // All tournaments cost tokens
+        $currencyColumn = 'tokens';
+        $currencyLabel  = 'tokens';
+
+        if ($loft->{$currencyColumn} < $totalEntryFee) {
+            session()->flash('race_error', "Not enough {$currencyLabel} for entry fee.");
             return;
         }
 
         // Deduct fee
-        $loft->decrement('coins', $totalEntryFee);
+        $loft->decrement($currencyColumn, $totalEntryFee);
         
         // Mark pigeon as racing
         foreach ($pigeons as $pigeon) {
@@ -92,7 +96,7 @@ class RaceLobby extends Component
 
         return view('livewire.race-lobby', [
             'races' => $query->latest()->get(),
-            'readyPigeons' => $loft->pigeons()->where('status', 'idle')->where('energy', '>=', 10)->get() ?? collect(),
+            'readyPigeons' => $loft->pigeons()->where('status', 'idle')->get() ?? collect(),
             'activeRaceType' => in_array($selectedType, $allowedTypes, true) ? $selectedType : null,
         ]);
     }

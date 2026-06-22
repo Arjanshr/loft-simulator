@@ -10,6 +10,7 @@ class RaceHistory extends Model
     protected $fillable = [
         'loft_id',
         'race_title',
+        'race_type',
         'pigeon_name',
         'position',
         'payout',

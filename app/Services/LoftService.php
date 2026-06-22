@@ -16,7 +16,9 @@ class LoftService
             $loft = Loft::create([
                 'user_id' => $user->id,
                 'name' => $loftName,
-                'coins' => 1000,
+                'coins' => 2500,
+                'vitamins' => 100,
+                'tokens' => 10,
                 'level' => 1,
             ]);
 
@@ -32,7 +34,7 @@ class LoftService
     public function upgradeLoft(Loft $loft): bool
     {
         $nextLevel = $loft->level + 1;
-        $xpRequired = $nextLevel * $nextLevel * 100;
+        $xpRequired = pow($nextLevel, 3) * 25;
         $cost = $nextLevel * 500;
 
         if ($loft->xp < $xpRequired || $loft->coins < $cost) {

@@ -9,11 +9,25 @@ use App\Services\GameSettingsService;
 
 use App\Models\Loft;
 use App\Models\ActivityLog;
+use App\Models\Race;
 
 class AdminDashboard extends Component
 {
     public $settings = [];
     public $selectedAiLoftId = null;
+
+    // Race management
+    public $races = [];
+    public $editingRaceId = null;
+    public $raceForm = [
+        'title' => '',
+        'race_type' => 'racing',
+        'distance_km' => 100,
+        'difficulty_tier' => 1,
+        'entry_fee' => 0,
+        'prize_pool' => 0,
+        'level_requirement' => 1,
+    ];
 
     public function mount(GameSettingsService $settingsService)
     {
@@ -32,6 +46,79 @@ class AdminDashboard extends Component
     public function selectAiLoft($id)
     {
         $this->selectedAiLoftId = $id;
+    }
+
+    // ── Race Management ──────────────────────────────────────────────
+
+    public function loadRaces()
+    {
+        $this->races = Race::orderBy('level_requirement')->get()->toArray();
+    }
+
+    public function resetRaceForm()
+    {
+        $this->editingRaceId = null;
+        $this->raceForm = [
+            'title' => '',
+            'race_type' => 'racing',
+            'distance_km' => 100,
+            'difficulty_tier' => 1,
+            'entry_fee' => 0,
+            'prize_pool' => 0,
+            'level_requirement' => 1,
+        ];
+    }
+
+    public function editRace($id)
+    {
+        $race = Race::findOrFail($id);
+        $this->editingRaceId = $race->id;
+        $this->raceForm = [
+            'title' => $race->title,
+            'race_type' => $race->race_type,
+            'distance_km' => $race->distance_km,
+            'difficulty_tier' => $race->difficulty_tier,
+            'entry_fee' => $race->entry_fee,
+            'prize_pool' => $race->prize_pool,
+            'level_requirement' => $race->level_requirement,
+        ];
+    }
+
+    public function saveRace()
+    {
+        $this->validate([
+            'raceForm.title' => 'required|string|max:255',
+            'raceForm.race_type' => 'required|in:racing,exhibition,highflyer',
+            'raceForm.distance_km' => 'required|integer|min:1',
+            'raceForm.difficulty_tier' => 'required|integer|min:1',
+            'raceForm.entry_fee' => 'required|integer|min:0',
+            'raceForm.prize_pool' => 'required|integer|min:0',
+            'raceForm.level_requirement' => 'required|integer|min:1',
+        ]);
+
+        if ($this->editingRaceId) {
+            Race::findOrFail($this->editingRaceId)->update($this->raceForm);
+            session()->flash('message', 'Tournament updated successfully.');
+        } else {
+            Race::create($this->raceForm);
+            session()->flash('message', 'Tournament created successfully.');
+        }
+
+        $this->resetRaceForm();
+        $this->loadRaces();
+    }
+
+    public function deleteRace($id)
+    {
+        Race::findOrFail($id)->delete();
+        $this->resetRaceForm();
+        $this->loadRaces();
+        session()->flash('message', 'Tournament deleted successfully.');
+    }
+
+    public function cancelRaceEdit()
+    {
+        $this->resetRaceForm();
     }
 
     public function updateSettings(GameSettingsService $settingsService)
@@ -80,6 +167,8 @@ class AdminDashboard extends Component
 
     public function render()
     {
+        $this->loadRaces();
+
         $aiLofts = Loft::whereHas('user', function($q) {
             $q->where('is_ai', true);
         })->withCount('pigeons')->get();

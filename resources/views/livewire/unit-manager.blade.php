@@ -70,6 +70,9 @@
                                 @if($pigeon->vitamin_income_per_minute > 0)
                                     <span class="text-[9px] font-black uppercase tracking-widest bg-emerald-900/20 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full">+{{ $pigeon->vitamin_income_per_minute }} 💊/MIN</span>
                                 @endif
+                                @if($pigeon->token_income_per_minute > 0)
+                                    <span class="text-[9px] font-black uppercase tracking-widest bg-purple-900/20 text-purple-400 border border-purple-500/20 px-3 py-1 rounded-full">+{{ $pigeon->token_income_per_minute }} 🎟️/MIN</span>
+                                @endif
                             </div>
                         </div>
 
@@ -88,6 +91,11 @@
                             @if($pigeon->energy < 100)
                                 <button wire:click="rest({{ $pigeon->id }})" class="text-[8px] font-black bg-aviary-brass hover:bg-aviary-blue text-white px-3 py-1.5 rounded-lg transition uppercase italic border border-white/10 shadow-md">
                                     Rest (50💊)
+                                </button>
+                            @endif
+                            @if($pigeon->status === 'idle')
+                                <button wire:click="quickSell({{ $pigeon->id }})" wire:confirm="Are you sure you want to quick sell this pigeon for {{ (int)($pigeon->fixed_price / 2) }} coins?" class="text-[8px] font-black bg-red-900/80 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg transition uppercase italic border border-white/10 shadow-md mt-1">
+                                    Sell ({{ (int)($pigeon->fixed_price / 2) }} 💰)
                                 </button>
                             @endif
                         </div>

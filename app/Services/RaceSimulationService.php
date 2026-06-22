@@ -60,6 +60,7 @@ class RaceSimulationService
                 RaceHistory::create([
                     'loft_id' => $pigeon->loft_id,
                     'race_title' => $race->title,
+                    'race_type' => $race->race_type,
                     'pigeon_name' => $pigeon->name,
                     'position' => $position,
                     'payout' => $payout,
@@ -78,10 +79,12 @@ class RaceSimulationService
                 // Update pigeon status
                 $pigeon->update(['status' => 'idle']);
                 
-                // If payout > 0, update loft currency
+                // If payout > 0, update loft currency based on race type
                 if ($payout > 0) {
                     if ($race->race_type === 'exhibition') {
                         $pigeon->loft->increment('vitamins', $payout);
+                    } elseif ($race->race_type === 'highflyer') {
+                        $pigeon->loft->increment('tokens', $payout);
                     } else {
                         $pigeon->loft->increment('coins', $payout);
                     }

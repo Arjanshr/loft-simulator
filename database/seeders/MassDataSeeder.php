@@ -35,6 +35,7 @@ class MassDataSeeder extends Seeder
                     'name' => "AI Loft L$level - $i",
                     'coins' => 10000,
                     'vitamins' => 1000,
+                    'tokens' => 100,
                     'level' => $level,
                 ]);
 

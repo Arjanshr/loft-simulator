@@ -11,7 +11,14 @@
         default => 'Speed, endurance, and clean lines decide the winner.',
     };
 
-    $raceRewardUnit = $race->race_type === 'exhibition' ? 'vitamins' : 'coins';
+    $raceRewardUnit = match($race->race_type) {
+        'exhibition' => 'vitamins',
+        'highflyer'  => 'tokens',
+        default      => 'coins',
+    };
+
+    $entryFeeUnit = 'tokens';
+
     $playerResults = $results ? $results->whereIn('pigeon_id', $pigeonIds) : collect();
 @endphp
 
@@ -135,7 +142,7 @@
                             </div>
                             <div class="rounded-[1.5rem] border border-white/10 bg-white/6 px-5 py-4 backdrop-blur-sm">
                                 <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-1">Entry Fee</p>
-                                <p class="text-lg font-black text-white">{{ number_format($race->entry_fee) }} {{ $raceRewardUnit }}</p>
+                                <p class="text-lg font-black text-white">{{ number_format($race->entry_fee) }} {{ $entryFeeUnit }}</p>
                             </div>
                             <div class="rounded-[1.5rem] border border-white/10 bg-white/6 px-5 py-4 backdrop-blur-sm">
                                 <p class="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black mb-1">Status</p>

@@ -40,12 +40,8 @@ class LiveRace extends Component
         $competitors = $opponents->merge($playerPigeons);
         
         $this->results = $simulationService->simulate($race, $competitors, $this->pigeonIds, $this->multiplier);
-        
-        // Reduce energy based on multiplier (10 energy per 1x multiplier)
-        $energyCost = 10 * $this->multiplier;
-        foreach ($playerPigeons as $pigeon) {
-            $pigeon->decrement('energy', $energyCost);
-        }
+
+        // All races use tokens — no stamina/energy cost
         
         $this->isSimulating = false;
     }

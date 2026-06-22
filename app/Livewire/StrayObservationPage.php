@@ -15,6 +15,11 @@ class StrayObservationPage extends Component
         $userLoft = Auth::user()->loft;
         $pigeon = Pigeon::where('id', $pigeonId)->where('stray_at_loft_id', $userLoft->id)->firstOrFail();
 
+        if ($userLoft->pigeons()->count() >= $userLoft->capacity) {
+            $this->dispatch('notify', message: "Your loft is at max capacity ({$userLoft->capacity}). Sell a bird to capture strays.", type: 'error');
+            return;
+        }
+
         // Formula: Base 15% + (Host Loft Level - Bird Level) * 2%
         $chance = 15 + ($userLoft->level - $pigeon->level) * 2;
         $chance = max(5, min(95, $chance));

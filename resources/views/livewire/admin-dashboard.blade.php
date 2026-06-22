@@ -198,6 +198,153 @@
                 </aside>
             </div>
 
+            {{-- Tournament Configuration Section --}}
+            <section class="rounded-[2.75rem] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur md:p-8">
+                <div class="flex flex-col gap-4 border-b border-white/10 pb-6 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-[0.35em] text-purple-400">Flight Registry</p>
+                        <h3 class="mt-2 text-2xl font-black italic uppercase text-white">Tournament configuration</h3>
+                    </div>
+                    <p class="max-w-xl text-sm text-slate-300/70">
+                        Create, edit, and remove tournaments. Entry fees are charged in tokens. Prize pools are paid in the race-type currency.
+                    </p>
+                </div>
+
+                {{-- Race List Table --}}
+                <div class="mt-6 overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead>
+                            <tr class="border-b border-white/10 text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">
+                                <th class="px-4 py-3">Title</th>
+                                <th class="px-4 py-3">Type</th>
+                                <th class="px-4 py-3">Distance</th>
+                                <th class="px-4 py-3">Tier</th>
+                                <th class="px-4 py-3">Entry 🎟️</th>
+                                <th class="px-4 py-3">Prize Pool</th>
+                                <th class="px-4 py-3">Min Level</th>
+                                <th class="px-4 py-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($races as $race)
+                                <tr class="border-b border-white/5 transition hover:bg-white/5">
+                                    <td class="px-4 py-3 font-black text-white">{{ $race['title'] }}</td>
+                                    <td class="px-4 py-3">
+                                        <span class="inline-block rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-widest
+                                            {{ $race['race_type'] === 'exhibition' ? 'border-emerald-500/20 bg-emerald-900/20 text-emerald-400' : '' }}
+                                            {{ $race['race_type'] === 'highflyer' ? 'border-purple-500/20 bg-purple-900/20 text-purple-400' : '' }}
+                                            {{ $race['race_type'] === 'racing' ? 'border-aviary-blue/20 bg-aviary-blue/10 text-aviary-blue' : '' }}
+                                        ">{{ $race['race_type'] }}</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-mono">{{ $race['distance_km'] }}km</td>
+                                    <td class="px-4 py-3 font-mono">{{ $race['difficulty_tier'] }}</td>
+                                    <td class="px-4 py-3 font-mono text-purple-300">{{ number_format($race['entry_fee']) }}</td>
+                                    <td class="px-4 py-3 font-mono text-aviary-brass">{{ number_format($race['prize_pool']) }}</td>
+                                    <td class="px-4 py-3 font-mono">Lv.{{ $race['level_requirement'] }}</td>
+                                    <td class="px-4 py-3 text-right">
+                                        <button wire:click="editRace({{ $race['id'] }})" class="mr-2 rounded-lg border border-aviary-blue/20 bg-aviary-blue/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-aviary-blue transition hover:bg-aviary-blue hover:text-white">
+                                            Edit
+                                        </button>
+                                        <button wire:click="deleteRace({{ $race['id'] }})" wire:confirm="Delete this tournament?" class="rounded-lg border border-red-500/20 bg-red-950/30 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-400 transition hover:bg-red-600 hover:text-white">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="px-4 py-8 text-center italic text-slate-500">No tournaments configured yet.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Create / Edit Race Form --}}
+                <div class="mt-8 rounded-[2rem] border border-white/10 bg-black/20 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="text-lg font-black italic uppercase text-white">
+                            {{ $editingRaceId ? 'Edit Tournament' : 'Create New Tournament' }}
+                        </h4>
+                        @if($editingRaceId)
+                            <button wire:click="cancelRaceEdit" class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 transition hover:bg-white/10">
+                                Cancel
+                            </button>
+                        @endif
+                    </div>
+
+                    <form wire:submit="saveRace" class="space-y-5">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                            {{-- Title --}}
+                            <div class="sm:col-span-2">
+                                <label class="mb-1 block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Tournament Title</label>
+                                <input wire:model="raceForm.title" type="text" placeholder="e.g. Grand Championship"
+                                    class="w-full rounded-xl border border-white/10 bg-aviary-oak/70 p-3 font-mono text-sm text-white outline-none transition focus:border-purple-400 focus:ring-0">
+                                @error('raceForm.title') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Race Type --}}
+                            <div>
+                                <label class="mb-1 block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Race Type</label>
+                                <select wire:model="raceForm.race_type"
+                                    class="w-full rounded-xl border border-white/10 bg-aviary-oak/70 p-3 font-mono text-sm text-white outline-none transition focus:border-purple-400 focus:ring-0">
+                                    <option value="racing">Racing</option>
+                                    <option value="exhibition">Exhibition</option>
+                                    <option value="highflyer">Highflyer</option>
+                                </select>
+                                @error('raceForm.race_type') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Difficulty Tier --}}
+                            <div>
+                                <label class="mb-1 block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Difficulty Tier</label>
+                                <input wire:model="raceForm.difficulty_tier" type="number" min="1"
+                                    class="w-full rounded-xl border border-white/10 bg-aviary-oak/70 p-3 font-mono text-sm text-white outline-none transition focus:border-purple-400 focus:ring-0">
+                                @error('raceForm.difficulty_tier') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Distance --}}
+                            <div>
+                                <label class="mb-1 block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Distance (km)</label>
+                                <input wire:model="raceForm.distance_km" type="number" min="1"
+                                    class="w-full rounded-xl border border-white/10 bg-aviary-oak/70 p-3 font-mono text-sm text-white outline-none transition focus:border-purple-400 focus:ring-0">
+                                @error('raceForm.distance_km') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Entry Fee --}}
+                            <div>
+                                <label class="mb-1 block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Entry Fee (🎟️ Tokens)</label>
+                                <input wire:model="raceForm.entry_fee" type="number" min="0"
+                                    class="w-full rounded-xl border border-white/10 bg-aviary-oak/70 p-3 font-mono text-sm text-white outline-none transition focus:border-purple-400 focus:ring-0">
+                                @error('raceForm.entry_fee') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Prize Pool --}}
+                            <div>
+                                <label class="mb-1 block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Prize Pool</label>
+                                <input wire:model="raceForm.prize_pool" type="number" min="0"
+                                    class="w-full rounded-xl border border-white/10 bg-aviary-oak/70 p-3 font-mono text-sm text-white outline-none transition focus:border-purple-400 focus:ring-0">
+                                @error('raceForm.prize_pool') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
+                            </div>
+
+                            {{-- Min Level --}}
+                            <div>
+                                <label class="mb-1 block text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Min Loft Level</label>
+                                <input wire:model="raceForm.level_requirement" type="number" min="1"
+                                    class="w-full rounded-xl border border-white/10 bg-aviary-oak/70 p-3 font-mono text-sm text-white outline-none transition focus:border-purple-400 focus:ring-0">
+                                @error('raceForm.level_requirement') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="group inline-flex w-full items-center justify-center rounded-[1.75rem] border border-white/10 bg-purple-600 px-6 py-4 text-sm font-black uppercase italic tracking-[0.25em] text-white shadow-2xl transition-all hover:bg-purple-500">
+                            <span class="transition-transform group-hover:scale-[1.02]">{{ $editingRaceId ? 'Update Tournament' : 'Create Tournament' }}</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            {{-- End Tournament Configuration --}}
+
             <section class="border-t border-white/10 pt-10">
                 <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>

@@ -60,6 +60,25 @@ class UnitManager extends Component
         session()->flash('message', "Renamed to {$pigeon->name}.");
     }
 
+    public function quickSell($pigeonId)
+    {
+        $pigeon = Auth::user()->loft->pigeons()->findOrFail($pigeonId);
+        if ($pigeon->status !== 'idle') {
+            session()->flash('error', "Pigeon must be idle to sell.");
+            return;
+        }
+
+        $loft = Auth::user()->loft;
+        $price = (int) ($pigeon->fixed_price / 2);
+        
+        $pigeonName = $pigeon->name;
+        $pigeon->delete();
+        $loft->increment('coins', $price);
+        
+        $this->dispatch('loft-updated');
+        session()->flash('message', "{$pigeonName} was sold for {$price} coins.");
+    }
+
     public function render()
     {
         $query = Auth::user()->loft->pigeons()

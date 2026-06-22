@@ -33,19 +33,30 @@ class PassiveIncomeCommand extends Command
                 foreach ($pigeons as $pigeon) {
                     // 1. Passive Income for Fancy types
                     if ($pigeon->type === 'fancy') {
-                        // Formula: 1 base coin + (beauty score / 10)
-                        $income = 1 + ($pigeon->beauty / 10);
-                        $pigeon->loft->increment('coins', (int) $income);
+                        $chance = 10 + ($pigeon->beauty / 2); // 10% to ~60% chance
+                        if (rand(1, 100) <= $chance) {
+                            $income = 1 + (int)($pigeon->beauty / 20);
+                            $pigeon->loft->increment('coins', $income);
+                        }
                     }
 
                     // 2. Passive Vitamin generation for Highflyers
                     if ($pigeon->type === 'highflyer') {
-                        // Formula: 1 base vitamin + (speed / 20)
-                        $vits = 1 + ($pigeon->speed / 20);
-                        $pigeon->loft->increment('vitamins', (int) $vits);
+                        $chance = 5 + ($pigeon->speed / 5); // 5% to ~25% chance
+                        if (rand(1, 100) <= $chance) {
+                            $pigeon->loft->increment('vitamins', 1);
+                        }
                     }
 
-                    // 3. Passive Loyalty growth for all
+                    // 3. Passive Token generation for Racers
+                    if ($pigeon->type === 'racer') {
+                        $chance = 5 + ($pigeon->speed / 5); // 5% to ~25% chance
+                        if (rand(1, 100) <= $chance) {
+                            $pigeon->loft->increment('tokens', 1);
+                        }
+                    }
+
+                    // 4. Passive Loyalty growth for all
                     if ($pigeon->loyalty < 100) {
                         $pigeon->increment('loyalty');
                     }

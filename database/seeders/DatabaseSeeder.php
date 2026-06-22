@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin Loft',
             'coins' => 99999,
             'vitamins' => 99999,
+            'tokens' => 99999,
             'level' => 1,
             'xp' => 0,
         ]);

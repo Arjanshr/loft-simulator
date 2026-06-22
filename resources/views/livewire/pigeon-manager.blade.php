@@ -45,6 +45,9 @@
                                 @if($pigeon->vitamin_income_per_minute > 0)
                                     <span class="text-[9px] font-black uppercase tracking-widest bg-emerald-900/20 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full">+{{ $pigeon->vitamin_income_per_minute }} 💊/MIN</span>
                                 @endif
+                                @if($pigeon->token_income_per_minute > 0)
+                                    <span class="text-[9px] font-black uppercase tracking-widest bg-purple-900/20 text-purple-400 border border-purple-500/20 px-3 py-1 rounded-full">+{{ $pigeon->token_income_per_minute }} 🎟️/MIN</span>
+                                @endif
                             </div>
                         </div>
 

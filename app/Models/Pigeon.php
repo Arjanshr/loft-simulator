@@ -127,7 +127,7 @@ class Pigeon extends Model
         };
     }
 
-protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute', 'vitamin_income_per_minute', 'fixed_price', 'required_stats', 'stat_limit_multiplier'];
+protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute', 'vitamin_income_per_minute', 'token_income_per_minute', 'fixed_price', 'required_stats', 'stat_limit_multiplier'];
 
 /**
  * Get the fixed market price for this pigeon.
@@ -155,7 +155,9 @@ public function getIncomePerMinuteAttribute(): float
         return 0;
     }
 
-    return round(1 + ($this->beauty / 10), 2);
+    $chance = 10 + ($this->beauty / 2);
+    $income = 1 + (int)($this->beauty / 20);
+    return round(($chance / 100) * $income, 2);
 }
 
 /**
@@ -167,7 +169,21 @@ public function getVitaminIncomePerMinuteAttribute(): float
         return 0;
     }
 
-    return round(1 + ($this->speed / 20), 2);
+    $chance = 5 + ($this->speed / 5);
+    return round(($chance / 100) * 1, 2);
+}
+
+/**
+ * Get the token income generated per minute by this pigeon.
+ */
+public function getTokenIncomePerMinuteAttribute(): float
+{
+    if ($this->type !== 'racer' || $this->status === 'chick') {
+        return 0;
+    }
+
+    $chance = 5 + ($this->speed / 5);
+    return round(($chance / 100) * 1, 2);
 }
 
 /**

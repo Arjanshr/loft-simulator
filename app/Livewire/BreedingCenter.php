@@ -34,6 +34,12 @@ class BreedingCenter extends Component
     public function breedPair($pairId, BreedingService $breedingService)
     {
         $pair = \App\Models\Pair::findOrFail($pairId);
+        $loft = Auth::user()->loft;
+
+        if ($loft->pigeons()->count() + 2 > $loft->capacity) {
+            session()->flash('error', "Your loft doesn't have enough capacity for 2 chicks. Capacity: {$loft->capacity}.");
+            return;
+        }
 
         if ($breedingService->breed($pair)) {
             session()->flash('message', 'Incubation started!');

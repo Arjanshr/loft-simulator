@@ -27,7 +27,7 @@
                             <div class="h-2 w-24 md:w-40 bg-aviary-oak rounded-full overflow-hidden">
                                 @php
                                     $nextLevel = $loft->level + 1;
-                                    $xpRequired = $nextLevel * $nextLevel * 100;
+                                    $xpRequired = pow($nextLevel, 3) * 25;
                                     $progress = min(100, ($loft->xp / ($xpRequired ?: 1)) * 100);
                                 @endphp
                                 <div class="h-full bg-aviary-blue shadow-[0_0_15px_#3b82f6]" style="width: {{ $progress }}%"></div>

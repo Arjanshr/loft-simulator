@@ -35,6 +35,11 @@ class Marketplace extends Component
         $listing = Listing::findOrFail($listingId);
         $buyerLoft = Auth::user()->loft;
 
+        if ($buyerLoft->pigeons()->count() >= $buyerLoft->capacity) {
+            session()->flash('error', "Your loft is at maximum capacity ({$buyerLoft->capacity}). Upgrade your loft or sell a bird.");
+            return;
+        }
+
         if ($marketplaceService->buyPigeon($listing, $buyerLoft)) {
             $this->dispatch('loft-updated');
             session()->flash('message', 'Pigeon purchased successfully!');
