@@ -38,6 +38,11 @@ new class extends Component
 
     <!-- Nav Links -->
     <nav class="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
+        @php
+            $loftLevel = Auth::user()->loft->level ?? 0;
+            $unlockLevels = config('game.unlock_levels');
+        @endphp
+
         <div class="px-4 mb-4">
             <span class="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Loft Management</span>
         </div>
@@ -50,24 +55,36 @@ new class extends Component
             Bird Registry
         </x-v2-nav-link>
 
-        <x-v2-nav-link :href="route('training.center')" icon="M13 10V3L4 14h7v7l9-11h-7z" :active="request()->routeIs('training.center')">
-            Training Field
+        <x-v2-nav-link :href="route('tournaments')" icon="M13 10V3L4 14h7v7l9-11h-7z" :active="request()->routeIs('tournaments')">
+            Racing Field
         </x-v2-nav-link>
 
-        <x-v2-nav-link :href="route('breeding.center')" icon="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" :active="request()->routeIs('breeding.center')">
+        <x-v2-nav-link :href="route('training.center')" icon="M13 10V3L4 14h7v7l9-11h-7z" :active="request()->routeIs('training.center')"
+            class="{{ $loftLevel < $unlockLevels['training'] ? 'opacity-40' : '' }}">
+            Training Field
+            @if($loftLevel < $unlockLevels['training'])
+                <span class="ml-auto text-[8px] font-black uppercase tracking-widest bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full border border-red-500/20">🔒 Lv.{{ $unlockLevels['training'] }}</span>
+            @endif
+        </x-v2-nav-link>
+
+        <x-v2-nav-link :href="route('breeding.center')" icon="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" :active="request()->routeIs('breeding.center')"
+            class="{{ $loftLevel < $unlockLevels['breeding'] ? 'opacity-40' : '' }}">
             Breeding Pair
+            @if($loftLevel < $unlockLevels['breeding'])
+                <span class="ml-auto text-[8px] font-black uppercase tracking-widest bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full border border-red-500/20">🔒 Lv.{{ $unlockLevels['breeding'] }}</span>
+            @endif
         </x-v2-nav-link>
 
         <div class="px-4 mt-8 mb-4">
             <span class="text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] italic">Racing Network</span>
         </div>
 
-        <x-v2-nav-link :href="route('marketplace')" icon="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" :active="request()->routeIs('marketplace')">
+        <x-v2-nav-link :href="route('marketplace')" icon="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" :active="request()->routeIs('marketplace')"
+            class="{{ $loftLevel < $unlockLevels['marketplace'] ? 'opacity-40' : '' }}">
             Bird Exchange
-        </x-v2-nav-link>
-
-        <x-v2-nav-link :href="route('tournaments')" icon="M13 10V3L4 14h7v7l9-11h-7z" :active="request()->routeIs('tournaments')">
-            Racing Field
+            @if($loftLevel < $unlockLevels['marketplace'])
+                <span class="ml-auto text-[8px] font-black uppercase tracking-widest bg-red-900/30 text-red-400 px-2 py-0.5 rounded-full border border-red-500/20">🔒 Lv.{{ $unlockLevels['marketplace'] }}</span>
+            @endif
         </x-v2-nav-link>
 
         @php

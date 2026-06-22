@@ -94,8 +94,19 @@
                                 </button>
                             @endif
                             @if($pigeon->status === 'idle')
-                                <button wire:click="quickSell({{ $pigeon->id }})" wire:confirm="Are you sure you want to quick sell this pigeon for {{ (int)($pigeon->fixed_price / 2) }} coins?" class="text-[8px] font-black bg-red-900/80 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg transition uppercase italic border border-white/10 shadow-md mt-1">
-                                    Sell ({{ (int)($pigeon->fixed_price / 2) }} 💰)
+                                @php
+                                    $isRare = in_array($pigeon->rarity, ['rare', 'super_rare', 'legendary', 'mythic']);
+                                    $sellPrice = (int)($pigeon->fixed_price / 2);
+                                    $confirmMsg = $isRare
+                                        ? "⚠️ WARNING: {$pigeon->name} is a " . strtoupper(str_replace('_', ' ', $pigeon->rarity)) . " bird!\\n\\nAre you sure you want to quick sell for {$sellPrice} coins? This cannot be undone."
+                                        : "Are you sure you want to quick sell this pigeon for {$sellPrice} coins?";
+                                @endphp
+                                <button wire:click="quickSell({{ $pigeon->id }})"
+                                    wire:confirm="{{ $confirmMsg }}"
+                                    class="text-[8px] font-black px-3 py-1.5 rounded-lg transition uppercase italic border shadow-md mt-1
+                                        {{ $isRare ? 'bg-red-700 hover:bg-red-500 text-white border-red-400/30 animate-pulse' : 'bg-red-900/80 hover:bg-red-600 text-white border-white/10' }}">
+                                    @if($isRare)<span class="mr-1">⚠️</span>@endif
+                                    Sell ({{ $sellPrice }} 💰)
                                 </button>
                             @endif
                         </div>

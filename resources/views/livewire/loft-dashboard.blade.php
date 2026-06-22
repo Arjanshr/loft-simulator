@@ -91,15 +91,35 @@
                         <span class="w-2 h-2 bg-aviary-blue rounded-full shadow-[0_0_8px_#3b82f6]"></span> Loft Census
                     </h2>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                        @php
+                            $birdCount = $loft->pigeons->count();
+                            $capacity = $loft->capacity;
+                            $capacityPercent = min(100, ($birdCount / ($capacity ?: 1)) * 100);
+                            $capacityColor = $birdCount >= $capacity ? 'text-red-400' : ($birdCount >= $capacity - 2 ? 'text-yellow-400' : 'text-white');
+                        @endphp
                         @foreach([
-                            ['Total Stock', $loft->pigeons->count(), 'text-white'],
-                            ['Racers', $loft->pigeons->where('type', 'racer')->count(), 'text-aviary-blue'],
-                            ['Fancy', $loft->pigeons->where('type', 'fancy')->count(), 'text-indigo-400'],
-                            ['Highflyers', $loft->pigeons->where('type', 'highflyer')->count(), 'text-green-500']
-                        ] as [$label, $count, $color])
+                            ['Birds', $birdCount . ' / ' . $capacity, $capacityColor, true],
+                            ['Racers', $loft->pigeons->where('type', 'racer')->count(), 'text-aviary-blue', false],
+                            ['Fancy', $loft->pigeons->where('type', 'fancy')->count(), 'text-indigo-400', false],
+                            ['Highflyers', $loft->pigeons->where('type', 'highflyer')->count(), 'text-green-500', false]
+                        ] as [$label, $count, $color, $showBar])
                             <div class="bg-black/30 p-5 rounded-2xl border border-aviary-brass/5 text-center group hover:border-aviary-blue/30 transition-all">
                                 <span class="block text-2xl md:text-4xl font-industrial font-black {{ $color }} mb-1 italic">{{ $count }}</span>
                                 <span class="text-[8px] md:text-[10px] font-black text-aviary-feather/40 uppercase tracking-widest italic">{{ $label }}</span>
+                                @if($showBar)
+                                    <div class="mt-3 w-full h-2 bg-aviary-oak rounded-full overflow-hidden border border-white/5">
+                                        <div class="h-full rounded-full transition-all duration-500
+                                            {{ $birdCount >= $capacity ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : ($birdCount >= $capacity - 2 ? 'bg-yellow-500 shadow-[0_0_8px_#eab308]' : 'bg-aviary-blue shadow-[0_0_8px_#3b82f6]') }}"
+                                            style="width: {{ $capacityPercent }}%"></div>
+                                    </div>
+                                    @if($birdCount >= $capacity)
+                                        <p class="text-[8px] font-black text-red-400 uppercase tracking-widest mt-2 animate-pulse italic">FULL</p>
+                                    @elseif($birdCount >= $capacity - 2)
+                                        <p class="text-[8px] font-black text-yellow-400 uppercase tracking-widest mt-2 italic">{{ $capacity - $birdCount }} slots left</p>
+                                    @else
+                                        <p class="text-[8px] font-black text-aviary-feather/30 uppercase tracking-widest mt-2 italic">{{ $capacity - $birdCount }} slots free</p>
+                                    @endif
+                                @endif
                             </div>
                         @endforeach
                     </div>

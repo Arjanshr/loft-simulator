@@ -17,8 +17,17 @@
                             <x-pigeon.registry-meta :pigeon="$pigeon" size="sm" class="mt-3" />
                         </div>
                         <div class="flex gap-6 items-center relative z-10">
+                            @php
+                                $isRare = in_array($pigeon->rarity, ['rare', 'super_rare', 'legendary', 'mythic']);
+                                $confirmMsg = $isRare
+                                    ? "⚠️ WARNING: {$pigeon->name} is a " . strtoupper(str_replace('_', ' ', $pigeon->rarity)) . " bird!\\n\\nAre you sure you want to list it on the marketplace?"
+                                    : "";
+                            @endphp
                             <button wire:click="listPigeon({{ $pigeon->id }})"
-                                    class="bg-aviary-brass hover:bg-aviary-blue text-white font-industrial font-black px-5 py-2.5 rounded-xl transition shadow-xl text-[10px] uppercase tracking-widest italic border border-white/10">
+                                    @if($isRare) wire:confirm="{{ $confirmMsg }}" @endif
+                                    class="font-industrial font-black px-5 py-2.5 rounded-xl transition shadow-xl text-[10px] uppercase tracking-widest italic border border-white/10
+                                        {{ $isRare ? 'bg-red-700 hover:bg-red-500 text-white animate-pulse' : 'bg-aviary-brass hover:bg-aviary-blue text-white' }}">
+                                @if($isRare)<span class="mr-1">⚠️</span>@endif
                                 List Bird
                             </button>
                         </div>

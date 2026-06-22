@@ -76,6 +76,15 @@ class BreedingCenter extends Component
     public function render()
     {
         $loft = Auth::user()->loft;
+        $requiredLevel = config('game.unlock_levels.breeding', 15);
+
+        if ($loft->level < $requiredLevel) {
+            return view('livewire.locked-feature', [
+                'feature' => 'Breeding Center',
+                'requiredLevel' => $requiredLevel,
+                'currentLevel' => $loft->level,
+            ])->layout('layouts.app', ['header' => 'Breeding Center']);
+        }
         
         $pairedPigeonIds = \App\Models\Pair::where('is_active', true)
             ->where('loft_id', $loft->id)

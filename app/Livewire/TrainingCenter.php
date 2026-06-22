@@ -235,6 +235,16 @@ class TrainingCenter extends Component
     public function render()
     {
         $userLoft = Auth::user()->loft;
+        $requiredLevel = config('game.unlock_levels.training', 2);
+
+        if ($userLoft->level < $requiredLevel) {
+            return view('livewire.locked-feature', [
+                'feature' => 'Training Center',
+                'requiredLevel' => $requiredLevel,
+                'currentLevel' => $userLoft->level,
+            ])->layout('layouts.app', ['header' => 'Training Center']);
+        }
+
         $pigeons = $userLoft->pigeons()->where('status', 'idle')->get();
         $selectedPigeons = $userLoft->pigeons()->whereIn('id', $this->selectedPigeonIds)->get();
         

@@ -51,6 +51,16 @@ class Marketplace extends Component
     public function render()
     {
         $userLoft = Auth::user()->loft;
+        $requiredLevel = config('game.unlock_levels.marketplace', 10);
+
+        if ($userLoft->level < $requiredLevel) {
+            return view('livewire.locked-feature', [
+                'feature' => 'The Exchange',
+                'requiredLevel' => $requiredLevel,
+                'currentLevel' => $userLoft->level,
+            ])->layout('layouts.app', ['header' => 'The Exchange']);
+        }
+
         $userLevel = $userLoft->level;
 
         $query = Listing::where('is_active', true)

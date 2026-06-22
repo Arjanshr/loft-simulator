@@ -78,18 +78,24 @@
             </div>
 
             <!-- Mobile Bottom Nav -->
+            @php
+                $loftLevel = Auth::user()->loft->level ?? 0;
+                $unlockLevels = config('game.unlock_levels');
+            @endphp
             <div class="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-aviary-oak/95 backdrop-blur-xl border-t border-aviary-brass/20 flex items-center justify-around px-2 z-50 galvanized-border">
                 <x-v2-nav-link :href="route('dashboard')" icon="m19 11-7-7-7 7m14 0v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-8m14 0L12 5.41 5 11" :active="request()->routeIs('dashboard')" minimal>
                     Loft
                 </x-v2-nav-link>
-                <x-v2-nav-link :href="route('training.center')" icon="M13 10V3L4 14h7v7l9-11h-7z" :active="request()->routeIs('training.center')" minimal>
-                    Train
+                <x-v2-nav-link :href="route('training.center')" icon="M13 10V3L4 14h7v7l9-11h-7z" :active="request()->routeIs('training.center')" minimal
+                    class="{{ $loftLevel < $unlockLevels['training'] ? 'opacity-40' : '' }}">
+                    {{ $loftLevel < $unlockLevels['training'] ? '🔒' : 'Train' }}
                 </x-v2-nav-link>
                 <x-v2-nav-link :href="route('pigeons.index')" icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" :active="request()->routeIs('pigeons.index')" minimal>
                     Birds
                 </x-v2-nav-link>
-                <x-v2-nav-link :href="route('marketplace')" icon="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" :active="request()->routeIs('marketplace')" minimal>
-                    Market
+                <x-v2-nav-link :href="route('marketplace')" icon="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" :active="request()->routeIs('marketplace')" minimal
+                    class="{{ $loftLevel < $unlockLevels['marketplace'] ? 'opacity-40' : '' }}">
+                    {{ $loftLevel < $unlockLevels['marketplace'] ? '🔒' : 'Market' }}
                 </x-v2-nav-link>
                 <button @click="sidebarOpen = true" class="flex flex-col items-center gap-1 px-2 py-2 text-slate-500 hover:text-aviary-brass transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>

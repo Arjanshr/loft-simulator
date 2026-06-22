@@ -62,6 +62,34 @@
                 </div>
             </div>
 
+            {{-- Bird Capacity --}}
+            @php
+                $birdCount = $loft->pigeons()->count();
+                $capacity = $loft->capacity;
+                $nearFull = $birdCount >= $capacity - 2;
+                $isFull = $birdCount >= $capacity;
+            @endphp
+            <div class="relative group cursor-help">
+                <div class="flex items-center gap-1.5 bg-aviary-timber/60 px-2 py-1.5 rounded-xl border transition-all shadow-inner sm:gap-2 sm:px-3 sm:py-2 sm:rounded-2xl
+                    {{ $isFull ? 'border-red-500/40' : ($nearFull ? 'border-yellow-500/30' : 'border-aviary-brass/10 hover:border-aviary-brass/30') }}">
+                    <span class="text-sm sm:text-lg">🐦</span>
+                    <span class="font-mono text-[11px] font-bold leading-none sm:text-sm {{ $isFull ? 'text-red-400' : ($nearFull ? 'text-yellow-400' : 'text-white') }}">{{ $birdCount }}/{{ $capacity }}</span>
+                </div>
+                <div class="hidden md:block absolute top-full right-0 mt-2 w-48 bg-aviary-timber border border-aviary-brass/10 rounded-xl p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-2xl pointer-events-none">
+                    <div class="text-[9px] uppercase tracking-widest text-aviary-brass mb-1 font-bold">Loft Capacity</div>
+                    <div class="text-[10px] text-white font-mono">
+                        {{ $birdCount }} / {{ $capacity }} birds
+                        @if($isFull)
+                            <br><span class="text-red-400 mt-1 block font-bold">⚠ Loft is full! Upgrade to add more.</span>
+                        @elseif($nearFull)
+                            <br><span class="text-yellow-400 mt-1 block">{{ $capacity - $birdCount }} slots remaining.</span>
+                        @else
+                            <br><span class="text-aviary-feather/50 mt-1 block">{{ $capacity - $birdCount }} slots available.</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         {{-- Income Rate Indicators --}}
