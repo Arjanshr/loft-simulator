@@ -18,7 +18,7 @@ class LoftService
                 'name' => $loftName,
                 'coins' => 2500,
                 'vitamins' => 100,
-                'tokens' => 100,
+                'tokens' => 500,
                 'level' => 1,
             ]);
 
