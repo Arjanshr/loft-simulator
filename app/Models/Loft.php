@@ -22,7 +22,7 @@ class Loft extends Model
 
     public function getTotalPassiveIncomeAttribute(): float
     {
-        return $this->pigeons()->where('type', 'fancy')->where('status', '!=', 'chick')->get()->map(function($p) {
+        return $this->pigeons()->where('type', 'racer')->where('status', '!=', 'chick')->get()->map(function($p) {
             $chance = 10 + ($p->beauty / 2);
             $income = 1 + (int)($p->beauty / 20);
             return ($chance / 100) * $income;
@@ -44,7 +44,7 @@ class Loft extends Model
 
     public function getTotalTokenIncomeAttribute(): float
     {
-        return $this->pigeons()->where('type', 'racer')->where('status', '!=', 'chick')->get()->map(function($p) {
+        return $this->pigeons()->where('type', 'fancy')->where('status', '!=', 'chick')->get()->map(function($p) {
             $chance = 5 + ($p->speed / 5);
             return ($chance / 100) * 1;
         })->sum();

@@ -36,7 +36,7 @@ class PassiveIncomeCommand extends Command
                         $chance = 10 + ($pigeon->beauty / 2); // 10% to ~60% chance
                         if (rand(1, 100) <= $chance) {
                             $income = 1 + (int)($pigeon->beauty / 20);
-                            $pigeon->loft->increment('coins', $income);
+                            $pigeon->loft->increment('tokens', $income);
                         }
                     }
 
@@ -52,7 +52,7 @@ class PassiveIncomeCommand extends Command
                     if ($pigeon->type === 'racer') {
                         $chance = 5 + ($pigeon->speed / 5); // 5% to ~25% chance
                         if (rand(1, 100) <= $chance) {
-                            $pigeon->loft->increment('tokens', 1);
+                            $pigeon->loft->increment('coins', 1);
                         }
                     }
 
