@@ -98,12 +98,10 @@ class RaceSimulationService
                 if (in_array($pigeon->id, $playerPigeonIds)) {
                     $xpAwarded *= $multiplier;
                 }
-                if ($pigeon->stamina > 10) {
-                    if ($pigeon->loft->level < 5) {
-                        $pigeon->loft->increment('xp', 3 * $xpAwarded);
-                    } else {
-                        $pigeon->loft->increment('xp', $xpAwarded);
-                    }
+                if ($pigeon->loft->level < 5) {
+                    $pigeon->loft->increment('xp', 3 * $xpAwarded);
+                } else {
+                    $pigeon->loft->increment('xp', $xpAwarded);
                 }
 
                 // Update pigeon status
