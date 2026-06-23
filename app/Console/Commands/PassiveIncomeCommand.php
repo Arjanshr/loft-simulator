@@ -25,38 +25,24 @@ class PassiveIncomeCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         \App\Models\Pigeon::where('status', '!=', 'chick')
             ->with('loft')
             ->chunk(100, function ($pigeons) {
                 foreach ($pigeons as $pigeon) {
-                    // 1. Passive Income for Fancy types
-                    if ($pigeon->type === 'fancy') {
-                        $chance = 10 + ($pigeon->beauty / 2); // 10% to ~60% chance
-                        if (rand(1, 100) <= $chance) {
-                            $income = 1 + (int)($pigeon->beauty / 20);
-                            $pigeon->loft->increment('tokens', $income);
-                        }
+                    $reward = $pigeon->passiveReward();
+
+                    if (
+                        $reward['resource'] &&
+                        random_int(1, 100) <= $reward['chance']
+                    ) {
+                        $pigeon->loft->increment(
+                            $reward['resource'],
+                            $reward['amount']
+                        );
                     }
 
-                    // 2. Passive Vitamin generation for Highflyers
-                    if ($pigeon->type === 'highflyer') {
-                        $chance = 5 + ($pigeon->speed / 5); // 5% to ~25% chance
-                        if (rand(1, 100) <= $chance) {
-                            $pigeon->loft->increment('vitamins', 1);
-                        }
-                    }
-
-                    // 3. Passive Token generation for Racers
-                    if ($pigeon->type === 'racer') {
-                        $chance = 5 + ($pigeon->speed / 5); // 5% to ~25% chance
-                        if (rand(1, 100) <= $chance) {
-                            $pigeon->loft->increment('coins', 1);
-                        }
-                    }
-
-                    // 4. Passive Loyalty growth for all
                     if ($pigeon->loyalty < 100) {
                         $pigeon->increment('loyalty');
                     }

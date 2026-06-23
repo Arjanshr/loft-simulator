@@ -16,9 +16,9 @@ class LoftService
             $loft = Loft::create([
                 'user_id' => $user->id,
                 'name' => $loftName,
-                'coins' => 2500,
-                'vitamins' => 100,
-                'tokens' => 500,
+                'coins' => 10000,
+                'vitamins' => 500,
+                'tokens' => 1000,
                 'level' => 1,
             ]);
 

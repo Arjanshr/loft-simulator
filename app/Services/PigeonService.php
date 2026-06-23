@@ -76,7 +76,7 @@ class PigeonService
             'birth_at' => now()->subDays(10), // Adult
             'hatch_at' => now()->subDays(6),
             'eyes' => rand(1,10), 'beak' => rand(1,10), 'legs' => rand(1,10), 'feather_quality' => rand(1,10), 'pattern' => rand(1,10), 'color' => rand(1,10), 'purity' => rand(1,10),
-            'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
+            'speed' => rand(1,10), 'endurance' => rand(1,10), 'navigation' => rand(1,10), 'temperament' => rand(1,10),
             'energy' => 100, 'status' => 'idle',
             'loyalty' => 100,
             'intelligence' => $intelligence,
@@ -95,8 +95,8 @@ class PigeonService
             'gender' => fake()->randomElement(['male', 'female']),
             'birth_at' => now()->subDays(2), // Juvenile
             'hatch_at' => now()->subDays(1),
-            'eyes' => 1, 'beak' => 1, 'legs' => 1, 'feather_quality' => 1, 'pattern' => 1, 'color' => 1, 'purity' => 1,
-            'speed' => 5, 'endurance' => 5, 'navigation' => 5, 'temperament' => 5,
+            'eyes' => rand(1,10), 'beak' => rand(1,10), 'legs' => rand(1,10), 'feather_quality' => rand(1,10), 'pattern' => rand(1,10), 'color' => rand(1,10), 'purity' => rand(1,10),
+            'speed' => rand(1,10), 'endurance' => rand(1,10), 'navigation' => rand(1,10), 'temperament' => rand(1,10),
             'energy' => 100, 'status' => 'idle',
             'loyalty' => 100,
             'intelligence' => $intelligence,

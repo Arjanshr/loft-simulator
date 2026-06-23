@@ -118,7 +118,7 @@ class Pigeon extends Model
      */
     public function getStatLimitMultiplierAttribute(): int
     {
-        return match($this->rarity) {
+        return match ($this->rarity) {
             'mythic' => 16,
             'legendary' => 14,
             'super_rare' => 12,
@@ -127,68 +127,36 @@ class Pigeon extends Model
         };
     }
 
-protected $appends = ['beauty', 'total_score', 'stat_grades', 'income_per_minute', 'vitamin_income_per_minute', 'token_income_per_minute', 'fixed_price', 'required_stats', 'stat_limit_multiplier'];
+    protected $appends = [
+        'beauty',
+        'total_score',
+        'stat_grades',
+        'income_per_minute',
+        'vitamin_income_per_minute',
+        'token_income_per_minute',
+        'fixed_price',
+        'required_stats',
+        'stat_limit_multiplier',
+    ];
+    /**
+     * Get the fixed market price for this pigeon.
+     */
+    public function getFixedPriceAttribute(): int
+    {
+        $rarityMultiplier = match (strtolower($this->rarity)) {
+            'mythic' => 15.0,
+            'legendary' => 7.0,
+            'super_rare' => 3.5,
+            'rare' => 1.8,
+            default => 1.0,
+        };
 
-/**
- * Get the fixed market price for this pigeon.
- */
-public function getFixedPriceAttribute(): int
-{
-    $rarityMultiplier = match(strtolower($this->rarity)) {
-        'mythic' => 15.0,
-        'legendary' => 7.0,
-        'super_rare' => 3.5,
-        'rare' => 1.8,
-        default => 1.0,
-    };
-    
-    $basePrice = ($this->level * 200) + ($this->total_score * 5);
-    return (int) round($basePrice * $rarityMultiplier);
-}
-
-/**
- * Get the income generated per minute by this pigeon.
- */
-public function getIncomePerMinuteAttribute(): float
-{
-    if ($this->type !== 'fancy' || $this->status === 'chick') {
-        return 0;
+        $basePrice = ($this->level * 200) + ($this->total_score * 5);
+        return (int) round($basePrice * $rarityMultiplier);
     }
 
-    $chance = 10 + ($this->beauty / 2);
-    $income = 1 + (int)($this->beauty / 20);
-    return round(($chance / 100) * $income, 2);
-}
-
-/**
- * Get the vitamin income generated per minute by this pigeon.
- */
-public function getVitaminIncomePerMinuteAttribute(): float
-{
-    if ($this->type !== 'highflyer' || $this->status === 'chick') {
-        return 0;
-    }
-
-    $chance = 5 + ($this->speed / 5);
-    return round(($chance / 100) * 1, 2);
-}
-
-/**
- * Get the token income generated per minute by this pigeon.
- */
-public function getTokenIncomePerMinuteAttribute(): float
-{
-    if ($this->type !== 'racer' || $this->status === 'chick') {
-        return 0;
-    }
-
-    $chance = 5 + ($this->speed / 5);
-    return round(($chance / 100) * 1, 2);
-}
-
-/**
- * Get visual grades for all trainable stats.
-...
+    /**
+     * Get visual grades for all trainable stats.
      */
     public function getStatGradesAttribute(): array
     {
@@ -213,5 +181,88 @@ public function getTokenIncomePerMinuteAttribute(): float
     public function loft(): BelongsTo
     {
         return $this->belongsTo(Loft::class);
+    }
+
+    /**
+     * Get passive reward configuration for this pigeon.
+     */
+    public function passiveReward(): array
+    {
+        if ($this->status === 'chick') {
+            return [
+                'resource' => null,
+                'chance' => 0,
+                'amount' => 0,
+                'expected' => 0,
+            ];
+        }
+
+        return match ($this->type) {
+            'fancy' => [
+                'resource' => 'tokens',
+                'chance' => 10 + ($this->beauty / 2),
+                'amount' => 1 + intdiv((int) $this->beauty, 20),
+                'expected' => (
+                    (10 + ($this->beauty / 2)) / 100
+                ) * (1 + intdiv((int) $this->beauty, 20)),
+            ],
+
+            'highflyer' => [
+                'resource' => 'vitamins',
+                'chance' => 5 + ($this->speed / 5),
+                'amount' => 1,
+                'expected' => (5 + ($this->speed / 5)) / 100,
+            ],
+
+            'racer' => [
+                'resource' => 'coins',
+                'chance' => 5 + ($this->speed / 5),
+                'amount' => 1,
+                'expected' => (5 + ($this->speed / 5)) / 100,
+            ],
+
+            default => [
+                'resource' => null,
+                'chance' => 0,
+                'amount' => 0,
+                'expected' => 0,
+            ],
+        };
+    }
+
+    /**
+     * Get the coin income generated per minute.
+     */
+    public function getIncomePerMinuteAttribute(): float
+    {
+        $reward = $this->passiveReward();
+
+        return $reward['resource'] === 'coins'
+            ? round($reward['expected'], 2)
+            : 0;
+    }
+
+    /**
+     * Get the vitamin income generated per minute.
+     */
+    public function getVitaminIncomePerMinuteAttribute(): float
+    {
+        $reward = $this->passiveReward();
+
+        return $reward['resource'] === 'vitamins'
+            ? round($reward['expected'], 2)
+            : 0;
+    }
+
+    /**
+     * Get the token income generated per minute.
+     */
+    public function getTokenIncomePerMinuteAttribute(): float
+    {
+        $reward = $this->passiveReward();
+
+        return $reward['resource'] === 'tokens'
+            ? round($reward['expected'], 2)
+            : 0;
     }
 }

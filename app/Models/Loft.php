@@ -20,34 +20,9 @@ class Loft extends Model
 
     protected $appends = ['total_passive_income', 'total_vitamin_income', 'total_token_income', 'capacity'];
 
-    public function getTotalPassiveIncomeAttribute(): float
-    {
-        return $this->pigeons()->where('type', 'racer')->where('status', '!=', 'chick')->get()->map(function($p) {
-            $chance = 10 + ($p->beauty / 2);
-            $income = 1 + (int)($p->beauty / 20);
-            return ($chance / 100) * $income;
-        })->sum();
-    }
-
     public function getCapacityAttribute(): int
     {
         return 10 + ($this->level * 2);
-    }
-
-    public function getTotalVitaminIncomeAttribute(): float
-    {
-        return $this->pigeons()->where('type', 'highflyer')->where('status', '!=', 'chick')->get()->map(function($p) {
-            $chance = 5 + ($p->speed / 5);
-            return ($chance / 100) * 1;
-        })->sum();
-    }
-
-    public function getTotalTokenIncomeAttribute(): float
-    {
-        return $this->pigeons()->where('type', 'fancy')->where('status', '!=', 'chick')->get()->map(function($p) {
-            $chance = 5 + ($p->speed / 5);
-            return ($chance / 100) * 1;
-        })->sum();
     }
 
     public function user(): BelongsTo
@@ -78,5 +53,41 @@ class Loft extends Model
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    public function getTotalPassiveIncomeAttribute(): float
+    {
+        return round(
+            $this->pigeons()
+                ->where('type', 'racer')
+                ->where('status', '!=', 'chick')
+                ->get()
+                ->sum->income_per_minute,
+            2
+        );
+    }
+
+    public function getTotalVitaminIncomeAttribute(): float
+    {
+        return round(
+            $this->pigeons()
+                ->where('type', 'highflyer')
+                ->where('status', '!=', 'chick')
+                ->get()
+                ->sum->vitamin_income_per_minute,
+            2
+        );
+    }
+
+    public function getTotalTokenIncomeAttribute(): float
+    {
+        return round(
+            $this->pigeons()
+                ->where('type', 'fancy')
+                ->where('status', '!=', 'chick')
+                ->get()
+                ->sum->token_income_per_minute,
+            2
+        );
     }
 }
