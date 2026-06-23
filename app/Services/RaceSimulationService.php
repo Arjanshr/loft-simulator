@@ -68,11 +68,11 @@ class RaceSimulationService
                 $pigeon = $result['pigeon'];
                 $position = $index + 1;
                 $payout = $this->calculatePayout($race, $position);
-                
+
                 if (in_array($pigeon->id, $playerPigeonIds)) {
                     $payout *= $multiplier;
                 }
-                
+
                 $raceResult = RaceResult::create([
                     'race_id' => $race->id,
                     'pigeon_id' => $pigeon->id,
@@ -94,19 +94,21 @@ class RaceSimulationService
                 // Award XP to loft
                 // Formula: Tier * (40 / Position)
                 $xpAwarded = (int) ($race->difficulty_tier * (40 / $position));
-                
+
                 if (in_array($pigeon->id, $playerPigeonIds)) {
                     $xpAwarded *= $multiplier;
                 }
-                if($pigeon->loft->level < 5) {
-                    $pigeon->loft->increment('xp', 3 * $xpAwarded);
-                }else{
-                    $pigeon->loft->increment('xp', $xpAwarded);
+                if ($pigeon->stamina > 10) {
+                    if ($pigeon->loft->level < 5) {
+                        $pigeon->loft->increment('xp', 3 * $xpAwarded);
+                    } else {
+                        $pigeon->loft->increment('xp', $xpAwarded);
+                    }
                 }
 
                 // Update pigeon status
                 $pigeon->update(['status' => 'idle']);
-                
+
                 // If payout > 0, update loft currency based on race type
                 if ($payout > 0) {
                     if ($race->race_type === 'exhibition') {
@@ -167,7 +169,7 @@ class RaceSimulationService
         if ($position === 1) return (int) ($race->prize_pool * 0.6);
         if ($position === 2) return (int) ($race->prize_pool * 0.25);
         if ($position === 3) return (int) ($race->prize_pool * 0.1);
-        
+
         return 0;
     }
 }
